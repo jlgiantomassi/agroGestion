@@ -80,6 +80,7 @@
                             <button type="button" class="btn btn-sm " data-toggle="modal" data-target="#modalProductor" data-whatever="" id="btnActProdModal"><i class="material-icons shadow">add_box</i></button>                       
                         </div>   
                         
+                        
                     </div>
                     <div class="row pl-1 pr-1">
                         <div class="col-8">
