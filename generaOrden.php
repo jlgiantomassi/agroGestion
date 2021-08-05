@@ -1,16 +1,5 @@
 <?php
-session_start();
-if(isset($_SESSION["idusuario"]))
-{   
-    
-    $idCampanaActiva = $_SESSION["idcampana"];
-    $idUsuarioActivo = $_SESSION["idusuario"];
-}
-else{
-    echo "El usuario no esta logeado";
-    session_destroy();
-    exit();
-}
+include_once("./includes/controlLogin.php");
 
 ini_set("memory_limit", "1024M");
 $idordentrabajo = $_GET["idorden"];

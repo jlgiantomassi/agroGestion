@@ -1,28 +1,5 @@
 <?php
- session_start();
-if(isset($_SESSION["idusuario"]))
-{   
-   
-    $idCampanaActiva = $_SESSION["idcampana"];
-    $idUsuarioActivo = $_SESSION["idusuario"];
-}
-else{
-    echo "El usuario no esta logeado";
-    session_destroy();
-    exit();
-}
-/*
-include_once 'conexion/conexion.php';
-$queryUsuarioActivo = mysqli_query($con, "select * from usuarios WHERE idusuario=".$idUsuarioActivo);
-$rowUsuarioActivo = mysqli_fetch_array($queryUsuarioActivo);
-$usuarioActivo = empty($rowUsuarioActivo) ? "sin usuario" : $rowUsuarioActivo['usuario'];
-
-$queryCampanaActiva = mysqli_query($con, "select * from campanas WHERE idcampana=".$idCampanaActiva);
-$rowCampanaActiva = mysqli_fetch_array($queryCampanaActiva);
-$campanaActiva = empty($rowCampanaActiva) ? "sin campaña" : $rowCampanaActiva['campana'];
-  */
- $usuarioActivo="Jose L Giantomassi";
- $campanaActiva="20-21";
+ include_once("controlLogin.php");
 ?>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="<?php echo 'index.php' ?>">agroGestion</a>

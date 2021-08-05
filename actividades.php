@@ -1,11 +1,11 @@
 <?php
     $raiz="";
-    require_once("includes/modelos/CamposModelo.php");
+    require_once("includes/modelos/camposModelo.php");
+    require_once("includes/modelos/cultivosModelo.php");
     $oCampos= new CamposModel();
     $campos=$oCampos->listarCampos();
-    /*$lotes=$oCampos->listarLotes($campos[0]["idcampo"]); //sacamos el primer campo de la lista y  cargamos el conjunto de lotes
-    $primerSuperficie=$lotes[0]['superficie'];
-    */
+    $oCultivos=new cultivosModel();
+    $cultivos=$oCultivos->listarCultivos();
 ?>
 
 <!doctype html>
@@ -55,9 +55,12 @@
                         <div class="form-group col-2 ">
                             <label for="sltcultivos" class="col-form-label">Cultivo</label>
                             <select class="form-control " name="sltcultivos" id="sltcultivos">
-                                <option value="<?php echo ''; ?>" >
-                                        <?php echo ''; ?>
+                                <option value="0" ></option>
+                                <?php foreach ($cultivos as $cultivo) { ?>
+                                    <option value="<?php echo $cultivo['idcultivo']; ?>" >
+                                        <?php echo $cultivo['cultivo']; ?>
                                     </option>
+                                <?php } ?>
                             </select>
                         </div>
 
@@ -70,233 +73,243 @@
                 </div>
                 <!-- Lista de actividades para el lote-->
                 <fieldset class="border rounded mb-2 d-none" id="fldActividades">
-                    <div class="row  pl-3 ">
-                        <div class="form-group col-8 mb-0">                        
-                            <strong><label for="" class="col-form-label">Lista de Actividades</label> </strong>
-                            <button type="button" class="btn btn-sm " data-toggle="modal" data-target="#modalAgregarLabor" data-whatever="" id="btnLaborModal"><i class="material-icons shadow">add_box</i></button>                       
-                        </div>   
-                        <div class="form-group col-4 mb-0 ">
-                            <strong><label for="" class="col-form-label">Asignacion de Productores</label> </strong>
-                            <button type="button" class="btn btn-sm " data-toggle="modal" data-target="#modalProductor" data-whatever="" id="btnActProdModal"><i class="material-icons shadow">add_box</i></button>                       
-                        </div>   
-                        
-                        
-                    </div>
-                    <div class="row pl-1 pr-1">
-                        <div class="col-8">
-                            <table class="table" id="tblactividades">
-                                <thead class="thead-light">
-                                    <tr>
-                                        <th>Fecha</th>
-                                        <th>Actividades</th>
-                                        <th class="text-right">Precio Ha</th>
-                                        <th class="text-right">Superficie</th>
-                                        <th class="text-right">Total</th>
-                                        <th class='text-center'>Accion</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    
-                                </tbody>
-                            </table>
+                    <div class="row  p-2">
+                        <div class="col-8 pl-3 mr-0">
+                            <div class="form-group mb-0 pl-2">                        
+                                <strong><label for="" class="col-form-label">Lista de Actividades</label> </strong>
+                                <button type="button" class="btn btn-sm " data-toggle="modal" data-target="#modalAgregarLabor" data-whatever="" id="btnLaborModal"><i class="material-icons shadow">add_box</i></button>                       
+                            </div>   
+                            <div class="m-0 p-0">
+                                <input type="hidden" name="idActividad" id="idActividad" value="0"/>
+                                <table class="table m-0 p-0 table-hover table-sm" id="tblactividades">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th class="d-none"></th>
+                                            <th>Fecha</th>
+                                            <th>Actividades</th>
+                                            <th class="text-right">Precio Ha</th>
+                                            <th class="text-right">Superficie</th>
+                                            <th class="text-right">Total</th>
+                                            <th class='text-center'>Accion</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody >
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                        <div class="col-md-4">
-                            <table class="table" id="tblproductores">
-                                <thead class="thead-light">
-                                    <tr>
-                                        <th>Productor</th>
-                                        <th class="text-right">Participacion</th>
-                                        <th class='text-center'>Accion</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+                    
+                        <div class="col-4 p-0 d-none">
+                            <div class="form-group mb-0 pl-3">
+                                <strong><label for="" class="col-form-label">Asignacion de Productores</label> </strong>
+                                <button type="button" class="btn btn-sm " data-toggle="modal" data-target="#modalProductor" data-whatever="" id="btnActProdModal"><i class="material-icons shadow">add_box</i></button>                       
+                            </div>   
+                            <div class="">
+                                <table class="table" id="tblproductores">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th>Productor</th>
+                                            <th class="text-right">Participacion</th>
+                                            <th class='text-center'>Accion</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
 
-                                </tbody>
-                            </table>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
+
                     </div>
                 </fieldset>
 
-                <nav class="d-none">
-                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                        <a class="nav-item nav-link active"  id="nav-insumos-tab" data-toggle="tab" href="#nav-insumos" role="tab" aria-controls="nav-insumos" aria-selected="true">Insumos</a>
-                        <a class="nav-item nav-link" id="nav-maquinarias-tab" data-toggle="tab" href="#nav-maquinarias" role="tab" aria-controls="nav-maquinarias" aria-selected="false">Maquinaria</a>
-                        <a class="nav-item nav-link" id="nav-observaciones-tab" data-toggle="tab" href="#nav-observaciones" role="tab" aria-controls="nav-observaciones" aria-selected="false">Observaciones</a>
-                    </div>
-                </nav>
-
-                
-
-                <div class="col-12 d-none">
-                    <div class="tab-content" id="nav-tabContent">
-                        <div class="tab-pane show active fade ml-0" id="nav-insumos" role="tabpanel" aria-labelledby="nav-insumos-tab">
-                            <div class="row mt-2 pl-3">
-                                <div class="form-group col-8 mb-0 ">
-                                    <strong><label for="" class="col-form-label">Lista de Insumos</label></strong>
-                                    <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#modalInsumo" data-whatever=""><i class="material-icons shadow">add_box</i></button>
-                                </div>
-                                <div class="form-group col-4 mb-0">
-                                    <strong><label for="" class="col-form-label">Asignacion de Productores</label> </strong>
-                                    <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#modalProductor" data-whatever="" id="btnInsProdModal"><i class="material-icons shadow">add_box</i></button>                       
-                                </div>      
+                <div class="row d-none" id="navDatos">
+                    <div class="col">
+                        <nav class="">
+                            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                <a class="nav-item nav-link active"  id="nav-insumos-tab" data-toggle="tab" href="#nav-insumos" role="tab" aria-controls="nav-insumos" aria-selected="true">Insumos</a>
+                                <a class="nav-item nav-link" id="nav-maquinarias-tab" data-toggle="tab" href="#nav-maquinarias" role="tab" aria-controls="nav-maquinarias" aria-selected="false">Maquinaria</a>
+                                <a class="nav-item nav-link" id="nav-observaciones-tab" data-toggle="tab" href="#nav-observaciones" role="tab" aria-controls="nav-observaciones" aria-selected="false">Observaciones</a>
                             </div>
-                            <div class="row">
-                                <div class="col-8">
-                                    <table class="table" id="tblinsumos">
-                                        <thead class="thead-light">
-                                            <tr>
-                                                <th>Insumo</th>
-                                                <th class="text-right">Cant/ha</th>
-                                                <th class="text-right">Precio unit.</th>
-                                                <th class="text-right">Total/ha</th>
-                                                <th class='text-center'>Accion</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
+                        </nav>
 
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="col-md-4">
-                                    <table class="table" id="tblproductores">
-                                        <thead class="thead-light">
-                                            <tr>
-                                                <th>Productor</th>
-                                                <th class="text-right">Participacion</th>
-                                                <th class='text-center'>Accion</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
+                        <div class="col-12">
+                            <div class="tab-content" id="nav-tabContent">
+                                <div class="tab-pane show active fade ml-0" id="nav-insumos" role="tabpanel" aria-labelledby="nav-insumos-tab">
+                                    <div class="row  p-2">
+                                        <div class="col-8 pl-0 mr-0">
+                                            <div class="form-group mb-0 pl-4">
+                                                <strong><label for="" class="col-form-label">Lista de Insumos</label></strong>
+                                                <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#modalInsumo" data-whatever=""><i class="material-icons shadow">add_box</i></button>
+                                            </div>
+                                                                        
+                                            <div class="col-12">
+                                                <table class="table m-0 p-0 table-hover table-sm" id="tblinsumos">
+                                                    <thead class="thead-light">
+                                                        <tr>
+                                                            <th class="d-none">idActividadInsumo</th>
+                                                            <th class="d-none">idInsumo</th>
+                                                            <th>Insumo</th>
+                                                            <th class="text-right">Cant/ha</th>
+                                                            <th class="text-right">Precio unit.</th>
+                                                            <th class="text-right">Total/ha</th>
+                                                            <th class='text-center'>Accion</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
 
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
 
+                                        <div class="col-4 pl-0 mr-0 d-none">
+                                            <div class="form-group mb-0 pl-4">
+                                                <strong><label for="" class="col-form-label">Asignacion de Productores</label> </strong>
+                                                <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#modalProductor" data-whatever="" id="btnInsProdModal"><i class="material-icons shadow">add_box</i></button>                       
+                                            </div>  
+                                            <table class="table m-0 p-0 table-hover table-sm" id="tblproductores">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th>Productor</th>
+                                                        <th class="text-right">Participacion</th>
+                                                        <th class='text-center'>Accion</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
 
-                        <div class="tab-pane fade ml-2" id="nav-maquinarias" role="tabpanel" aria-labelledby="nav-maquinarias-tab">
-                            <div class="row mt-2">
-                                <div class="col-md-3">
-                                    <strong>Asignacion de Maquinaria</strong>
-                                </div>
-                            </div>
-                            <div class="row m-2" >
-                                <div class="col-md-9" id="optMaquinarias" >
-                                    <div class="form-check form-check-inline ">
-                                        <input class="form-check-input rb "  type="radio" id="maquinariaPropia" name="maquinaria" value="maquinariaPropia" disabled>
-                                            <label class="form-check-label" for="maquinariaPropia">Propia</label>
-                                    </div>
-                                    <div class="form-check form-check-inline ">
-                                        <input class="form-check-input rb "  type="radio" id="maquinariaContratada" name="maquinaria" value="maquinariaContratada" disabled>
-                                            <label class="form-check-label" for="maquinariaContratada">Contratada</label>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="row d-none" id="tblMaquinaria">
-                                <div class="col-md-4">
-                                    <strong>Lista de Personal asignado a la labor</strong>
-                                </div>
-                                <div class="col-md-1">
-                                    <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#modalPersonal" data-whatever=""><i class="material-icons">add_box</i></button>
-                                </div>
-                                <div class="col-md-9">
-                                    <table class="table" id="tblpersonales">
-                                        <thead class="thead-light">
-                                            <tr>
-                                                <th>Personal asignado</th>
-                                                <th class="text-right">Labor Precio/ha</th>
-                                                <th class='text-center'>Accion</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-                            <div class="row  d-none" id="tblContratistas">
-                                <div class="col-md-4">
-                                    <strong>Lista de Contratistas asignado a la labor</strong>
-                                </div>
-                                <div class="col-md-1">
-                                    <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#modalContratistas" data-whatever=""><i class="material-icons">add_box</i></button>
-                                </div>
-                                <div class="col-md-9">
-                                    <table class="table" id="tblterceros" >
-                                        <thead class="thead-light">
-                                            <tr>
-                                                <th>Maquinaria Contratada</th>
-                                                <th class="text-right">Precio Ha</th>
-                                                <th class="text-right d-none">Superficie</th>
-                                                <th class='text-center'>Accion</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="tab-pane fade ml-2" id="nav-observaciones" role="tabpanel" aria-labelledby="nav-observaciones-tab">
-                            <div class="row mt-2">
-                                <div class="col-md-5">
-                                    <strong>Observaciones de la Orden de Trabajo</strong>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-9">
-                                    <textarea class="form-control mb-3" name="txtobservaciones" id="txtobservaciones"></textarea>
-                                </div>
-                                <div class="col-md-3">
-                                    <button class="btn btn-success" id="btnObservaciones">Guardar</button>
-                                </div>
-                            </div>
-                        </div>
 
 
-                        <div class="tab-pane fade ml-2" id="nav-resumen" role="tabpanel" aria-labelledby="nav-resumen-tab">
-                            <div class="row mt-2" id="resumenMensaje">
-                                <strong>Debe tener asignado al menos un lote y una participacion del 100% de productores para activar el resumen y poder guardar
-                                    la orden de trabajo</strong>
-                            </div>
-                            <div class="row mt-2" id="resumen" >
-                                <h5 class="col-md-12">Resumen Orden de Trabajo</h5>
-                                <div class="col-md-4">
-                                    <table class="table" >
-                                        <tbody>
-                                            <tr>
-                                                <td>Superficie Total (has)</td>
-                                                <td id="tdSupTotal" class="text-right"></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Total Labores (U$S)</td>
-                                                <td id="tdTotalLabores" class="text-right"></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Total Insumos (U$S)</td>
-                                                <td id="tdTotalInsumos" class="text-right"></td>
-                                            </tr>
-                                            <tr>
+                                <div class="tab-pane fade ml-2" id="nav-maquinarias" role="tabpanel" aria-labelledby="nav-maquinarias-tab">
+                                    <div class="row mt-2">
+                                        <div class="col-md-3">
+                                            <strong>Asignacion de Maquinaria</strong>
+                                        </div>
+                                    </div>
+                                    <div class="row m-2" >
+                                        <div class="col-md-9" id="optMaquinarias" >
+                                            <div class="form-check form-check-inline ">
+                                                <input class="form-check-input rb "  type="radio" id="maquinariaPropia" name="maquinaria" value="maquinariaPropia" disabled>
+                                                    <label class="form-check-label" for="maquinariaPropia">Propia</label>
+                                            </div>
+                                            <div class="form-check form-check-inline ">
+                                                <input class="form-check-input rb "  type="radio" id="maquinariaContratada" name="maquinaria" value="maquinariaContratada" disabled>
+                                                    <label class="form-check-label" for="maquinariaContratada">Contratada</label>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                                                <td><strong>Total (U$S)</strong></td>
-                                                <td class="text-right"><strong id="tdTotal" ></strong></td>
+                                    <div class="row d-none" id="tblMaquinaria">
+                                        <div class="col-md-4">
+                                            <strong>Lista de Personal asignado a la labor</strong>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#modalPersonal" data-whatever=""><i class="material-icons">add_box</i></button>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <table class="table" id="tblpersonales">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th>Personal asignado</th>
+                                                        <th class="text-right">Labor Precio/ha</th>
+                                                        <th class='text-center'>Accion</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
 
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <div class="row  d-none" id="tblContratistas">
+                                        <div class="col-md-4">
+                                            <strong>Lista de Contratistas asignado a la labor</strong>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#modalContratistas" data-whatever=""><i class="material-icons">add_box</i></button>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <table class="table" id="tblterceros" >
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th>Maquinaria Contratada</th>
+                                                        <th class="text-right">Precio Ha</th>
+                                                        <th class="text-right d-none">Superficie</th>
+                                                        <th class='text-center'>Accion</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
 
                                 </div>
-                                <div class="col-md-3">
-                                    <button type="button" id="btnGuardarOrden" class="btn btn-primary form-control">Guardar Orden de Trabajo</button>
-                                    <button type="button" id="btnOrdenTrabajo" class="btn btn-primary form-control d-none" >Orden de Trabajo</button>
-                                    <button type="button" id="btnInformeProductor" class="btn btn-info form-control mt-2 d-none">Informe Productor</button>
-                                    <button type="button" id="btnLimpiarOrden" class="btn btn-light form-control mt-2 d-none">Limpiar Orden</button>
+
+                                <div class="tab-pane fade ml-2" id="nav-observaciones" role="tabpanel" aria-labelledby="nav-observaciones-tab">
+                                    <div class="row mt-2">
+                                        <div class="col-md-5">
+                                            <strong>Observaciones de la Orden de Trabajo</strong>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-9">
+                                            <textarea class="form-control mb-3" name="txtobservaciones" id="txtobservaciones"></textarea>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <button class="btn btn-success" id="btnObservaciones">Guardar</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="tab-pane fade ml-2" id="nav-resumen" role="tabpanel" aria-labelledby="nav-resumen-tab">
+                                    <div class="row mt-2" id="resumenMensaje">
+                                        <strong>Debe tener asignado al menos un lote y una participacion del 100% de productores para activar el resumen y poder guardar
+                                            la orden de trabajo</strong>
+                                    </div>
+                                    <div class="row mt-2" id="resumen" >
+                                        <h5 class="col-md-12">Resumen Orden de Trabajo</h5>
+                                        <div class="col-md-4">
+                                            <table class="table" >
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Superficie Total (has)</td>
+                                                        <td id="tdSupTotal" class="text-right"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Total Labores (U$S)</td>
+                                                        <td id="tdTotalLabores" class="text-right"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Total Insumos (U$S)</td>
+                                                        <td id="tdTotalInsumos" class="text-right"></td>
+                                                    </tr>
+                                                    <tr>
+
+                                                        <td><strong>Total (U$S)</strong></td>
+                                                        <td class="text-right"><strong id="tdTotal" ></strong></td>
+
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+                                        <div class="col-md-3">
+                                            <button type="button" id="btnGuardarOrden" class="btn btn-primary form-control">Guardar Orden de Trabajo</button>
+                                            <button type="button" id="btnOrdenTrabajo" class="btn btn-primary form-control d-none" >Orden de Trabajo</button>
+                                            <button type="button" id="btnInformeProductor" class="btn btn-info form-control mt-2 d-none">Informe Productor</button>
+                                            <button type="button" id="btnLimpiarOrden" class="btn btn-light form-control mt-2 d-none">Limpiar Orden</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

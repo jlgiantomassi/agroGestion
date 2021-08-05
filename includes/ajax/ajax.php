@@ -7,6 +7,7 @@ include_once $raiz.'includes/modelos/insumosModelo.php';
 include_once $raiz.'includes/modelos/laboresModelo.php';
 include_once $raiz.'includes/modelos/personalesModelo.php';
 include_once $raiz.'includes/modelos/usuariosModelo.php';
+include_once $raiz.'includes/modelos/cultivosModelo.php';
 $accion = $_GET['accion'];
 switch ($accion) {
     case "todosCampos":
@@ -44,6 +45,40 @@ switch ($accion) {
         $datos=$oCampos->loteById($id);
         echo json_encode($datos);
         break;
+    case "loteCultivo":
+        $idlote = $_GET['idlote'];
+        $idusuario = $_GET['idusuario'];
+        $idcampana = $_GET['idcampana'];
+        $oCultivos=new cultivosModel();
+        $datos=$oCultivos->cultivoPorCampana($idlote,$idusuario,$idcampana);
+        echo json_encode($datos);
+        break;
+    case "loteCultivoGuardar":
+        $idlote = $_GET['idlote'];
+        $idusuario = $_GET['idusuario'];
+        $idcampana = $_GET['idcampana'];
+        $idcultivo = $_GET['idcultivo'];
+        $oCultivos=new cultivosModel();
+        $id=$oCultivos->insertarCultivoEnCampana($idlote,$idusuario,$idcampana,$idcultivo);
+        if ($id > 0) {
+            echo $id;
+        } else {
+            echo "false";
+        }
+        break;
+    case "loteCultivoModificar":
+            $idlote = $_GET['idlote'];
+            $idusuario = $_GET['idusuario'];
+            $idcampana = $_GET['idcampana'];
+            $idcultivo = $_GET['idcultivo'];
+            $oCultivos=new cultivosModel();
+            $id=$oCultivos->modificarCultivoEnCampana($idlote,$idusuario,$idcampana,$idcultivo);
+            if ($id > 0) {
+                echo $id;
+            } else {
+                echo "false";
+            }
+            break;
     case "labores":
         $id = $_GET['idlabor'];
         $oLabores=new laboresModel();

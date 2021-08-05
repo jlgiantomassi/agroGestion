@@ -7,7 +7,10 @@
     
         <?php 
         include_once 'includes/menu.php'; 
-        $query = mysqli_query($con, "select ordentrabajos.idordentrabajo as idorden,superficie as sup,fecha,labor from ordentrabajos  INNER JOIN labores on ordentrabajos.idlabor=labores.idlabor   WHERE realizado =0 and idcampana=". $idCampanaActiva ." and idusuario=". $idUsuarioActivo ." order by fecha ASC,ordentrabajos.idordentrabajo "); 
+        include_once 'includes/funciones.php';
+        include_once 'conexion/BaseDatos.php';
+        $bd=new BaseDatos();
+        $datosOrdenes=$bd->sql("select ordentrabajos.idordentrabajo as idorden,superficie as sup,fecha,labor from ordentrabajos  INNER JOIN labores on ordentrabajos.idlabor=labores.idlabor   WHERE realizado =0 and idcampana=". $idCampanaActiva ." and idusuario=". $idUsuarioActivo ." order by fecha ASC,ordentrabajos.idordentrabajo ");
         ?>
        
         <div class="container border bg-white">
@@ -30,10 +33,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php while ($row = mysqli_fetch_array($query)) { ?>
+                    <?php foreach ($datosOrdenes as $row) { ?>
                         <tr>
                             <td scope="row"><?php echo $row["idorden"] ?></td>
-                            <td><?php echo $row["fecha"] ?></td>
+                            <td><?php echo fecha_a_normal($row["fecha"]) ?></td>
                             <td><?php echo $row["labor"] ?></td>
                             <td><?php echo $row["sup"] ?></td> 
                             <td class="text-center col-4">

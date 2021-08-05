@@ -17,7 +17,10 @@ $primerPrecio = ($cantLabores > 0) ? $rowsLabores[0]['precio'] : "";
             </div>
             <div class="modal-body">
                 <form id="frmlabores">
-
+                    <div class="form-group">
+                        <label for="txtFecha" class="col-form-label">Fecha:</label>
+                        <input class="form-control col-md-3" type="text" value="<?php echo date('d/m/Y'); ?>" id="fecha" name="fecha">
+                    </div>
                     <div class="form-group">
                         <label for="sltlabores" class="col-form-label">Labor:</label>
                         <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#modalLabor" data-whatever="" id="btnAbrirNuevaLabor"><i class="material-icons">add_box</i></button>
@@ -25,17 +28,20 @@ $primerPrecio = ($cantLabores > 0) ? $rowsLabores[0]['precio'] : "";
                             <?php
                             if ($cantLabores > 0) {
                                 foreach ($rowsLabores as $rowLabor) { ?>
-                                    <option value="<?php echo $rowLabor['idLabor']; ?>" <?php echo $rowLabor['idlabor']; ?>><?php echo $rowLabor['labor']; ?></option>
-                                    <?php
-                                } 
+                                    <option value="<?php echo $rowLabor['idlabor']; ?>" <?php echo $rowLabor['idlabor']; ?>><?php echo $rowLabor['labor']; ?></option>
+                                <?php } 
                             } ?>
                         </select>
-
                     </div>
 
                     <div class="form-group">
                         <label for="txtPrecio" class="col-form-label">Precio:</label>
-                        <input type="text" class="form-control" id="txtPrecio" name="txtPrecio" value="<?php echo $primerPrecio; ?>">
+                        <input type="text" class="form-control" id="txtPrecioLabor" name="txtPrecioLabor" value="<?php echo $primerPrecio; ?>">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="txtsupActividad" class="col-form-label">Superficie a aplicar:</label>
+                        <input type="text" class="form-control" id="txtsupActividad" name="txtsupActividad" >
                     </div>
                     
                     <div class="modal-footer">

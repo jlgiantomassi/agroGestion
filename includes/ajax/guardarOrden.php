@@ -1,6 +1,8 @@
 <?php
 
-include '../../conexion/BaseDatos.php';
+include_once '../../conexion/BaseDatos.php';
+include_once '../funciones.php';
+
 $bd1=new BaseDatos();
 
 $idorden=0;
@@ -8,7 +10,7 @@ $flag=true;
 if(isset($_REQUEST["orden"]))
 {
     $datos=json_decode($_REQUEST["orden"]);
-    $sql= "INSERT INTO ordentrabajos (fecha, idlabor,precio,observaciones,superficie,realizado,idusuario,idcampana) VALUES ('" . $datos->fecha . "','" . $datos->idlabor . "','" . $datos->precioLabor . "','" . $datos->observacion . "','" . $datos->supTotal . "',0,'" . $datos->idusuario . "','" . $datos->idcampana . "');";
+    $sql= "INSERT INTO ordentrabajos (fecha, idlabor,precio,observaciones,superficie,realizado,idusuario,idcampana) VALUES ('" . fecha_a_mysql($datos->fecha) . "','" . $datos->idlabor . "','" . $datos->precioLabor . "','" . $datos->observacion . "','" . $datos->supTotal . "',0,'" . $datos->idusuario . "','" . $datos->idcampana . "');";
     $sql.="SET @id := LAST_INSERT_ID();";
 }
 if(isset($_REQUEST["productores"]))

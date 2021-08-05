@@ -11,9 +11,7 @@
     <body>
         <?php// include 'includes/menu.php';?>
         <!-- Login -->
-        
         <?php
-        
             if (!isset($_SESSION)) {
                 session_start();
                 require_once("includes/modelos/usuariosModelo.php");
@@ -28,13 +26,8 @@
                 $_SESSION['idcampana']=$row[0]["idcampana"];
                 $_SESSION['campana']=$row[0]["campana"];
                 header("Location:home.php");
-                
-                
             }
-
         ?>
-        
-
         <?php include 'includes/footer.php';?>
     </body>
 </html>
