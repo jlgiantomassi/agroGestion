@@ -7,6 +7,8 @@ function iniciarEventosActividades() {
     let idusuario=0;
     let idcultivoSel=0;
     let idlotecampana=0;
+    let idactividadSel=0; //toma los id de la tabla de actividades que se seleccionan
+    let superficieSel=0 //toma las superficies de la tabla de actividades que se seleccionan
     idcampana=$("#idCampanaActiva").val();
     idusuario=$("#idUsuarioActivo").val(); //recuperamos en java los id de usuario y campana
 
@@ -16,6 +18,8 @@ function iniciarEventosActividades() {
         $("#supLote").val("");
         $("#sltlotes").empty();
         $("#sltlotes").append('<option value="0"></option>');
+        $("#navDatos").addClass("d-none");
+        $("#fldActividades").addClass("d-none");
         let idcampo = $("#sltcampos").val();
         $.ajax({
             type: "GET",
@@ -39,6 +43,9 @@ function iniciarEventosActividades() {
     //cargamos los datos de los lotes, el cultivo de la campana y las actividades guardadas
     $('#sltlotes').change(function (e) {
         e.preventDefault();
+        filaActividad=0;
+        $("#tblactividades tbody").empty();
+        $("#navDatos").addClass("d-none");
         $("#supLote").val("");
         let idlote;
         idlote = $("#sltlotes").val();
@@ -64,8 +71,6 @@ function iniciarEventosActividades() {
                                 idlotecampana=datos[0].idloteCampana;
                                 idcultivoSel=datos[0].idcultivo;
                                 
-                                filaActividad=0;
-                                $("#tblactividades tbody").empty();
                                 $.ajax({
                                     type: "GET",
                                     url: "includes/ajax/actividades.php",
@@ -79,7 +84,7 @@ function iniciarEventosActividades() {
                                                                             <td>" + dato.fecha + "</td>\
                                                                             <td>" + dato.labor + "</td>\
                                                                             <td class='text-right'>" + dato.precioha + "</td>\
-                                                                            <td class='text-right'>" + dato.superficie + "</td>\
+                                                                            <td class='text-right superficie'>" + dato.superficie + "</td>\
                                                                             <td class='text-right'>" + dato.precioha * dato.superficie + "</td>\
                                                                             <td class='text-center'><a class='borrarActividad' href='#'><i class='material-icons'>clear</i></a></td>\
                                                                         </tr>");
@@ -126,6 +131,67 @@ function iniciarEventosActividades() {
                 alert("error de conexion al buscar productores");
             }
         });
+    });
+
+    // al seleccionar un insumo actualizamos los datos de la ventana
+    $('#sltinsumos').change(function (e) {
+        e.preventDefault();
+        let idinsumo;
+        idinsumo = $("#sltinsumos").val();
+        $.ajax({
+            data: "accion=insumos&idinsumo=" + idinsumo,
+            type: "GET",
+            dataType: "json",
+            url: "includes/ajax/ajax.php",
+            success: function (datos) {
+                if (datos.length > 0) {
+                    $("#txtprecio").val(datos[0].precio);
+                    $("#txtunidad").val(datos[0].unidad);
+
+                }
+            },
+            error: function (datos) {
+                alert("error de conexion");
+            }
+        });
+    });
+
+    // insertar un insumo a la base de datos y luego agregarlo a la tabla
+    $("#btnInsertarInsumo").click(function (e) {
+        e.preventDefault();
+        //let total = 0;
+        let idunidad = $("#sltunidad").val();
+        let nombreInsumo = $("#txtInsInsumo").val();
+        let slt = $("#sltinsumos option");
+        if (estaEnElCombo(nombreInsumo, slt)) {
+            alert("Este insumo ya existe");
+
+        } else {
+            if ($("#frmAgregarInsumo").valid()) {
+                let precio = ($("#txtInsPrecio").val() == "") ? 0 : parseFloat($("#txtInsPrecio").val());
+                //let cantidad = ($("#txtInsCantidadInsumo").val() == "") ? 0 : parseFloat($("#txtInsCantidadInsumo").val());
+
+                $.ajax({
+                    data: "accion=insInsumos&idunidad=" + idunidad + "&insumo=" + nombreInsumo + "&precio=" + precio,
+                    type: "GET",
+                    dataType: "text",
+                    url: "includes/ajax/ajax.php",
+                    success: function (datos) {
+                        if (datos != "false") {
+                            //var idinsumo = parseInt(datos);
+                            $("#modalInsertarInsumo").hide();
+                            $("#modalInsertarInsumo").modal('hide');
+                            actualizarListaInsumos();
+                        } else {
+                            alert(datos);
+                        }
+                    },
+                    error: function () {
+                        alert("error de conexion");
+                    }
+                });
+            }
+        }
     });
 
     $("#btnInsertarCampo").click(function (e) {
@@ -205,9 +271,7 @@ function iniciarEventosActividades() {
             let fechaActividad = $("#fecha").val();
             let precioHa = ($("#txtPrecioLabor").val() == "") ? 0 : parseFloat($("#txtPrecioLabor").val());
             let superficie = ($("#txtsupActividad").val() == "") ? 0 : parseFloat($("#txtsupActividad").val());
-            let idlotecampana=$("#idlotecampana").val();
             idlabor = parseInt($("#sltlabores option:selected").val());
-            //id='filaActividad" + filaActividad + "'
             
             $.ajax({
                 type: "GET",
@@ -222,7 +286,7 @@ function iniciarEventosActividades() {
                                                     <td>" + fechaActividad + "</td>\
                                                     <td>" + nombreLabor + "</td>\
                                                     <td class='text-right'>" + precioHa + "</td>\
-                                                    <td class='text-right'>" + superficie + "</td>\
+                                                    <td class='text-right superficie'>" + superficie + "</td>\
                                                     <td class='text-right'>" + precioHa * superficie + "</td>\
                                                     <td class='text-center'><a class='borrarActividad' href='#'><i class='material-icons'>clear</i></a></td>\
                                                 </tr>");
@@ -236,19 +300,44 @@ function iniciarEventosActividades() {
         } //fin validar campos
     });
 
+    //al hacer click en la tabla de actividades se selecciona una actividad y actualiza el resto de las tablas correspondientes
     $('#tblactividades tbody').click(function (e) { 
         //console.log(e.target.parentNode.className);
+        
         if(e.target.parentNode.className=="borrarActividad")
             {
-                alert("Desea borrar esta actividad?");
+                if(confirm("Desea borrar esta actividad?"))
+                {
+                    dato=e.target.parentNode.parentNode.parentNode
+                    idactividadSel= $(dato).children().html();
+                    $.ajax({
+                        type: "GET",
+                        url: "includes/ajax/actividades.php",
+                        data: "accion=borrar&idactividad="+idactividadSel,
+                        dataType: "text",
+                        success: function (id) {
+                            if(id)
+                            {
+                            $(dato).remove();
+                            $("#navDatos").addClass("d-none");
+                            idactividadSel=0;
+                            superficieSel=0;
+                            }else{
+                                alert("Hubo un error al borrar la actividad");
+                            }
+                        }
+                    });       
+                } 
             }else
             {
-                $('#tblactividades tbody tr').removeClass("table-active");
                 dato=e.target.parentNode
+                idactividadSel= $(dato).children().html();  //es lo mismo que -> console.log(dato.children[0].innerHTML);
+                superficieSel=$(dato).find(".superficie").html();
+                $('#tblactividades tbody tr').removeClass("table-active");
                 dato.className="table-active";
-                $("#idActividad").val($(dato).children().html());  //es lo mismo que -> console.log(dato.children[0].innerHTML);
                 $("#navDatos").removeClass("d-none");
-                actualizarListaActividades();
+                actualizarListaInsumosActividades(idactividadSel);
+                actualizarListaMaquinariaActividades(idactividadSel);
             }
     });
 
@@ -294,6 +383,36 @@ function iniciarEventosActividades() {
         }
     });
     
+
+    $("#btnAgregarInsumo").click(function (e) { 
+        e.preventDefault();
+        let precio=$("#txtprecio").val();
+        let cantidadha=$("#txtcantidadInsumo").val();
+        let idinsumo=$("#sltinsumos").val();
+        let insumo=$("#sltinsumos option:selected").html();
+        $.ajax({
+            type: "GET",
+            url: "includes/ajax/actividades.php",
+            data: "accion=insertarInsumo&idactividad="+idactividadSel+"&superficie="+superficieSel+"&precio="+precio+"&cantidadha="+cantidadha+"&idinsumo="+idinsumo,
+            dataType: "text",
+            success: function (id) {
+                $("#tblinsumos tbody").append("<tr>\
+                                                    <td class='d-none idactividadinsumo'>" + id + "</td>\
+                                                    <td class='d-none'>" + idinsumo + "</td>\
+                                                    <td>" + insumo + "</td>\
+                                                    <td class='text-right'>" + precio + "</td>\
+                                                    <td class='text-right'>" + cantidadha + "</td>\
+                                                    <td class='text-right superficie'>" + superficieSel*cantidadha + "</td>\
+                                                    <td class='text-right'>" + superficieSel*cantidadha*precio + "</td>\
+                                                    <td class='text-center'><a class='borrarActividad' href='#'><i class='material-icons'>clear</i></a></td>\
+                                                </tr>");
+                },
+                error: function(){
+                    alert("ocurrio un error al guardar la actividad");
+                }
+            
+        });
+    });
 }//fin iniciar eventos actividades
 
 function actualizarListaLotes(idcampo, idlote) {
@@ -343,7 +462,7 @@ function actualizarListaCampos() {
     });
 }
 
-
+//busca en un combo slt si esta el elemento nombre
 function estaEnElCombo(nombre, slt) {
     let estado = false;
     slt.each(function () {
@@ -354,6 +473,54 @@ function estaEnElCombo(nombre, slt) {
     return estado;
 }
 
-function actualizarListaActividades(){
+//actualiza la lista de insumos en la tabla de insumos correspondiente a una actividad
+function actualizarListaInsumosActividades(idactividad){
+    $("#tblinsumos tbody").empty();
+    $.ajax({
+        type: "GET",
+        url: "includes/ajax/actividades.php",
+        data: "accion=listaInsumos&idactividad="+idactividad,
+        dataType: "json",
+        success: function (datos) {
+            datos.forEach(dato => {
+                $("#tblinsumos tbody").append("<tr class='table-sm'>\
+                                            <td class='d-none idactividad_insumo'>" + dato.idactividad_insumo + "</td>\
+                                            <td class='d-none'>" + dato.idinsumo + "</td>\
+                                            <td>" + dato.insumo + "</td>\
+                                            <td class='text-right'>" + dato.precio + "</td>\
+                                            <td class='text-right'>" + dato.cantidadHa + "</td>\
+                                            <td class='text-right'>" + dato.cantidadTotal + "</td>\
+                                            <td class='text-right'>" + dato.precio * dato.cantidadTotal + "</td>\
+                                            <td class='text-center'><a class='borrarActividad' href='#'><i class='material-icons'>clear</i></a></td>\
+                                        </tr>");
+            });
+        }
+    });
+}
+
+//actualiza la lista de insumos de la ventana modal
+function actualizarListaInsumos() {
+    let idinsumo = 'idinsumo';
+    $("#sltinsumos").empty();
+    $.ajax({
+        data: "accion=insumos&idinsumo=" + idinsumo,
+        type: "GET",
+        dataType: "json",
+        url: "includes/ajax/ajax.php",
+        success: function (datos) {
+            if (datos.length > 0) {
+                $.each(datos, function (index, valor) {
+                    $("#sltinsumos").append('<option value="' + valor.idinsumo + '">' + valor.insumo + '</option>');
+                });
+            }
+        },
+        error: function () {
+            alert("error de conexion");
+        }
+    });
+}
+
+//actualiza la lista de maquinarias en la tabla de maquinarias correspondiente a una actividad
+function actualizarListaMaquinariaActividades(idactividad){
 
 }

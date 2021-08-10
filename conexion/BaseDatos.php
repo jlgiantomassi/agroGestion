@@ -103,6 +103,30 @@ class BaseDatos {
 		}
 
 	}
+
+	public function eliminar($sql)
+	{
+		
+		try
+		{
+			$con=$this->conectar();
+			$query=$con->query($sql);
+			if($query)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		catch(Exception $e)
+		{
+			die($e->getMessage());
+			return 0;
+		}
+
+	}
 }
 
 ?>

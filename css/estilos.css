@@ -4,7 +4,12 @@
 .colorazul{
     background: #006dcc;
 }
-
-body{
+tr{
+    height : 0.7rem;
+    font-size: 0.8rem;
+    margin: 0 0 0 0;
+    }
     
+.table-sm td, .table-sm th {
+    padding: 0rem;
 }

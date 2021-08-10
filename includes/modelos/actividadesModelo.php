@@ -21,8 +21,30 @@ class actividadesModel
 
     public function cargarActividades($idlotecampana)
     {
-        $sql = "SELECT * FROM actividades_lotes INNER JOIN labores on actividades_lotes.idlabor=labores.idlabor WHERE idloteCampana=".$idlotecampana;
+        $sql = "SELECT idactividad, DATE_FORMAT(fecha, '%d/%m/%Y') as fecha,labor,precioha,superficie FROM actividades_lotes INNER JOIN labores on actividades_lotes.idlabor=labores.idlabor WHERE idloteCampana=".$idlotecampana;
         return $this->bd->sql($sql);
+    }
+
+    public function cargarInsumos($idactividad)
+    {
+        $sql="SELECT a.idactividad,a.idactividad_insumo,a.idinsumo,i.insumo,a.cantidadHa,a.precio,a.cantidadTotal FROM actividades_insumos a INNER JOIN insumos i on a.idinsumo=i.idinsumo WHERE idactividad=".$idactividad;
+        return $this->bd->sql($sql);
+    }
+
+    public function borrarActividades($idactividad)
+    {
+        $sql="DELETE FROM `actividades_lotes` WHERE idactividad=".$idactividad;
+        $resultado= $this->bd->eliminar($sql);
+        if($resultado){
+            return 1;
+        }else{
+            return 0;
+        }
+    }
+    public function insertarActividadInsumo($idactividad,$idinsumo,$precio,$cantidadha,$cantidadTotal)
+    {
+        $sql="INSERT INTO `actividades_insumos`(`idactividad`, `idinsumo`, `cantidadHa`, `precio`, `cantidadTotal`) VALUES ('".$idactividad."','".$idinsumo."','".$cantidadha."','".$precio."','".$cantidadTotal."')";
+        return $this->bd->insertar($sql);
     }
 }
 ?>

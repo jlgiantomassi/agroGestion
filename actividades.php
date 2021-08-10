@@ -20,7 +20,8 @@
         <div class="container border bg-white">
             <div id="alerta"></div>
             <form id="formactividades">
-                <div>
+                <!-- Campos y lotes-->
+                <div> 
                     <div class="row">
                         <div class="shadow p-3 mb-3 bg-white rounded col-md-12 ">
                             <h5>Actividades</h5>
@@ -71,6 +72,7 @@
 
                     </div>
                 </div>
+
                 <!-- Lista de actividades para el lote-->
                 <fieldset class="border rounded mb-2 d-none" id="fldActividades">
                     <div class="row  p-2">
@@ -81,7 +83,7 @@
                             </div>   
                             <div class="m-0 p-0">
                                 <input type="hidden" name="idActividad" id="idActividad" value="0"/>
-                                <table class="table m-0 p-0 table-hover table-sm" id="tblactividades">
+                                <table class="table table-sm table-hover m-0 p-0" id="tblactividades">
                                     <thead class="thead-light">
                                         <tr>
                                             <th class="d-none"></th>
@@ -123,9 +125,11 @@
 
                     </div>
                 </fieldset>
-
+                
+                <!-- Navegador de insumos, maquinarias, etc-->
                 <div class="row d-none" id="navDatos">
                     <div class="col">
+                        <!-- encabezado del navegador-->
                         <nav class="">
                             <div class="nav nav-tabs" id="nav-tab" role="tablist">
                                 <a class="nav-item nav-link active"  id="nav-insumos-tab" data-toggle="tab" href="#nav-insumos" role="tab" aria-controls="nav-insumos" aria-selected="true">Insumos</a>
@@ -133,9 +137,12 @@
                                 <a class="nav-item nav-link" id="nav-observaciones-tab" data-toggle="tab" href="#nav-observaciones" role="tab" aria-controls="nav-observaciones" aria-selected="false">Observaciones</a>
                             </div>
                         </nav>
-
+                        
+                        <!-- Insumos-->
                         <div class="col-12">
                             <div class="tab-content" id="nav-tabContent">
+
+                                <!-- Insumos-->
                                 <div class="tab-pane show active fade ml-0" id="nav-insumos" role="tabpanel" aria-labelledby="nav-insumos-tab">
                                     <div class="row  p-2">
                                         <div class="col-8 pl-0 mr-0">
@@ -145,15 +152,16 @@
                                             </div>
                                                                         
                                             <div class="col-12">
-                                                <table class="table m-0 p-0 table-hover table-sm" id="tblinsumos">
+                                                <table class="table table-sm m-0 p-0 table-hover " id="tblinsumos">
                                                     <thead class="thead-light">
                                                         <tr>
                                                             <th class="d-none">idActividadInsumo</th>
                                                             <th class="d-none">idInsumo</th>
                                                             <th>Insumo</th>
-                                                            <th class="text-right">Cant/ha</th>
-                                                            <th class="text-right">Precio unit.</th>
-                                                            <th class="text-right">Total/ha</th>
+                                                            <th class="text-right">Precio unit</th>
+                                                            <th class="text-right">Cant. Ha</th>
+                                                            <th class="text-right">Cant. Total</th>
+                                                            <th class="text-right">Importe Total</th>
                                                             <th class='text-center'>Accion</th>
                                                         </tr>
                                                     </thead>
@@ -185,7 +193,7 @@
                                     </div>
                                 </div>
 
-
+                                <!-- maquinaria-->
                                 <div class="tab-pane fade ml-2" id="nav-maquinarias" role="tabpanel" aria-labelledby="nav-maquinarias-tab">
                                     <div class="row mt-2">
                                         <div class="col-md-3">
@@ -253,7 +261,8 @@
                                     </div>
 
                                 </div>
-
+                                
+                                <!-- Observaciones -->
                                 <div class="tab-pane fade ml-2" id="nav-observaciones" role="tabpanel" aria-labelledby="nav-observaciones-tab">
                                     <div class="row mt-2">
                                         <div class="col-md-5">
@@ -270,7 +279,7 @@
                                     </div>
                                 </div>
 
-
+                                <!-- Resumen de actividades-->
                                 <div class="tab-pane fade ml-2" id="nav-resumen" role="tabpanel" aria-labelledby="nav-resumen-tab">
                                     <div class="row mt-2" id="resumenMensaje">
                                         <strong>Debe tener asignado al menos un lote y una participacion del 100% de productores para activar el resumen y poder guardar
