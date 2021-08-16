@@ -23,6 +23,14 @@ switch ($accion) {
         $datos=$oActividad->borrarActividades($idactividad);
         echo $datos;
     break;
+    case "modificar":
+        $idactividad=$_GET["idactividad"];
+        $fecha=$_GET["fecha"];
+        $superficie=$_GET["superficie"];
+        $precioHa=$_GET["precioHa"];
+        $datos=$oActividad->modificarActividades($idactividad,$fecha,$precioHa,$superficie);
+        echo $datos;
+    break;
     case "listaInsumos":
         $idactividad=$_GET["idactividad"];
         $datos=$oActividad->cargarInsumos($idactividad);
@@ -35,6 +43,18 @@ switch ($accion) {
         $cantidadha=    $_GET["cantidadha"];
         $idinsumo=      $_GET["idinsumo"];
         echo $oActividad->insertarActividadInsumo($idactividad,$idinsumo,$precio,$cantidadha,$superficie*$cantidadha);
+    break;
+    case "borrarInsumo":
+        $id=$_GET["idactividad_insumo"];
+        echo $oActividad->borrarActividadInsumo($id);
+    break;
+    case "modificarInsumo":
+        $id=$_GET["idactividad_insumo"];
+        $precio=$_GET["precio"];
+        $cantidadHa=$_GET["cantidadHa"];
+        $cantidadTotal=$_GET["cantidadTotal"];
+        $datos=$oActividad->modificarActividadInsumo($id,$precio,$cantidadHa,$cantidadTotal);
+        echo $datos;
     break;
 }
 ?>

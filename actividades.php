@@ -344,6 +344,14 @@
 
             });
         </script>
+        <script>
+            $('#txtFechaActividadModificar').datepicker({
+                uiLibrary: 'bootstrap4',
+                format: 'dd/mm/yyyy',
+                locale: 'es-es'
+
+            });
+        </script>
 
     </body>
 </html>

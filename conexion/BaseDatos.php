@@ -127,6 +127,28 @@ class BaseDatos {
 		}
 
 	}
+
+	public function modificar($sql)
+	{
+		try{
+			$con=$this->conectar();
+			$query = $con->query($sql);
+			$datos=0;
+			if($query)
+			{
+				$datos= 1;
+			}
+			else 
+			{
+				$datos= 0;
+			}
+			$this->cerrar($con);
+			return $datos;
+		}catch(Exception $e)
+		{
+			die($e->getMessage());
+		}
+	}
 }
 
 ?>

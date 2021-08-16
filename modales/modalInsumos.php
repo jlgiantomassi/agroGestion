@@ -41,13 +41,13 @@ $cantUnidad = $oUnidades->cantidadUnidades();
 
                     <div class="form-group">
                         <label for="txtprecio" class="col-form-label">Precio (Unidad):</label>
-                        <input type="text" class="form-control" id="txtprecio" name="txtprecio" value="<?php echo $primerPrecio; ?>">
+                        <input type="number" class="form-control" id="txtprecio" name="txtprecio" value="<?php echo $primerPrecio; ?>">
 
                     </div>
 
                     <div class="form-group">
                         <label for="txtcantidadInsumo" class="col-form-label">Cantidad/Ha:</label>
-                        <input type="text" class="form-control" id="txtcantidadInsumo" name="txtcantidadInsumo" value="">
+                        <input type="number" class="form-control" id="txtcantidadInsumo" name="txtcantidadInsumo" value="">
 
                     </div>
 
@@ -118,6 +118,48 @@ $cantUnidad = $oUnidades->cantidadUnidades();
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                 <button type="button" class="btn btn-primary" id="btnInsertarInsumo">Agregar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- modificar un insumo en la lista de actividades -->
+<div class="modal fade" id="modalInsumoActividad" tabindex="-1" role="dialog" aria-labelledby="lbltitulo" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="lbltitulo">Modificar Insumos en la actividad</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button> </div>
+            <div class="modal-body">
+                <form id="frmInsertarInsumo">
+                    
+                    <div class="form-group">
+                        <label for="txtinsumoactividad" class="col-form-label">Insumo:</label>
+                        <input type="text" disabled class="form-control" id="txtinsumoactividad" name="txtinsumoactividad" value="">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="txtprecioInsumoActividad" class="col-form-label">Precio (Unidad):</label>
+                        <input type="number" class="form-control" id="txtprecioInsumoActividad" name="txtprecioInsumoActividad" value="">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="txtcantidadInsumoActividad" class="col-form-label">Cantidad/Ha:</label>
+                        <input type="number" class="form-control" id="txtcantidadInsumoActividad" name="txtcantidadInsumoActividad" value="">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="txtcantidadInsumoTotal" class="col-form-label">Cantidad Total</label>
+                        <input type="number" class="form-control" id="txtcantidadInsumoTotal" name="txtcantidadInsumoTotal" value="">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" id="btnModificarInsumo">Modificar</button>
             </div>
         </div>
     </div>

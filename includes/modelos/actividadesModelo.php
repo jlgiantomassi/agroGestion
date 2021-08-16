@@ -41,10 +41,34 @@ class actividadesModel
             return 0;
         }
     }
+
+    public function modificarActividades($idactividad,$fecha,$precioHa,$superficie)
+    {
+        $sql="UPDATE `actividades_lotes` SET `fecha`='".fecha_a_mysql($fecha)."',`superficie`=".$superficie.",`precioha`=".$precioHa." WHERE idactividad=".$idactividad;
+        return $this->bd->modificar($sql);
+    }
+
     public function insertarActividadInsumo($idactividad,$idinsumo,$precio,$cantidadha,$cantidadTotal)
     {
         $sql="INSERT INTO `actividades_insumos`(`idactividad`, `idinsumo`, `cantidadHa`, `precio`, `cantidadTotal`) VALUES ('".$idactividad."','".$idinsumo."','".$cantidadha."','".$precio."','".$cantidadTotal."')";
         return $this->bd->insertar($sql);
+    }
+
+    public function borrarActividadInsumo($id)
+    {
+        $sql="DELETE FROM `actividades_insumos` WHERE idactividad_insumo=".$id;
+        $resultado=$this->bd->eliminar($sql);
+        if($resultado){
+            return 1;
+        }else{
+            return 0;
+        }
+    }
+
+    public function modificarActividadInsumo($id,$precio,$cantidadHa,$cantidadTotal)
+    {
+        $sql="UPDATE `actividades_insumos` SET `cantidadHa`=".$cantidadHa.",`precio`=".$precio.",`cantidadTotal`=".$cantidadTotal." WHERE idactividad_insumo=".$id;
+        return $this->bd->modificar($sql);
     }
 }
 ?>
