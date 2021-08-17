@@ -21,13 +21,13 @@ class actividadesModel
 
     public function cargarActividades($idlotecampana)
     {
-        $sql = "SELECT idactividad, DATE_FORMAT(fecha, '%d/%m/%Y') as fecha,labor,precioha,superficie FROM actividades_lotes INNER JOIN labores on actividades_lotes.idlabor=labores.idlabor WHERE idloteCampana=".$idlotecampana;
+        $sql = "SELECT idactividad, DATE_FORMAT(fecha, '%d/%m/%Y') as fecha,labor,precioha,superficie FROM actividades_lotes INNER JOIN labores on actividades_lotes.idlabor=labores.idlabor WHERE idloteCampana=".$idlotecampana." order by fecha";
         return $this->bd->sql($sql);
     }
 
     public function cargarInsumos($idactividad)
     {
-        $sql="SELECT a.idactividad,a.idactividad_insumo,a.idinsumo,i.insumo,a.cantidadHa,a.precio,a.cantidadTotal FROM actividades_insumos a INNER JOIN insumos i on a.idinsumo=i.idinsumo WHERE idactividad=".$idactividad;
+        $sql="SELECT a.idactividad,a.idactividad_insumo,a.idinsumo,i.insumo,a.cantidadHa,a.precio,a.cantidadTotal FROM actividades_insumos a INNER JOIN insumos i on a.idinsumo=i.idinsumo WHERE idactividad=".$idactividad." ORDER BY i.insumo";
         return $this->bd->sql($sql);
     }
 
@@ -69,6 +69,58 @@ class actividadesModel
     {
         $sql="UPDATE `actividades_insumos` SET `cantidadHa`=".$cantidadHa.",`precio`=".$precio.",`cantidadTotal`=".$cantidadTotal." WHERE idactividad_insumo=".$id;
         return $this->bd->modificar($sql);
+    }
+
+    public function modificarInsumosDeActividad($id,$superficie)
+    {
+        $sql="UPDATE `actividades_insumos` SET `cantidadTotal`=cantidadHa*".$superficie." WHERE idactividad=".$id;
+        return $this->bd->modificar($sql);
+    }
+
+    public function actividadMaquinaria($id) //devuelve el valor del tipo de maquinaria, si es contratada o propia
+    {
+        $sql="SELECT maquinaria FROM actividades_lotes WHERE idactividad=".$id;
+        return $this->bd->sql($sql);
+    }
+
+    public function guardarActividadMaquinaria($id,$tipo)
+    {
+        $sql="UPDATE `actividades_lotes` SET `maquinaria`=".$tipo." WHERE idactividad=".$id;
+        return $this->bd->modificar($sql);
+    }
+
+    public function borrarActividadesPersonales($id)
+    {
+        $sql="DELETE FROM `actividades_personales` WHERE idactividad=".$id;
+        $resultado=$this->bd->eliminar($sql);
+        if($resultado){
+            return 1;
+        }else{
+            return 0;
+        }
+    }
+    
+    public function borrarActividadesTerceros($id)
+    {
+        $sql="DELETE FROM `actividades_terceros` WHERE idactividad=".$id;
+        $resultado=$this->bd->eliminar($sql);
+        if($resultado){
+            return 1;
+        }else{
+            return 0;
+        }
+    }
+
+    public function guardarActividadPersonal($idactividad,$idpersonal,$precioHa)
+    {
+        $sql="INSERT INTO `actividades_personales`(`idactividad`, `idpersonal`, `precioHa`) VALUES (".$idactividad.",".$idpersonal.",".$precioHa.")";
+        return $this->bd->insertar($sql);
+    }
+
+    public function listarPersonales($idactividad)
+    {
+        $sql="SELECT * FROM actividades_personales a INNER JOIN personales p ON a.idpersonal=p.idpersonal WHERE idactividad=".$idactividad;
+        return $this->bd->sql($sql);
     }
 }
 ?>

@@ -1,15 +1,15 @@
 $().ready(iniciarEventosActividades);
-
+let tipoMaquinaria=0;
+let idcampana=0;
+let idusuario=0;
+let idcultivoSel=0;
+let idlotecampana=0;
+let idactividadSel=0; //toma los id de la tabla de actividades que se seleccionan
+let superficieSel=0 //toma las superficies de la tabla de actividades que se seleccionan
+let idinsumoSel=0;
+let idactividadInsumoSel=0;
 
 function iniciarEventosActividades() {
-    let idcampana=0;
-    let idusuario=0;
-    let idcultivoSel=0;
-    let idlotecampana=0;
-    let idactividadSel=0; //toma los id de la tabla de actividades que se seleccionan
-    let superficieSel=0 //toma las superficies de la tabla de actividades que se seleccionan
-    let idinsumoSel=0;
-    let idactividadInsumoSel=0;
     idcampana=$("#idCampanaActiva").val();
     idusuario=$("#idUsuarioActivo").val(); //recuperamos en java los id de usuario y campana
 
@@ -343,6 +343,7 @@ function iniciarEventosActividades() {
             case "modificarActividad":
                 dato=e.target.parentNode.parentNode.parentNode;
                 idactividadSel= $(dato).children().html();
+                superficieSel=$(dato).find(".superficie").html();
                 $("#txtActividadModificar").val($(dato).find(".actividad").html());
                 $("#txtFechaActividadModificar").val($(dato).find(".fechaActividad").html());
                 $("#txtPrecioActividadModificar").val($(dato).find(".precioHa").html());
@@ -362,6 +363,7 @@ function iniciarEventosActividades() {
     });
 
     $('#tblactividades thead').click(function (e) { 
+        //tipoMaquinaria=0;
         $('#tblactividades tbody tr').removeClass("table-active");
         $("#idActividad").val(0);
         $("#navDatos").addClass("d-none");
@@ -475,25 +477,7 @@ function iniciarEventosActividades() {
                 data: "accion=insertarInsumo&idactividad="+idactividadSel+"&superficie="+superficieSel+"&precio="+precio+"&cantidadha="+cantidadha+"&idinsumo="+idinsumo,
                 dataType: "text",
                 success: function (id) {
-                    actualizarListaInsumosActividades(idactividadSelsss)
-                    /*$("#tblinsumos tbody").append("<tr>\
-                                                        <td class='d-none idactividadinsumo'>" + id + "</td>\
-                                                        <td class='d-none idinsumo'>" + idinsumo + "</td>\
-                                                        <td class='insumo'>" + insumo + "</td>\
-                                                        <td class='text-right precio'>" + precio + "</td>\
-                                                        <td class='text-right cantidadHa'>" + cantidadha + "</td>\
-                                                        <td class='text-right cantidadTotal'>" + superficieSel*cantidadha + "</td>\
-                                                        <td class='text-right precioTotal'>" + superficieSel*cantidadha*precio + "</td>\
-                                                        <td class='text-center'>\
-                                                            <a class='modificarInsumo' href='#' href='#' data-toggle='modal' data-target='#modalInsumoActividad' data-whatever=''>\
-                                                                <i class='material-icons'>create</i>\
-                                                            </a>\
-                                                            <a class='borrarInsumo' href='#'>\
-                                                                <i class='material-icons'>clear</i>\
-                                                            </a>\
-                                                        </td>\
-                                                    </tr>");
-                    */
+                    actualizarListaInsumosActividades(idactividadSel)
                     },
                     error: function(){
                         alert("ocurrio un error al guardar la actividad");
@@ -537,6 +521,8 @@ function iniciarEventosActividades() {
 
     $("#btnModificarActividad").click(function (e) { 
         e.preventDefault();
+        $("#modalModificarLabor").hide();
+        $("#modalModificarLabor").modal('hide');
         superficie=$("#txtSupActividadModificar").val();
         precioHa=$("#txtPrecioActividadModificar").val();
         fecha=$("#txtFechaActividadModificar").val();
@@ -556,8 +542,87 @@ function iniciarEventosActividades() {
                 alert("Ocurrio un error al modificar la actividad");
             }
         });
-        $("#modalModificarLabor").hide();
-        $("#modalModificarLabor").modal('hide');
+        
+        if(superficieSel!=superficie)
+        {
+            if(confirm("Desea actualizar la lista de insumos?"))
+            {
+                $.ajax({
+                    type: "GET",
+                    url: "includes/ajax/actividades.php",
+                    data: "accion=modificarInsumosDeActividad&idactividad="+idactividadSel+"&superficie="+superficie,
+                    dataType: "text",
+                    success: function (datos) {
+                        if(datos)
+                        {
+                            actualizarListaInsumosActividades(idactividadSel);
+                        }else{
+                            alert("Ocurrio un error al actualizar la base de datos");
+                        }
+                    }
+                });
+            }else
+            {
+                alert("Puede cambiar los valores de los insumos manualmente de acuerdo a las necesidades");
+            }
+        }
+    });
+
+    $("input:radio[name='maquinaria']").change(function(e){
+        e.preventDefault();
+        opt=$("input:radio[name='maquinaria']:checked").val(); //sacamos el valor de la opcion seleccionada
+        if(tipoMaquinaria==0)
+        {
+            $.ajax({
+                type: "GET",
+                url: "includes/ajax/actividades.php",
+                data: "accion=guardarTipoMaquinaria&idactividad="+idactividadSel+"&tipoMaquinaria="+opt,
+                dataType: "text",
+                success: function (datos) {
+                    if(datos==0)
+                        alert("Ocurrio un error al guardar los datos");
+                },
+                error: function(){
+                    alert("Ocurrio un error al guardar los datos");
+                }
+            });
+        }else
+        {
+            if(confirm("Desea cambiar el tipo maquinaria? Si confirma se eliminaran todos los datos cargados anteriormente"))
+            {
+                $.ajax({
+                    type: "GET",
+                    url: "includes/ajax/actividades.php",
+                    data: "accion=guardarTipoMaquinaria&idactividad="+idactividadSel+"&tipoMaquinaria="+opt,
+                    dataType: "text",
+                    success: function (datos) {
+                        if(datos==0)
+                            alert("Ocurrio un error al guardar los datos");
+                        else
+                        actualizarListaMaquinariaActividades(idactividadSel);
+                    },
+                    error: function(){
+                        alert("Ocurrio un error al guardar los datos");
+                    }
+                });
+                
+            }
+        }
+    });
+
+    $("#btnAgregarPersonal").click(function (e) { 
+        e.preventDefault();
+        let idpersonal=$("#sltpersonales").val();
+        let precioHa=$("#txtPrecioHa").val();
+        $.ajax({
+            type: "GET",
+            url: "includes/ajax/actividades.php",
+            data: "accion=agregarPersonal&idactividad="+idactividadSel+"&idpersonal="+idpersonal+"&precioHa="+precioHa,
+            dataType: "json",
+            success: function (datos) {
+                    actualizarListaPersonalesActividades(idactividadSel);
+            }
+        });
     });
 }//fin iniciar eventos actividades
 
@@ -640,7 +705,7 @@ function actualizarListaInsumosActividades(idactividad){
                                             <td class='text-right precio'>" + dato.precio + "</td>\
                                             <td class='text-right cantidadHa'>" + dato.cantidadHa + "</td>\
                                             <td class='text-right cantidadTotal'>" + dato.cantidadTotal + "</td>\
-                                            <td class='text-right precioTotal'>" + dato.precio * dato.cantidadTotal + "</td>\
+                                            <td class='text-right precioTotal'>" + (dato.precio * dato.cantidadTotal).toFixed(2) + "</td>\
                                             <td class='text-center'>\
                                                 <a class='modificarInsumo' href='#' data-toggle='modal' data-target='#modalInsumoActividad' data-whatever=''>\
                                                     <i class='material-icons'>create</i>\
@@ -679,5 +744,57 @@ function actualizarListaInsumos() {
 
 //actualiza la lista de maquinarias en la tabla de maquinarias correspondiente a una actividad
 function actualizarListaMaquinariaActividades(idactividad){
-
+    $.ajax({
+        type: "GET",
+        url: "includes/ajax/actividades.php",
+        data: "accion=tipoMaquinaria&idactividad="+idactividad,
+        dataType: "json",
+        success: function (datos) {
+            tipoMaquinaria=datos[0].maquinaria;
+            if(datos[0].maquinaria==1) //si la maquinaria es contratada
+            {
+                $("#maquinariaContratada").prop("checked", true);
+                $("#tblMaquinaria").addClass("d-none");
+                $("#tblContratistas").removeClass("d-none");
+                //actualizarTerceros(idactividad);
+            }
+            if(datos[0].maquinaria==2) //si la maquinaria es propia
+            {
+                $("#maquinariaPropia").prop("checked", true);
+                $("#tblContratistas").addClass("d-none");
+                $("#tblMaquinaria").removeClass("d-none");
+                actualizarListaPersonalesActividades(idactividadSel);
+                //actualizarPersonal(idactividad);
+            }
+            if(datos[0].maquinaria==0)
+            {
+                $("#maquinariaContratada").prop("checked", false);
+                $("#maquinariaPropia").prop("checked", false);
+                $("#tblMaquinaria").addClass("d-none");
+                $("#tblContratistas").addClass("d-none");
+            }
+        }
+    });
 }
+
+function actualizarListaPersonalesActividades(idactividad)
+    {
+        $("#tblpersonales tbody").empty();
+        $.ajax({
+            type: "GET",
+            url: "includes/ajax/actividades.php",
+            data: "accion=listaPersonales&idactividad="+idactividad,
+            dataType: "json",
+            success: function (datos) {
+                datos.forEach(dato => {
+                    $("#tblpersonales tbody").append("<tr>\
+                                                            <td class='d-none idpersonal'>" + dato.idpersonal + "</td>\
+                                                            <td class='personal'>" + dato.personal + "</td>\
+                                                            <td class='text-right precioHaPersonal'>" + dato.precioHa + "</td>\
+                                                            <td class='text-center'>acciones</td>\
+                                                      </tr>");
+                });
+            }
+        });
+        
+    }

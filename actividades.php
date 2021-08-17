@@ -203,11 +203,11 @@
                                     <div class="row m-2" >
                                         <div class="col-md-9" id="optMaquinarias" >
                                             <div class="form-check form-check-inline ">
-                                                <input class="form-check-input rb "  type="radio" id="maquinariaPropia" name="maquinaria" value="maquinariaPropia" disabled>
+                                                <input class="form-check-input rb "  type="radio" id="maquinariaPropia" name="maquinaria" value="2" >
                                                     <label class="form-check-label" for="maquinariaPropia">Propia</label>
                                             </div>
                                             <div class="form-check form-check-inline ">
-                                                <input class="form-check-input rb "  type="radio" id="maquinariaContratada" name="maquinaria" value="maquinariaContratada" disabled>
+                                                <input class="form-check-input rb "  type="radio" id="maquinariaContratada" name="maquinaria" value="1" >
                                                     <label class="form-check-label" for="maquinariaContratada">Contratada</label>
                                             </div>
                                         </div>
@@ -220,10 +220,11 @@
                                         <div class="col-md-1">
                                             <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#modalPersonal" data-whatever=""><i class="material-icons">add_box</i></button>
                                         </div>
-                                        <div class="col-md-9">
-                                            <table class="table" id="tblpersonales">
+                                        <div class="col-md-8">
+                                            <table class="table table-sm m-0 mb-2 p-0 table-hover" id="tblpersonales">
                                                 <thead class="thead-light">
                                                     <tr>
+                                                        <th class="d-none">idpersonal</th>
                                                         <th>Personal asignado</th>
                                                         <th class="text-right">Labor Precio/ha</th>
                                                         <th class='text-center'>Accion</th>
@@ -244,7 +245,7 @@
                                             <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#modalContratistas" data-whatever=""><i class="material-icons">add_box</i></button>
                                         </div>
                                         <div class="col-md-9">
-                                            <table class="table" id="tblterceros" >
+                                            <table class="table table-sm m-0 p-0 table-hover" id="tblterceros" >
                                                 <thead class="thead-light">
                                                     <tr>
                                                         <th>Maquinaria Contratada</th>

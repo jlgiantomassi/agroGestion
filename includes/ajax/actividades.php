@@ -56,5 +56,36 @@ switch ($accion) {
         $datos=$oActividad->modificarActividadInsumo($id,$precio,$cantidadHa,$cantidadTotal);
         echo $datos;
     break;
+    case "modificarInsumosDeActividad":
+        $id=$_GET["idactividad"];
+        $superficie=$_GET["superficie"];
+        $datos=$oActividad->modificarInsumosDeActividad($id,$superficie);
+        echo $datos;
+    break;
+    case "tipoMaquinaria":
+        $id=$_GET["idactividad"];
+        $datos=$oActividad->actividadMaquinaria($id);
+        echo json_encode($datos);
+    break;
+    case "guardarTipoMaquinaria":
+        $id=$_GET["idactividad"];
+        $tipo=$_GET["tipoMaquinaria"];
+        $oActividad->borrarActividadesPersonales($id);
+        $oActividad->borrarActividadesTerceros($id);
+        $datos=$oActividad->guardarActividadMaquinaria($id,$tipo);
+        echo $datos;
+    break;
+    case "agregarPersonal":
+        $idactividad=$_GET["idactividad"];
+        $idpersonal=$_GET["idpersonal"];
+        $precioHa=$_GET["precioHa"];
+        $datos=$oActividad->guardarActividadPersonal($idactividad,$idpersonal,$precioHa);
+        echo json_encode($datos);
+    break;
+    case "listaPersonales":
+        $idactividad=$_GET["idactividad"];
+        $datos=$oActividad->listarPersonales($idactividad);
+        echo json_encode($datos);
+    break;
 }
 ?>
