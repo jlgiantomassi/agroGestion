@@ -95,3 +95,36 @@
         </div>
     </div>
 </div>
+
+<!-- modal para modificar los datos de un personal en la lista -->
+<div class="modal fade" id="modalModificarPersonal" tabindex="-1" role="dialog" aria-labelledby="lbltitulo" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="lbltitulo">Modificar Datos de Personal en la Lista</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button> 
+            </div>
+            <div class="modal-body">
+                <form id="frmpersonales">
+
+                    <div class="form-group">
+                        <label for="txtPersonal" class="col-form-label">Personal:</label>
+                        <input type="text" disabled class="form-control" id="txtPersonal" name="txtPersonal" value="">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="txtPrecioHa" class="col-form-label">Precio por Ha:</label>
+                        <input type="text" class="form-control" id="txtModificarPrecioHaPersonal" name="txtModificarPrecioHaPersonal" value="">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-primary" id="btnModficarPersonal" >Agregar</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>

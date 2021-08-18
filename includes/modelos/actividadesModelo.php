@@ -89,7 +89,7 @@ class actividadesModel
         return $this->bd->modificar($sql);
     }
 
-    public function borrarActividadesPersonales($id)
+    public function borrarActividadesPersonales($id) //borra todos los personales que existen para esa actividad (cero, uno o varios registros)
     {
         $sql="DELETE FROM `actividades_personales` WHERE idactividad=".$id;
         $resultado=$this->bd->eliminar($sql);
@@ -100,7 +100,7 @@ class actividadesModel
         }
     }
     
-    public function borrarActividadesTerceros($id)
+    public function borrarActividadesTerceros($id) //borra todos los terceros que existen para esa actividad(cero, uno o varios registros) 
     {
         $sql="DELETE FROM `actividades_terceros` WHERE idactividad=".$id;
         $resultado=$this->bd->eliminar($sql);
@@ -119,8 +119,25 @@ class actividadesModel
 
     public function listarPersonales($idactividad)
     {
-        $sql="SELECT * FROM actividades_personales a INNER JOIN personales p ON a.idpersonal=p.idpersonal WHERE idactividad=".$idactividad;
+        $sql="SELECT a.idactividad_personal,p.personal,a.precioHa FROM actividades_personales a INNER JOIN personales p ON a.idpersonal=p.idpersonal WHERE idactividad=".$idactividad;
         return $this->bd->sql($sql);
+    }
+
+    public function borrarPersonales($id) //borra todos el personal de la lista de actividades (un solo registro)
+    {
+        $sql="DELETE FROM `actividades_personales` WHERE idactividad_personal=".$id;
+        $resultado=$this->bd->eliminar($sql);
+        if($resultado){
+            return 1;
+        }else{
+            return 0;
+        }
+    }
+
+    public function modificarPersonales($id,$precioHa)
+    {
+        $sql="UPDATE `actividades_personales` SET `precioHa`=".$precioHa." WHERE idactividad_personal=".$id;
+        return $this->bd->modificar($sql);
     }
 }
 ?>

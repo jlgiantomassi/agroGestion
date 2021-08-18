@@ -8,6 +8,7 @@ let idactividadSel=0; //toma los id de la tabla de actividades que se selecciona
 let superficieSel=0 //toma las superficies de la tabla de actividades que se seleccionan
 let idinsumoSel=0;
 let idactividadInsumoSel=0;
+let idactividadPersonalSel =0;
 
 function iniciarEventosActividades() {
     idcampana=$("#idCampanaActiva").val();
@@ -408,6 +409,41 @@ function iniciarEventosActividades() {
         }
     });
 
+    $("#tblpersonales").click(function (e) { 
+        e.preventDefault();
+        switch (e.target.parentNode.className) {
+            case "modificarPersonal":
+                dato=e.target.parentNode.parentNode.parentNode;
+                idactividadPersonalSel= $(dato).find(".idactividad_personal").html();
+                $("#txtPersonal").val($(dato).find(".personal").html());
+                $("#txtModificarPrecioHaPersonal").val($(dato).find(".precioHaPersonal").html());
+            break;
+            case "borrarPersonal":
+                if(confirm("Desea borrar este personal de la lista?"))
+                {
+                    dato=e.target.parentNode.parentNode.parentNode;
+                    idactividadPersonalSel= $(dato).children().html();
+                    $.ajax({
+                        type: "GET",
+                        url: "includes/ajax/actividades.php",
+                        data: "accion=borrarPersonal&idactividad_personal="+idactividadPersonalSel,
+                        dataType: "text",
+                        success: function (id) {
+                            if(id)
+                            {
+                            $(dato).remove();
+                            //$("#navDatos").addClass("d-none");
+                            idactividadPersonalSel=0;
+                            }else{
+                                alert("Hubo un error al borrar la actividad");
+                            }
+                        }
+                    });       
+                } 
+            break;
+        }
+    });
+
     $("#sltcultivos").change(function (e) { 
         e.preventDefault();
         let idcultivo=$("#sltcultivos").val();
@@ -517,6 +553,28 @@ function iniciarEventosActividades() {
         $("#modalInsumoActividad").hide();
         $("#modalInsumoActividad").modal('hide');
 
+    });
+
+    $("#btnModficarPersonal").click(function (e) { 
+        e.preventDefault();
+        let precioHa=$("#txtModificarPrecioHaPersonal").val();
+        $.ajax({
+            type: "GET",
+            url: "includes/ajax/actividades.php",
+            data: "accion=modificarPersonal&idactividad_personal="+idactividadPersonalSel+"&precioHa="+precioHa,
+            dataType: "text",
+            success: function (datos) {
+                if(datos==1)
+                {
+                    actualizarListaPersonalesActividades(idactividadSel);
+                }else
+                {
+                    alert("Hubo un error al modificar los datos");
+                }
+            }
+        });
+        $("#modalModificarPersonal").hide();
+        $("#modalModificarPersonal").modal('hide');
     });
 
     $("#btnModificarActividad").click(function (e) { 
@@ -788,10 +846,18 @@ function actualizarListaPersonalesActividades(idactividad)
             success: function (datos) {
                 datos.forEach(dato => {
                     $("#tblpersonales tbody").append("<tr>\
-                                                            <td class='d-none idpersonal'>" + dato.idpersonal + "</td>\
+                                                            <td class='d-none idactividad_personal'>" + dato.idactividad_personal + "</td>\
                                                             <td class='personal'>" + dato.personal + "</td>\
                                                             <td class='text-right precioHaPersonal'>" + dato.precioHa + "</td>\
-                                                            <td class='text-center'>acciones</td>\
+                                                            <td class='text-right precioTotalPersonal'>" + dato.precioHa*superficieSel + "</td>\
+                                                            <td class='text-center'>\
+                                                                <a class='modificarPersonal' href='#' data-toggle='modal' data-target='#modalModificarPersonal' data-whatever=''>\
+                                                                    <i class='material-icons'>create</i>\
+                                                                </a>\
+                                                                <a class='borrarPersonal' href='#'>\
+                                                                    <i class='material-icons'>clear</i>\
+                                                                </a>\
+                                                            </td>\
                                                       </tr>");
                 });
             }

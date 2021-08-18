@@ -87,5 +87,14 @@ switch ($accion) {
         $datos=$oActividad->listarPersonales($idactividad);
         echo json_encode($datos);
     break;
+    case "borrarPersonal":
+        $id=$_GET["idactividad_personal"];
+        echo $oActividad->borrarPersonales($id);
+    break;
+    case "modificarPersonal":
+        $id=$_GET["idactividad_personal"];
+        $precioHa=$_GET["precioHa"];
+        echo $oActividad->modificarPersonales($id,$precioHa);
+    break;
 }
 ?>
