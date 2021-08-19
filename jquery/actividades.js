@@ -9,6 +9,8 @@ let superficieSel=0 //toma las superficies de la tabla de actividades que se sel
 let idinsumoSel=0;
 let idactividadInsumoSel=0;
 let idactividadPersonalSel =0;
+let idactividadTerceroSel=0;
+let precioHaSel=0;
 
 function iniciarEventosActividades() {
     idcampana=$("#idCampanaActiva").val();
@@ -158,6 +160,50 @@ function iniciarEventosActividades() {
                 }
             },
             error: function (datos) {
+                alert("error de conexion");
+            }
+        });
+    });
+
+    $('#sltpersonales').change(function (e) {
+        e.preventDefault();
+        $("#txtCuil").val("");
+        $("#txtPrecioHa").val("");
+        let idpersonal = $("#sltpersonales").val();
+        $.ajax({
+            data: "accion=personales&idpersonal=" + idpersonal,
+            type: "GET",
+            dataType: "json",
+            url: "includes/ajax/ajax.php",
+            success: function (datos) {
+                if (datos.length > 0) {
+                    $("#txtCuil").val(datos[0].cuil);
+                    $("#txtPrecioHa").val(datos[0].precioHa);
+                }
+            },
+            error: function () {
+                alert("error de conexion");
+            }
+        });
+    });
+
+    $('#sltterceros').change(function (e) {
+        e.preventDefault();
+        $("#txtCuitTercero").val("");
+        $("#txtDireccion").val("");
+        let idtercero = $("#sltterceros").val();
+        $.ajax({
+            data: "accion=terceros&idtercero=" + idtercero,
+            type: "GET",
+            dataType: "json",
+            url: "includes/ajax/ajax.php",
+            success: function (datos) {
+                if (datos.length > 0) {
+                    $("#txtCuitTercero").val(datos[0].cuit);
+                    $("#txtDireccionTercero").val(datos[0].direccion);
+                }
+            },
+            error: function () {
                 alert("error de conexion");
             }
         });
@@ -354,6 +400,7 @@ function iniciarEventosActividades() {
                 dato=e.target.parentNode
                 idactividadSel= $(dato).children().html();  //es lo mismo que -> console.log(dato.children[0].innerHTML);
                 superficieSel=$(dato).find(".superficie").html();
+                precioHaSel=$(dato).find(".precioHa").html();
                 $('#tblactividades tbody tr').removeClass("table-active");
                 dato.className="table-active";
                 $("#navDatos").removeClass("d-none");
@@ -409,31 +456,31 @@ function iniciarEventosActividades() {
         }
     });
 
-    $("#tblpersonales").click(function (e) { 
+    $("#tblterceros").click(function (e) { 
         e.preventDefault();
         switch (e.target.parentNode.className) {
-            case "modificarPersonal":
+            case "modificarTercero":
                 dato=e.target.parentNode.parentNode.parentNode;
-                idactividadPersonalSel= $(dato).find(".idactividad_personal").html();
-                $("#txtPersonal").val($(dato).find(".personal").html());
-                $("#txtModificarPrecioHaPersonal").val($(dato).find(".precioHaPersonal").html());
+                idactividadTerceroSel= $(dato).find(".idactividad_tercero").html();
+                $("#txtModificarTercero").val($(dato).find(".tercero").html());
+                $("#txtModificarPrecioHaTercero").val($(dato).find(".precioHaTercero").html());
             break;
-            case "borrarPersonal":
-                if(confirm("Desea borrar este personal de la lista?"))
+            case "borrarTercero":
+                if(confirm("Desea borrar esta empresa Tercerizada de la lista?"))
                 {
                     dato=e.target.parentNode.parentNode.parentNode;
-                    idactividadPersonalSel= $(dato).children().html();
+                    idactividadTerceroSel= $(dato).children().html();
                     $.ajax({
                         type: "GET",
                         url: "includes/ajax/actividades.php",
-                        data: "accion=borrarPersonal&idactividad_personal="+idactividadPersonalSel,
+                        data: "accion=borrarTercero&idactividad_tercero="+idactividadTerceroSel,
                         dataType: "text",
                         success: function (id) {
                             if(id)
                             {
                             $(dato).remove();
                             //$("#navDatos").addClass("d-none");
-                            idactividadPersonalSel=0;
+                            idactividadTerceroSel=0;
                             }else{
                                 alert("Hubo un error al borrar la actividad");
                             }
@@ -555,7 +602,7 @@ function iniciarEventosActividades() {
 
     });
 
-    $("#btnModficarPersonal").click(function (e) { 
+    $("#btnModificarPersonal").click(function (e) { 
         e.preventDefault();
         let precioHa=$("#txtModificarPrecioHaPersonal").val();
         $.ajax({
@@ -567,6 +614,28 @@ function iniciarEventosActividades() {
                 if(datos==1)
                 {
                     actualizarListaPersonalesActividades(idactividadSel);
+                }else
+                {
+                    alert("Hubo un error al modificar los datos");
+                }
+            }
+        });
+        $("#modalModificarPersonal").hide();
+        $("#modalModificarPersonal").modal('hide');
+    });
+
+    $("#btnModificarTercero").click(function (e) { 
+        e.preventDefault();
+        let precioHa=$("#txtModificarPrecioHaTercero").val();
+        $.ajax({
+            type: "GET",
+            url: "includes/ajax/actividades.php",
+            data: "accion=modificarTercero&idactividad_tercero="+idactividadTerceroSel+"&precioHa="+precioHa,
+            dataType: "text",
+            success: function (datos) {
+                if(datos==1)
+                {
+                    actualizarListaTercerosActividades(idactividadSel);
                 }else
                 {
                     alert("Hubo un error al modificar los datos");
@@ -681,6 +750,32 @@ function iniciarEventosActividades() {
                     actualizarListaPersonalesActividades(idactividadSel);
             }
         });
+    });
+
+    $("#btnAgregarTercero").click(function (e) { 
+        e.preventDefault();
+        let idtercero=$("#sltterceros").val();
+        let cantidad=0;
+        $("#tblterceros tbody tr").each(function(){
+            cantidad+=1;
+        });
+        if (cantidad==1)
+        {
+            alert("No puede ingresar mas de una empresa contratada para realizar la activiad");
+        }
+        else
+        {
+        
+            $.ajax({
+                type: "GET",
+                url: "includes/ajax/actividades.php",
+                data: "accion=agregarTercero&idactividad="+idactividadSel+"&idtercero="+idtercero+"&precioHa="+precioHaSel,
+                dataType: "json",
+                success: function (datos) {
+                        actualizarListaTercerosActividades(idactividadSel);
+                }
+            });
+        }
     });
 }//fin iniciar eventos actividades
 
@@ -814,7 +909,7 @@ function actualizarListaMaquinariaActividades(idactividad){
                 $("#maquinariaContratada").prop("checked", true);
                 $("#tblMaquinaria").addClass("d-none");
                 $("#tblContratistas").removeClass("d-none");
-                //actualizarTerceros(idactividad);
+                actualizarListaTercerosActividades(idactividadSel);
             }
             if(datos[0].maquinaria==2) //si la maquinaria es propia
             {
@@ -855,6 +950,36 @@ function actualizarListaPersonalesActividades(idactividad)
                                                                     <i class='material-icons'>create</i>\
                                                                 </a>\
                                                                 <a class='borrarPersonal' href='#'>\
+                                                                    <i class='material-icons'>clear</i>\
+                                                                </a>\
+                                                            </td>\
+                                                      </tr>");
+                });
+            }
+        });
+        
+    }
+
+    function actualizarListaTercerosActividades(idactividad)
+    {
+        $("#tblterceros tbody").empty();
+        $.ajax({
+            type: "GET",
+            url: "includes/ajax/actividades.php",
+            data: "accion=listaTerceros&idactividad="+idactividad,
+            dataType: "json",
+            success: function (datos) {
+                datos.forEach(dato => {
+                    $("#tblterceros tbody").append("<tr>\
+                                                            <td class='d-none idactividad_tercero'>" + dato.idactividad_tercero + "</td>\
+                                                            <td class='tercero'>" + dato.tercero + "</td>\
+                                                            <td class='text-right precioHaTercero'>" + dato.precioHa + "</td>\
+                                                            <td class='text-right precioTotalTercero'>" + dato.precioHa*superficieSel + "</td>\
+                                                            <td class='text-center'>\
+                                                                <a class='modificarTercero' href='#' data-toggle='modal' data-target='#modalModificarTercero' data-whatever=''>\
+                                                                    <i class='material-icons'>create</i>\
+                                                                </a>\
+                                                                <a class='borrarTercero' href='#'>\
                                                                     <i class='material-icons'>clear</i>\
                                                                 </a>\
                                                             </td>\

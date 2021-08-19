@@ -99,7 +99,7 @@ class actividadesModel
             return 0;
         }
     }
-    
+  
     public function borrarActividadesTerceros($id) //borra todos los terceros que existen para esa actividad(cero, uno o varios registros) 
     {
         $sql="DELETE FROM `actividades_terceros` WHERE idactividad=".$id;
@@ -117,9 +117,21 @@ class actividadesModel
         return $this->bd->insertar($sql);
     }
 
+    public function guardarActividadTercero($idactividad,$idtercero,$precioHa)
+    {
+        $sql="INSERT INTO `actividades_terceros`(`idactividad`, `idusuario`, `precioHa`) VALUES (".$idactividad.",".$idtercero.",".$precioHa.")";
+        return $this->bd->insertar($sql);
+    }
+
     public function listarPersonales($idactividad)
     {
         $sql="SELECT a.idactividad_personal,p.personal,a.precioHa FROM actividades_personales a INNER JOIN personales p ON a.idpersonal=p.idpersonal WHERE idactividad=".$idactividad;
+        return $this->bd->sql($sql);
+    }
+
+    public function listarTerceros($idactividad)
+    {
+        $sql="SELECT a.idactividad_tercero,u.usuario as tercero,a.precioHa FROM actividades_terceros a INNER JOIN usuarios u ON a.idusuario=u.idusuario WHERE idactividad=".$idactividad;
         return $this->bd->sql($sql);
     }
 
@@ -134,9 +146,26 @@ class actividadesModel
         }
     }
 
+    public function borrarTerceros($id) //borra todos el personal de la lista de actividades (un solo registro)
+    {
+        $sql="DELETE FROM `actividades_terceros` WHERE idactividad_tercero=".$id;
+        $resultado=$this->bd->eliminar($sql);
+        if($resultado){
+            return 1;
+        }else{
+            return 0;
+        }
+    }
+
     public function modificarPersonales($id,$precioHa)
     {
         $sql="UPDATE `actividades_personales` SET `precioHa`=".$precioHa." WHERE idactividad_personal=".$id;
+        return $this->bd->modificar($sql);
+    }
+
+    public function modificarTerceros($id,$precioHa)
+    {
+        $sql="UPDATE `actividades_terceros` SET `precioHa`=".$precioHa." WHERE idactividad_tercero=".$id;
         return $this->bd->modificar($sql);
     }
 }

@@ -120,7 +120,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                        <button type="button" class="btn btn-primary" id="btnModficarPersonal" >Agregar</button>
+                        <button type="button" class="btn btn-primary" id="btnModificarPersonal" >Agregar</button>
                     </div>
                 </form>
             </div>

@@ -82,19 +82,41 @@ switch ($accion) {
         $datos=$oActividad->guardarActividadPersonal($idactividad,$idpersonal,$precioHa);
         echo json_encode($datos);
     break;
+    case "agregarTercero":
+        $idactividad=$_GET["idactividad"];
+        $idtercero=$_GET["idtercero"];
+        $precioHa=$_GET["precioHa"];
+        $datos=$oActividad->guardarActividadTercero($idactividad,$idtercero,$precioHa);
+        echo json_encode($datos);
+    break;
+
     case "listaPersonales":
         $idactividad=$_GET["idactividad"];
         $datos=$oActividad->listarPersonales($idactividad);
+        echo json_encode($datos);
+    break;
+    case "listaTerceros":
+        $idactividad=$_GET["idactividad"];
+        $datos=$oActividad->listarTerceros($idactividad);
         echo json_encode($datos);
     break;
     case "borrarPersonal":
         $id=$_GET["idactividad_personal"];
         echo $oActividad->borrarPersonales($id);
     break;
+    case "borrarTercero":
+        $id=$_GET["idactividad_tercero"];
+        echo $oActividad->borrarTerceros($id);
+    break;
     case "modificarPersonal":
         $id=$_GET["idactividad_personal"];
         $precioHa=$_GET["precioHa"];
         echo $oActividad->modificarPersonales($id,$precioHa);
+    break;
+    case "modificarTercero":
+        $id=$_GET["idactividad_tercero"];
+        $precioHa=$_GET["precioHa"];
+        echo $oActividad->modificarTerceros($id,$precioHa);
     break;
 }
 ?>

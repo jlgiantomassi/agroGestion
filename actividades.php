@@ -256,9 +256,10 @@ $cultivos = $oCultivos->listarCultivos();
                                                 <table class="table table-sm mb-2 p-0 table-hover " id="tblterceros">
                                                     <thead class="thead-light">
                                                         <tr>
+                                                            <th class="d-none">idactividad_tercero</th>
                                                             <th>Maquinaria Contratada</th>
                                                             <th class="text-right">Precio Ha</th>
-                                                            <th class="text-right d-none">Superficie</th>
+                                                            <th class="text-right">Superficie</th>
                                                             <th class='text-center'>Accion</th>
                                                         </tr>
                                                     </thead>
