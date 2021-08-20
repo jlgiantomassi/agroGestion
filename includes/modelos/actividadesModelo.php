@@ -15,13 +15,13 @@ class actividadesModel
     {
         //$sql=$idlotecampana+$idlabor+$fecha+$superficie+$precioha;
         //echo $sql;
-        $sql="INSERT INTO `actividades_lotes`(`idloteCampana`, `idlabor`, `fecha`, `superficie`, `precioha`) VALUES ('".$idlotecampana."','".$idlabor."','".fecha_a_mysql($fecha)."','".$superficie."','".$precioha."')";
+        $sql="INSERT INTO `actividades_lotes`(`idloteCampana`, `idlabor`, `fecha`, `superficie`, `precioha`,`observaciones`) VALUES ('".$idlotecampana."','".$idlabor."','".fecha_a_mysql($fecha)."','".$superficie."','".$precioha."','')";
         return $this->bd->insertar($sql);
     }
 
     public function cargarActividades($idlotecampana)
     {
-        $sql = "SELECT idactividad, DATE_FORMAT(fecha, '%d/%m/%Y') as fecha,labor,precioha,superficie FROM actividades_lotes INNER JOIN labores on actividades_lotes.idlabor=labores.idlabor WHERE idloteCampana=".$idlotecampana." order by fecha";
+        $sql = "SELECT idactividad, DATE_FORMAT(fecha, '%d/%m/%Y') as fecha,labor,precioha,superficie,observaciones FROM actividades_lotes INNER JOIN labores on actividades_lotes.idlabor=labores.idlabor WHERE idloteCampana=".$idlotecampana." order by fecha";
         return $this->bd->sql($sql);
     }
 
@@ -167,6 +167,18 @@ class actividadesModel
     {
         $sql="UPDATE `actividades_terceros` SET `precioHa`=".$precioHa." WHERE idactividad_tercero=".$id;
         return $this->bd->modificar($sql);
+    }
+
+    public function guardarObservaciones($id,$observaciones)
+    {
+        $sql="UPDATE `actividades_lotes` SET `observaciones`='".$observaciones."' WHERE idactividad=".$id;
+        return $this->bd->modificar($sql);
+    }
+
+    public function importeInsumos($id)
+    {
+        $sql="SELECT SUM(i.cantidadTotal*i.precio) as importe FROM `lotescampanas` l INNER JOIN actividades_lotes a ON l.idloteCampana=a.idloteCampana INNER JOIN actividades_insumos i on a.idactividad=i.idactividad WHERE l.idloteCampana=".$id;
+        return $this->bd->sql($sql);
     }
 }
 ?>

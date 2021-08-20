@@ -118,5 +118,14 @@ switch ($accion) {
         $precioHa=$_GET["precioHa"];
         echo $oActividad->modificarTerceros($id,$precioHa);
     break;
+    case "guardarObservaciones":
+        $id=$_GET["idactividad"];
+        $observaciones=$_GET["observaciones"];
+        echo $oActividad->guardarObservaciones($id,$observaciones);
+    break;
+    case "importeInsumosLote":
+        $id=$_GET["idlotecampana"];
+        echo json_encode($oActividad->importeInsumos($id));
+    break;
 }
 ?>

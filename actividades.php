@@ -137,6 +137,7 @@ $cultivos = $oCultivos->listarCultivos();
                             <a class="nav-item nav-link active" id="nav-insumos-tab" data-toggle="tab" href="#nav-insumos" role="tab" aria-controls="nav-insumos" aria-selected="true">Insumos</a>
                             <a class="nav-item nav-link" id="nav-maquinarias-tab" data-toggle="tab" href="#nav-maquinarias" role="tab" aria-controls="nav-maquinarias" aria-selected="false">Maquinaria</a>
                             <a class="nav-item nav-link" id="nav-observaciones-tab" data-toggle="tab" href="#nav-observaciones" role="tab" aria-controls="nav-observaciones" aria-selected="false">Observaciones</a>
+                            <a class="nav-item nav-link" id="nav-resumen-tab" data-toggle="tab" href="#nav-resumen" role="tab" aria-controls="nav-resumen" aria-selected="false">Resumen</a>
                         </div>
                     </nav>
 
@@ -277,7 +278,7 @@ $cultivos = $oCultivos->listarCultivos();
                             <div class="tab-pane fade ml-2" id="nav-observaciones" role="tabpanel" aria-labelledby="nav-observaciones-tab">
                                 <div class="row mt-2">
                                     <div class="col-md-5">
-                                        <strong>Observaciones de la Orden de Trabajo</strong>
+                                        <strong>Observaciones de la Actividad del Lote</strong>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -285,19 +286,15 @@ $cultivos = $oCultivos->listarCultivos();
                                         <textarea class="form-control mb-3" name="txtobservaciones" id="txtobservaciones"></textarea>
                                     </div>
                                     <div class="col-md-3">
-                                        <button class="btn btn-success" id="btnObservaciones">Guardar</button>
+                                        <button class="btn btn-primary" id="btnObservaciones">Guardar</button>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Resumen de actividades-->
                             <div class="tab-pane fade ml-2" id="nav-resumen" role="tabpanel" aria-labelledby="nav-resumen-tab">
-                                <div class="row mt-2" id="resumenMensaje">
-                                    <strong>Debe tener asignado al menos un lote y una participacion del 100% de productores para activar el resumen y poder guardar
-                                        la orden de trabajo</strong>
-                                </div>
                                 <div class="row mt-2" id="resumen">
-                                    <h5 class="col-md-12">Resumen Orden de Trabajo</h5>
+                                    <h5 class="col-md-12">Resumen de la Actividad del Lote</h5>
                                     <div class="col-md-4">
                                         <table class="table">
                                             <tbody>
@@ -324,10 +321,8 @@ $cultivos = $oCultivos->listarCultivos();
 
                                     </div>
                                     <div class="col-md-3">
-                                        <button type="button" id="btnGuardarOrden" class="btn btn-primary form-control">Guardar Orden de Trabajo</button>
-                                        <button type="button" id="btnOrdenTrabajo" class="btn btn-primary form-control d-none">Orden de Trabajo</button>
-                                        <button type="button" id="btnInformeProductor" class="btn btn-info form-control mt-2 d-none">Informe Productor</button>
-                                        <button type="button" id="btnLimpiarOrden" class="btn btn-light form-control mt-2 d-none">Limpiar Orden</button>
+                                        <button type="button" id="btnInformeProductor" class="btn btn-info form-control mt-2">Informe Costos</button>
+                                        
                                     </div>
                                 </div>
                             </div>
