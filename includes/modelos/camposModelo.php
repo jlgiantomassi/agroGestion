@@ -57,5 +57,11 @@ class camposModel
         $sql=("INSERT INTO `lotes`(`lote`,`superficie`,`idcampo`) VALUES('".$lote."',".$superficie.",".$idcampo.")");
         return $this->bdLotes->insertar($sql);
     }
+
+    public function datosByIdCampana($idloteCampana)
+    {
+        $sql="SELECT u.usuario,c.campo,l.lote,l.superficie,ca.campana,cu.cultivo FROM lotescampanas lc INNER JOIN lotes l ON lc.idlote=l.idlote INNER JOIN campos c ON l.idcampo=c.idcampo inner JOIN usuarios u ON lc.idusuario=u.idusuario INNER JOIN campanas ca ON lc.idcampana=ca.idcampana INNER JOIN cultivos cu ON lc.idcultivo=cu.idcultivo WHERE lc.idloteCampana=".$idloteCampana;
+        return $this->bdLotes->sql($sql);
+    }
 }
 ?>

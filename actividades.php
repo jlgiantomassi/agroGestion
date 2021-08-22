@@ -2,6 +2,7 @@
 $raiz = "";
 require_once("includes/modelos/camposModelo.php");
 require_once("includes/modelos/cultivosModelo.php");
+
 $oCampos = new CamposModel();
 $campos = $oCampos->listarCampos();
 $oCultivos = new cultivosModel();
@@ -321,8 +322,8 @@ $cultivos = $oCultivos->listarCultivos();
 
                                     </div>
                                     <div class="col-md-3">
-                                        <button type="button" id="btnInformeProductor" class="btn btn-info form-control mt-2">Informe Costos</button>
-                                        
+                                        <button type="button" id="btnInformeCostos" class="btn btn-info form-control mt-2">Informe Costos</button>
+                                        <button type="button" id="btnInformeDetallado" class="btn btn-info form-control mt-2">Informe Detallado</button>
                                     </div>
                                 </div>
                             </div>

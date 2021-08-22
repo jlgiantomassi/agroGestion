@@ -1,6 +1,6 @@
 <?php
 include_once($raiz."conexion/BaseDatos.php");
-include_once ('../funciones.php');
+include_once ($raiz."includes/funciones.php");
 
 
 class actividadesModel 
@@ -21,7 +21,7 @@ class actividadesModel
 
     public function cargarActividades($idlotecampana)
     {
-        $sql = "SELECT idactividad, DATE_FORMAT(fecha, '%d/%m/%Y') as fecha,labor,precioha,superficie,observaciones FROM actividades_lotes INNER JOIN labores on actividades_lotes.idlabor=labores.idlabor WHERE idloteCampana=".$idlotecampana." order by fecha";
+        $sql = "SELECT idactividad, DATE_FORMAT(fecha, '%d/%m/%Y') as fechaDMY,labor,precioha,superficie,observaciones FROM actividades_lotes INNER JOIN labores on actividades_lotes.idlabor=labores.idlabor WHERE idloteCampana=".$idlotecampana." order by fecha ASC";
         return $this->bd->sql($sql);
     }
 
@@ -178,6 +178,13 @@ class actividadesModel
     public function importeInsumos($id)
     {
         $sql="SELECT SUM(i.cantidadTotal*i.precio) as importe FROM `lotescampanas` l INNER JOIN actividades_lotes a ON l.idloteCampana=a.idloteCampana INNER JOIN actividades_insumos i on a.idactividad=i.idactividad WHERE l.idloteCampana=".$id;
+        return $this->bd->sql($sql);
+    }
+
+    public function importeInsumosPorLote($idloteCampana)
+    {
+        //devuelve cantidad, insumo, importe de cada insumo por lote
+        $sql="SELECT SUM(ai.cantidadTotal) as cantidad,i.insumo,SUM(ai.cantidadTotal*ai.precio) as importe FROM `actividades_lotes` al INNER JOIN `actividades_insumos` ai ON al.idactividad=ai.idactividad INNER JOIN insumos i ON ai.idinsumo=i.idinsumo WHERE al.idloteCampana=".$idloteCampana." GROUP BY i.idinsumo";
         return $this->bd->sql($sql);
     }
 }

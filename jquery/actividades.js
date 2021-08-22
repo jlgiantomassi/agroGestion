@@ -84,7 +84,7 @@ function iniciarEventosActividades() {
                                         datos.forEach(dato => {
                                             $("#tblactividades tbody").append("<tr>\
                                                                             <td class='d-none idactividad'>" + dato.idactividad + "</td>\
-                                                                            <td class='fechaActividad'>" + dato.fecha + "</td>\
+                                                                            <td class='fechaActividad'>" + dato.fechaDMY + "</td>\
                                                                             <td class='actividad'>" + dato.labor + "</td>\
                                                                             <td class='text-right precioHa'>" + dato.precioha + "</td>\
                                                                             <td class='text-right superficie'>" + dato.superficie + "</td>\
@@ -360,6 +360,42 @@ function iniciarEventosActividades() {
             $("#navDatos").addClass("d-none");
 
         } //fin validar campos
+    });
+
+    $("#btnInsertarLabor").click(function (e) {
+        e.preventDefault();
+        let precio = ($("#txtInsPrecioLabor").val() == "") ? 0 : parseInt($("#txtInsPrecioLabor").val());
+        let nombreLabor = $("#txtInsLabor").val();
+        let slt = $("#sltlabores option");
+        if (estaEnElCombo(nombreLabor, slt)) {
+            alert("Esta Labor ya existe");
+
+        } else {
+            if ($("#frmAgregarLabor").valid()) {
+
+                $.ajax({
+                    data: "accion=insLabor&labor=" + nombreLabor + "&precio=" + precio,
+                    type: "GET",
+                    dataType: "text",
+                    url: "includes/ajax/ajax.php",
+                    success: function (datos) {
+                        if (datos != "false") {
+                            totalLabores = precio;
+                            $("#modalLabor").hide();
+                            $("#modalLabor").modal('hide');
+                            actualizarListaLabores(datos);
+                            modificarPresupuesto();
+
+                        } else {
+                            alert(datos);
+                        }
+                    },
+                    error: function () {
+                        alert("error de conexion");
+                    }
+                });
+            }
+        }
     });
 
     //al hacer click en la tabla de actividades se selecciona una actividad y actualiza el resto de las tablas correspondientes
@@ -782,6 +818,16 @@ function iniciarEventosActividades() {
         });
 
     });
+
+    $("#btnInformeCostos").click(function (e) { 
+        e.preventDefault();
+        window.open("generarCostosLote.php?idloteCampana="+idlotecampana);
+    });
+
+    $("#btnInformeDetallado").click(function (e) { 
+        e.preventDefault();
+        window.open("generarInformeCostosDetallado.php?idloteCampana="+idlotecampana);
+    });
 }//fin iniciar eventos actividades
 
 
@@ -889,6 +935,32 @@ function actualizarListaInsumos() {
             if (datos.length > 0) {
                 $.each(datos, function (index, valor) {
                     $("#sltinsumos").append('<option value="' + valor.idinsumo + '">' + valor.insumo + '</option>');
+                });
+            }
+        },
+        error: function () {
+            alert("error de conexion");
+        }
+    });
+}
+
+//actualiza la lista de labores de la ventana modal
+function actualizarListaLabores(id) {
+    let idlabor = 'idlabor';
+    $("#sltlabores").empty();
+    $.ajax({
+        data: "accion=labores&idlabor=" + idlabor,
+        type: "GET",
+        dataType: "json",
+        url: "includes/ajax/ajax.php",
+        success: function (datos) {
+            if (datos.length > 0) {
+                $.each(datos, function (index, valor) {
+                    if (valor.idlabor == parseInt(id)) {
+                        var sel = "selected";
+                        $("#txtPrecioLabor").val(valor.precio);
+                    }
+                    $("#sltlabores").append('<option value="' + valor.idlabor + '" data-foo="' + valor.precio + '" ' + sel + '>' + valor.labor + '</option>');
                 });
             }
         },

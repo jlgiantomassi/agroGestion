@@ -73,7 +73,7 @@ $primerPrecio = ($cantLabores > 0) ? $rowsLabores[0]['precio'] : "";
 
                     <div class="form-group">
                         <label for="txtInsLabor" class="col-form-label">Labor:</label>
-                        <input type="number" class="form-control" id="txtInsLabor" name="txtInsLabor" value="">
+                        <input type="text" class="form-control" id="txtInsLabor" name="txtInsLabor" value="">
 
                     </div>
 
