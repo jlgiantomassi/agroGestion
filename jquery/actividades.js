@@ -91,7 +91,7 @@ function iniciarEventosActividades() {
                                                                             <td class='text-right importeActividad'>" + dato.precioha * dato.superficie + "</td>\
                                                                             <td class='d-none observaciones'>" + dato.observaciones + "</td>\
                                                                             <td class='text-center'>\
-                                                                                <a class='modificarActividad' href='#' data-toggle='modal' data-target='#modalModificarLabor' data-whatever=''>\
+                                                                                <a class='modificarActividad' href='#' data-toggle='modal' data-target='#modalModificarActividad' data-whatever=''>\
                                                                                     <i class='material-icons'>create</i>\
                                                                                 </a>\
                                                                                 <a class='borrarActividad' href='#'>\
@@ -343,7 +343,7 @@ function iniciarEventosActividades() {
                                                     <td class='text-right'>" + precioHa * superficie + "</td>\
                                                     <td class='d-none observaciones'></td>\
                                                     <td class='text-center'>\
-                                                        <a class='modificarActividad' href='#' data-toggle='modal' data-target='#modalModificarLabor' data-whatever=''>\
+                                                        <a class='modificarActividad' href='#' data-toggle='modal' data-target='#modalModificarActividad' data-whatever=''>\
                                                             <i class='material-icons'>create</i>\
                                                         </a>\
                                                         <a class='borrarActividad' href='#'>\
@@ -681,8 +681,8 @@ function iniciarEventosActividades() {
 
     $("#btnModificarActividad").click(function (e) {
         e.preventDefault();
-        $("#modalModificarLabor").hide();
-        $("#modalModificarLabor").modal('hide');
+        $("#modalModificarActividad").hide();
+        $("#modalModificarActividad").modal('hide');
         superficie = $("#txtSupActividadModificar").val();
         precioHa = $("#txtPrecioActividadModificar").val();
         fecha = $("#txtFechaActividadModificar").val();

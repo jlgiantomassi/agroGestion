@@ -1,18 +1,24 @@
 <?php
-session_start();
-if(isset($_SESSION["idusuario"]))
-{   
-    
-    $idCampanaActiva = $_SESSION["idcampana"];
-    $idUsuarioActivo = $_SESSION["idusuario"];
-}
-else{
-    echo "El usuario no esta logeado";
-    session_destroy();
-    exit();
-}
+$raiz = "";
+include_once("./includes/controlLogin.php");
+include_once("./includes/modelos/ordenesModelo.php");
 
+ini_set("memory_limit", "1024M");
 $idordentrabajo = $_GET["idorden"];
+$oOrden = new ordenesModel();
+$ordenes = $oOrden->verOrden($idordentrabajo);
+
+$productores = $oOrden->verOrdenProductores($idordentrabajo);
+$cantProductores = $oOrden->cantidadRegistros();
+
+$campos = $oOrden->verOrdenLotes($idordentrabajo);
+$cantCampos = $oOrden->cantidadRegistros();
+
+$insumos = $oOrden->verOrdenInsumos($idordentrabajo);
+$cantInsumos = $oOrden->cantidadRegistros();
+
+
+/*
 include "conexion/conexion.php";
 $query_orden = mysqli_query($con, "select o.fecha,l.labor,o.precio,o.observaciones,o.superficie from ordentrabajos as o inner join labores as l on o.idlabor=l.idlabor where o.idordentrabajo=" . $idordentrabajo);
 $row = mysqli_fetch_array($query_orden);
@@ -28,8 +34,8 @@ $cantCampos = mysqli_affected_rows($con);
 $query_insumo = mysqli_query($con, "select o.cantidadHa,o.precioUn,o.cantidadTotal,o.precioTotal,i.insumo,u.unidad from orden_insumos o inner join insumos i on o.idinsumo=i.idinsumo inner join unidades u on i.idunidad=u.idunidad where o.idordentrabajo=" . $idordentrabajo);
 $rowInsumo = mysqli_fetch_array($query_insumo);
 $cantInsumos = mysqli_affected_rows($con);
-
-$totalInsumos=0; 
+*/
+$totalInsumos = 0;
 
 /*
 require_once 'dompdf/autoload.inc.php';
@@ -40,17 +46,27 @@ ob_start();
 */
 ?>
 
-<html lang='en'>
-    <head>
-        <?php include 'includes/header.php'; ?>
-        <title>Orden de Trabajo</title>
-    </head>
-    <body>
-        <h1 style="font-size: 45px; text-align: center;">Orden de Trabajo</h1>
-        <div class="container border bg-white">
-            <div class="row">
-                <div class="col-md-9">
-                    <table class="table">
+<html lang='es'>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/estilos.css" />
+
+    <title>Orden de Trabajo</title>
+</head>
+
+
+<body>
+    <div class="container col-5 mt-2">
+        <div class="card mb-2 shadow">
+            <h4 class="text-center">Orden de Trabajo - Informe Productor</h4>
+        </div>
+        <div class="card p-3 shadow">
+            <div class="row ">
+                <div class="col-md-12">
+                    <table class="table table-sm">
                         <thead class="thead-light">
                             <tr>
                                 <th>Fecha</th>
@@ -62,18 +78,17 @@ ob_start();
                         </thead>
                         <tbody>
                             <tr>
-                                <td><?php echo $row['fecha']; ?></td>
-                                <td><?php echo $row['labor']; ?></td>
-                                <td class="text-right"><?php echo $row['precio']; ?></td>
-                                <td class="text-right"><?php echo $row['superficie']; ?></td>
-                                <td class="text-right"><?php echo $row['superficie'] * $row['precio']; ?></td>
+                                <td><?php echo $ordenes[0]['fecha']; ?></td>
+                                <td><?php echo $ordenes[0]['labor']; ?></td>
+                                <td class="text-right"><?php echo $ordenes[0]['precio']; ?></td>
+                                <td class="text-right"><?php echo $ordenes[0]['superficie']; ?></td>
+                                <td class="text-right"><?php echo $ordenes[0]['superficie'] * $ordenes[0]['precio']; ?></td>
                             </tr>
-                            <?php if($row['observaciones']!='')
-                            {
+                            <?php if ($ordenes[0]['observaciones'] != '') {
                                 echo "<tr>
                                     <td>Observaciones</td>
-                                    <td colspan='4' style='border: 1px solid;'>" . $row['observaciones']. "</td>
-                                    </tr>"; 
+                                    <td colspan='4' style='border: 1px solid;'>" . $ordenes[0]['observaciones'] . "</td>
+                                    </tr>";
                             } ?>
                         </tbody>
                     </table>
@@ -83,13 +98,13 @@ ob_start();
 
             <?php if ($cantProductores > 0) { ?>
                 <div class="row mt-2">
-                    <div class="col-md-3">
+                    <div class="col-md-12 ml-3">
                         <strong>Lista de Productores</strong>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-9">
-                        <table class="table" id="tblproductores">
+                    <div class="col-md-12">
+                        <table class="table table-sm" id="tblproductores">
                             <thead class="thead-light">
                                 <tr>
                                     <th>Productor</th>
@@ -97,12 +112,12 @@ ob_start();
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php do { ?>
+                                <?php foreach ($productores as $rowProductor) { ?>
                                     <tr>
                                         <td><?php echo $rowProductor['productor'] ?></td>
                                         <td class="text-right"><?php echo $rowProductor['superficie'] ?></td>
                                     </tr>
-                                <?php } while ($rowProductor = mysqli_fetch_array($query_productor)); ?>
+                                <?php }  ?>
                             </tbody>
                         </table>
                     </div>
@@ -111,14 +126,14 @@ ob_start();
 
             <?php if ($cantCampos > 0) { ?>
                 <div class="row mt-2">
-                    <div class="col-md-3">
+                    <div class="col-md-12 ml-3">
                         <strong>Lista de Campos/Lotes</strong>
                     </div>
 
                 </div>
                 <div class="row">
-                    <div class="col-md-9">
-                        <table class="table" id="tblcampos">
+                    <div class="col-md-12">
+                        <table class="table table-sm" id="tblcampos">
                             <thead class="thead-light">
                                 <tr>
                                     <th>Campo</th>
@@ -128,14 +143,14 @@ ob_start();
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php do { ?>
+                                <?php foreach ($campos as $rowCampo) { ?>
                                     <tr>
                                         <td><?php echo $rowCampo['campo']; ?></td>
                                         <td><?php echo $rowCampo['lote']; ?></td>
                                         <td class="text-right"><?php echo $rowCampo['superficie']; ?></td>
-                                        <td class="text-right"><?php echo $rowCampo['superficie'] * $row['precio']; ?></td>
+                                        <td class="text-right"><?php echo $rowCampo['superficie'] * $ordenes[0]['precio']; ?></td>
                                     </tr>
-                                <?php } while ($rowCampo = mysqli_fetch_array($query_campo)); ?>
+                                <?php } ?>
                             </tbody>
                         </table>
 
@@ -145,13 +160,13 @@ ob_start();
 
             <?php if ($cantInsumos > 0) { ?>
                 <div class="row mt-2">
-                    <div class="col-md-3">
+                    <div class="col-md-12 ml-3">
                         <strong>Lista de Insumos</strong>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-9">
-                        <table class="table" id="tblinsumos">
+                    <div class="col-md-12">
+                        <table class="table table-sm" id="tblinsumos">
                             <thead class="thead-light">
                                 <tr>
                                     <th>Insumo</th>
@@ -163,7 +178,7 @@ ob_start();
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php do { ?>
+                                <?php foreach ($insumos as $rowInsumo) { ?>
                                     <tr>
                                         <td><?php echo $rowInsumo['insumo']; ?></td>
                                         <td class="text-right"><?php echo $rowInsumo['cantidadHa']; ?></td>
@@ -173,28 +188,28 @@ ob_start();
                                         <td class="text-right"><?php echo $rowInsumo['precioTotal']; ?></td>
                                     </tr>
                                     <?php $totalInsumos += $rowInsumo['precioTotal']; ?>
-                                <?php } while ($rowInsumo = mysqli_fetch_array($query_insumo)); ?>
+                                <?php } ?>
                             </tbody>
                         </table>
                     </div>
                 </div>
             <?php } ?>
             <div class="row">
-                <div class="col-md-9">
-                    <table class="table" >
+                <div class="col-md-12">
+                    <table class="table table-sm">
                         <thead class="thead-light">
-                                <tr>
-                                    <th colspan="2">Resumen de la Orden de Trabajo</th>
-                                </tr>
-                            </thead>
+                            <tr>
+                                <th colspan="2">Resumen de la Orden de Trabajo</th>
+                            </tr>
+                        </thead>
                         <tbody>
                             <tr>
                                 <td>Superficie Total (has)</td>
-                                <td id="tdSupTotal" class="text-right"><?php echo $row['superficie']; ?></td>
+                                <td id="tdSupTotal" class="text-right"><?php echo $ordenes[0]['superficie']; ?></td>
                             </tr>
                             <tr>
                                 <td>Total Labores (U$S)</td>
-                                <td id="tdTotalLabores" class="text-right"><?php echo $row['superficie'] * $row['precio']; ?></td>
+                                <td id="tdTotalLabores" class="text-right"><?php echo $ordenes[0]['superficie'] * $ordenes[0]['precio']; ?></td>
                             </tr>
                             <tr>
                                 <td>Total Insumos (U$S)</td>
@@ -203,7 +218,7 @@ ob_start();
                             <tr>
 
                                 <td><strong>Total (U$S)</strong></td>
-                                <td class="text-right"><strong id="tdTotal" ><?php echo $totalInsumos+($row['superficie'] * $row['precio']); ?></strong></td>
+                                <td class="text-right"><strong id="tdTotal"><?php echo $totalInsumos + ($ordenes[0]['superficie'] * $ordenes[0]['precio']); ?></strong></td>
 
                             </tr>
                         </tbody>
@@ -211,7 +226,8 @@ ob_start();
                 </div>
             </div>
         </div>
-    </body>
+</body>
+
 </html>
 <?php
 /*

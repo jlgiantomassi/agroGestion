@@ -20,10 +20,11 @@
                     Datos
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="#">Productores</a>
-                    <a class="dropdown-item" href="#">Clientes</a>
-                    <!-- <div class="dropdown-divider"></div> -->
-                    <a class="dropdown-item" href="#">Maquinaria</a>
+                    <a class="dropdown-item" href="empresas.php">Empresas</a>
+                    <a class="dropdown-item" href="campos.php">Campos</a>
+                    <a class="dropdown-item" href="insumos.php">Insumos</a>
+                    <a class="dropdown-item" href="labores.php">Labores</a>
+                    <a class="dropdown-item" href="personales.php">Personales</a>
                 </div>
             </li>
 

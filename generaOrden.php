@@ -1,48 +1,42 @@
 <?php
+$raiz = "";
 include_once("./includes/controlLogin.php");
+include_once("./includes/modelos/ordenesModelo.php");
 
-ini_set("memory_limit", "1024M");
 $idordentrabajo = $_GET["idorden"];
-include "conexion/conexion.php";
-$query_orden = mysqli_query($con, "select o.fecha,l.labor,o.precio,o.observaciones,o.superficie from ordentrabajos as o inner join labores as l on o.idlabor=l.idlabor where o.idordentrabajo=" . $idordentrabajo);
-$row = mysqli_fetch_array($query_orden);
+$oOrden = new ordenesModel();
+$ordenes = $oOrden->verOrden($idordentrabajo);
 
-$query_productor = mysqli_query($con, "select o.superficie,p.usuario as productor from orden_productores o inner join usuarios p on o.idproductor=p.idusuario where o.idordentrabajo=" . $idordentrabajo);
-$rowProductor = mysqli_fetch_array($query_productor);
-$cantProductores = mysqli_affected_rows($con);
+$productores = $oOrden->verOrdenProductores($idordentrabajo);
+$cantProductores = $oOrden->cantidadRegistros();
 
-$query_campo = mysqli_query($con, "select o.superficie,c.campo,l.lote from orden_lotes o inner join lotes l on o.idlote=l.idlote inner join campos c on l.idcampo=c.idcampo where o.idordentrabajo=" . $idordentrabajo);
-$rowCampo = mysqli_fetch_array($query_campo);
-$cantCampos = mysqli_affected_rows($con);
+$campos = $oOrden->verOrdenLotes($idordentrabajo);
+$cantCampos = $oOrden->cantidadRegistros();
 
-$query_insumo = mysqli_query($con, "select o.cantidadHa,o.cantidadTotal,i.insumo,u.unidad from orden_insumos o inner join insumos i on o.idinsumo=i.idinsumo inner join unidades u on i.idunidad=u.idunidad where o.idordentrabajo=" . $idordentrabajo);
-$rowInsumo = mysqli_fetch_array($query_insumo);
-$cantInsumos = mysqli_affected_rows($con);
-
-
-require_once 'dompdf/autoload.inc.php';
-
-//use Dompdf\Dompdf;
-
-//ob_start();
-
+$insumos = $oOrden->verOrdenInsumos($idordentrabajo);
+$cantInsumos = $oOrden->cantidadRegistros();
 ?>
 
-<html lang='en'>
-    <head> 
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-        <link rel="stylesheet" href="css/estilos.css"  />
-        
-        <title>Orden de Trabajo</title>
-    </head>
-    <body>
-        <h1 style="font-size: 45px; text-align: center;">Orden de Trabajo</h1>
-        <div class="container border bg-white">
-            <div class="row">
-                <div class="col-md-9">
-                    <table class="table">
+<html lang='es'>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/estilos.css" />
+
+    <title>Orden de Trabajo</title>
+</head>
+
+<body>
+    <div class="container col-5 mt-2">
+        <div class="card mb-2 shadow">
+            <h4 class="text-center">Orden de Trabajo</h4>
+        </div>
+        <div class="card p-3 shadow">
+            <div class="row ">
+                <div class="col-md-12">
+                    <table class="table table-sm">
                         <thead class="thead-light">
                             <tr>
                                 <th>Fecha</th>
@@ -52,15 +46,14 @@ require_once 'dompdf/autoload.inc.php';
                         </thead>
                         <tbody>
                             <tr>
-                                <td><?php echo $row['fecha']; ?></td>
-                                <td><?php echo $row['labor']; ?></td>
-                                <td class="text-right"><?php echo $row['superficie']; ?></td>
+                                <td><?php echo $ordenes[0]['fecha']; ?></td>
+                                <td><?php echo $ordenes[0]['labor']; ?></td>
+                                <td class="text-right"><?php echo $ordenes[0]['superficie']; ?></td>
                             </tr>
-                            <?php if($row['observaciones']!='')
-                            {
-                            echo "<tr>
+                            <?php if ($ordenes[0]['observaciones'] != '') {
+                                echo "<tr>
                                 <td>Observaciones</td>
-                                <td colspan='2' style='border: 1px solid;'>". $row['observaciones']. "</td>
+                                <td colspan='2' style='border: 1px solid;'>" . $ordenes[0]['observaciones'] . "</td>
                                 </tr>";
                             } ?>
                         </tbody>
@@ -71,13 +64,13 @@ require_once 'dompdf/autoload.inc.php';
 
             <?php if ($cantProductores > 0) { ?>
                 <div class="row mt-2">
-                    <div class="col-md-3">
+                    <div class="col-md-12 ml-3">
                         <strong>Lista de Productores</strong>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-9">
-                        <table class="table" id="tblproductores">
+                    <div class="col-md-12">
+                        <table class="table table-sm" id="tblproductores">
                             <thead class="thead-light">
                                 <tr>
                                     <th>Productor</th>
@@ -85,12 +78,12 @@ require_once 'dompdf/autoload.inc.php';
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php do { ?>
+                                <?php foreach ($productores as $rowProductor) { ?>
                                     <tr>
                                         <td><?php echo $rowProductor['productor'] ?></td>
                                         <td class="text-right"><?php echo $rowProductor['superficie'] ?></td>
                                     </tr>
-                                <?php } while ($rowProductor = mysqli_fetch_array($query_productor)); ?>
+                                <?php } ?>
                             </tbody>
                         </table>
                     </div>
@@ -99,14 +92,14 @@ require_once 'dompdf/autoload.inc.php';
 
             <?php if ($cantCampos > 0) { ?>
                 <div class="row mt-2">
-                    <div class="col-md-3">
+                    <div class="col-md-12 ml-3">
                         <strong>Lista de Campos/Lotes</strong>
                     </div>
 
                 </div>
                 <div class="row">
-                    <div class="col-md-9">
-                        <table class="table" id="tblcampos">
+                    <div class="col-md-12">
+                        <table class="table table-sm" id="tblcampos">
                             <thead class="thead-light">
                                 <tr>
                                     <th>Campo</th>
@@ -115,13 +108,13 @@ require_once 'dompdf/autoload.inc.php';
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php do { ?>
+                                <?php foreach ($campos as $rowCampo) { ?>
                                     <tr>
                                         <td><?php echo $rowCampo['campo'] ?></td>
                                         <td><?php echo $rowCampo['lote'] ?></td>
                                         <td class="text-right"><?php echo $rowCampo['superficie'] ?></td>
                                     </tr>
-                                <?php } while ($rowCampo = mysqli_fetch_array($query_campo)); ?>
+                                <?php } ?>
                             </tbody>
                         </table>
 
@@ -131,13 +124,13 @@ require_once 'dompdf/autoload.inc.php';
 
             <?php if ($cantInsumos > 0) { ?>
                 <div class="row mt-2">
-                    <div class="col-md-3">
+                    <div class="col-md-12 ml-3">
                         <strong>Lista de Insumos</strong>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-9">
-                        <table class="table" id="tblinsumos">
+                    <div class="col-md-12">
+                        <table class="table table-sm" id="tblinsumos">
                             <thead class="thead-light">
                                 <tr>
                                     <th>Insumo</th>
@@ -147,14 +140,14 @@ require_once 'dompdf/autoload.inc.php';
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php do { ?>
+                                <?php foreach ($insumos as $rowInsumo) { ?>
                                     <tr>
                                         <td><?php echo $rowInsumo['insumo'] ?></td>
                                         <td class="text-right"><?php echo $rowInsumo['cantidadHa'] ?></td>
                                         <td class="text-right"><?php echo $rowInsumo['unidad'] ?></td>
                                         <td class="text-right"><?php echo $rowInsumo['cantidadTotal'] ?></td>
                                     </tr>
-                                <?php } while ($rowInsumo = mysqli_fetch_array($query_insumo)); ?>
+                                <?php } ?>
                             </tbody>
                         </table>
                     </div>
@@ -162,16 +155,7 @@ require_once 'dompdf/autoload.inc.php';
             <?php } ?>
 
         </div>
-    </body>
+    </div>
+</body>
+
 </html>
-<?php
-
-/*$html = ob_get_clean();
-$dompdf = new Dompdf();
-
-$dompdf->loadHtml($html);
-$dompdf->setPaper("A4", "portrait");
-$dompdf->render();
-$dompdf->stream();
-*/
-?>

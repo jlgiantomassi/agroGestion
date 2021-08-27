@@ -10,9 +10,9 @@ class laboresModel
         $this->bd = new BaseDatos();
     }
 
-    public function listarLabores() //retorna todos los campos en un array asociativo
+    public function listarLabores($idusuario) //retorna todos los campos en un array asociativo
     {
-        $sql="SELECT * FROM labores order by labor ASC";
+        $sql="SELECT * FROM labores WHERE idusuario=".$idusuario." order by labor ASC";
         return $this->bd->sql($sql);
     }
 
@@ -27,9 +27,9 @@ class laboresModel
         return $this->bd->sql($sql);
     }
 
-    public function insertar($labor,$precio)
+    public function insertar($labor,$precio,$idusuario)
     {
-        $sql="INSERT INTO `labores`(`labor`,`precio`) VALUES('".$labor."',".$precio.")";
+        $sql="INSERT INTO `labores`(`labor`,`precio`,`idusuario`) VALUES('".$labor."',".$precio.",".$idusuario.")";
         $id=$this->bd->insertar($sql);
         if($id==0)
             return 0;
@@ -37,5 +37,16 @@ class laboresModel
             return $id;
     }
 
+    public function modificarLabor($labor,$idlabor,$precio)
+    {
+        $sql="UPDATE `labores` SET `labor`='".$labor."',`precio`=".$precio." WHERE idlabor=".$idlabor;
+        return $this->bd->modificar($sql);
+    }
+
+    public function borrarLabor($idlabor)
+    {
+        $sql="DELETE FROM `labores` WHERE idlabor=".$idlabor;
+        return $this->bd->eliminar($sql);
+    }
 }
 ?>

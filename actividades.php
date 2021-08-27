@@ -1,14 +1,3 @@
-<?php
-$raiz = "";
-require_once("includes/modelos/camposModelo.php");
-require_once("includes/modelos/cultivosModelo.php");
-
-$oCampos = new CamposModel();
-$campos = $oCampos->listarCampos();
-$oCultivos = new cultivosModel();
-$cultivos = $oCultivos->listarCultivos();
-?>
-
 <!doctype html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 
@@ -17,7 +6,16 @@ $cultivos = $oCultivos->listarCultivos();
 </head>
 
 <body>
-    <?php include 'includes/menu.php'; ?>
+    <?php include_once 'includes/menu.php'; 
+    $raiz = "";
+    include_once("includes/modelos/camposModelo.php");
+    include_once("includes/modelos/cultivosModelo.php");
+    //$idUsuarioActivo=1;
+    $oCampos = new CamposModel();
+    $campos = $oCampos->listarCampos($idUsuarioActivo);
+    $oCultivos = new cultivosModel();
+    $cultivos = $oCultivos->listarCultivos();
+    ?>
 
     <script src="./jquery/actividades.js?version=<?php echo rand(1, 10000); ?>"></script>
     <div class="container border bg-white">

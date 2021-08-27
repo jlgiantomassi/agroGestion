@@ -1,7 +1,7 @@
 <?php
     require_once("includes/modelos/personalesModelo.php");
     $oPersonales=new personalesModel();
-    $rowsPersonales = $oPersonales->listarPersonales();
+    $rowsPersonales = $oPersonales->listarPersonales($idUsuarioActivo);
     $cantPersonales = $oPersonales->cantidadPersonales();
     $primerPrecioHa = ($cantPersonales > 0) ? $rowsPersonales[0]['precioHa'] : "";
     $primerCuil = ($cantPersonales > 0) ? $rowsPersonales[0]['cuil'] : "";
@@ -113,7 +113,10 @@
                         <label for="txtPersonal" class="col-form-label">Personal:</label>
                         <input type="text" disabled class="form-control" id="txtPersonal" name="txtPersonal" value="">
                     </div>
-
+                    <div class="form-group">
+                        <label for="txtModificarCuil" class="col-form-label">CUIL:</label>
+                        <input type="text" class="form-control" id="txtModificarCuil" name="txtModificarCuil" value="">
+                    </div>
                     <div class="form-group">
                         <label for="txtPrecioHa" class="col-form-label">Precio por Ha:</label>
                         <input type="text" class="form-control" id="txtModificarPrecioHaPersonal" name="txtModificarPrecioHaPersonal" value="">

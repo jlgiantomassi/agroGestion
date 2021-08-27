@@ -44,6 +44,11 @@ switch ($accion) {
         $idinsumo=      $_GET["idinsumo"];
         echo $oActividad->insertarActividadInsumo($idactividad,$idinsumo,$precio,$cantidadha,$superficie*$cantidadha);
     break;
+    case "insLabor":
+        $labor=$_GET["labor"];
+        $precio=$_GET["precio"];
+        $idusuario=$_["idusuario"];
+    break;
     case "borrarInsumo":
         $id=$_GET["idactividad_insumo"];
         echo $oActividad->borrarActividadInsumo($id);

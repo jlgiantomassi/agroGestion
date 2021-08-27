@@ -11,9 +11,9 @@ class camposModel
         $this->bdLotes = new BaseDatos();
     }
 
-    public function listarCampos() //retorna todos los campos en un array asociativo
+    public function listarCampos($id) //retorna todos los campos en un array asociativo
     {
-        $sql="SELECT * FROM campos order by campo";
+        $sql="SELECT * FROM campos where idusuario=".$id." order by campo";
         return $this->bdCampos->sql($sql);
     }
 
@@ -28,10 +28,29 @@ class camposModel
         return $this->bdCampos->cantidadRegistros();
     }
     
-    public function insertarCampo($campo)
+    public function insertarCampo($campo,$idusuario)
     {
-        $sql="INSERT INTO `campos`(`campo`) VALUES('".$campo."')";
+        $sql="INSERT INTO `campos`(`campo`,`idusuario`) VALUES('".$campo."','".$idusuario."')";
         return $this->bdCampos->insertar($sql);
+    }
+
+    public function borrarCampo($idcampo)
+    {
+        $sql="DELETE FROM `campos` WHERE idcampo=".$idcampo;
+        return $this->bdCampos->eliminar($sql);
+    }
+
+    public function modificarCampo($campo,$idcampo)
+    {
+        $sql="UPDATE `campos` SET `campo`='".$campo."' WHERE idcampo=".$idcampo;
+        return $this->bdCampos->modificar($sql);
+    }
+
+    public function superficieCampo($idcampo)
+    {
+        $sql="SELECT sum(superficie) as superficie FROM lotes WHERE idcampo=".$idcampo;
+        $superficie=$this->bdCampos->sql($sql);
+        return $superficie[0]["superficie"];
     }
 
     //Lotes
@@ -56,6 +75,18 @@ class camposModel
     {
         $sql=("INSERT INTO `lotes`(`lote`,`superficie`,`idcampo`) VALUES('".$lote."',".$superficie.",".$idcampo.")");
         return $this->bdLotes->insertar($sql);
+    }
+
+    public function modificarLote($lote,$idlote,$superficie)
+    {
+        $sql="UPDATE `lotes` SET `lote`='".$lote."',`superficie`=".$superficie." WHERE idlote=".$idlote;
+        return $this->bdLotes->modificar($sql);
+    }
+
+    public function borrarLote($idlote)
+    {
+        $sql="DELETE FROM `lotes` WHERE idlote=".$idlote;
+        return $this->bdLotes->eliminar($sql);
     }
 
     public function datosByIdCampana($idloteCampana)

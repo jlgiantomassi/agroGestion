@@ -2,7 +2,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
 <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-<link rel="stylesheet" href="css/estilos.css?version="<?php echo rand(1,10000); ?>  />
+<link rel="stylesheet" href="css/estilos.css?version=<?php echo rand(1,10000); ?>"  />
 <link href="bootstrap/css/gijgo.css" rel="stylesheet" type="text/css"/>
 <!--<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
 -->

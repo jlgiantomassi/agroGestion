@@ -10,9 +10,9 @@ class insumosModel
         $this->bd = new BaseDatos();
     }
 
-    public function listarInsumos() //retorna todos los campos en un array asociativo
+    public function listarInsumos($idusario) //retorna todos los campos en un array asociativo
     {
-        $sql="select * from insumos inner join unidades on insumos.idunidad=unidades.idunidad order by insumo asc";
+        $sql="select i.idinsumo,i.insumo,i.precio,u.unidad from insumos i inner join unidades u on i.idunidad=u.idunidad WHERE idusuario=".$idusario." order by i.insumo asc";
         return $this->bd->sql($sql);
     }
 
@@ -27,15 +27,26 @@ class insumosModel
         return $this->bd->sql($sql);
     }
 
-    public function insertar($insumo,$precio,$idunidad)
+    public function insertar($insumo,$precio,$idunidad,$idusuario)
     {
-        $sql="INSERT INTO `insumos`(`insumo`, `precio`, `idunidad`) VALUES ('".$insumo."',".$precio.",".$idunidad.")";
+        $sql="INSERT INTO `insumos`(`insumo`, `precio`, `idunidad`, `idusuario`) VALUES ('".$insumo."',".$precio.",".$idunidad.",".$idusuario.")";
         $id=$this->bd->insertar($sql);
         if($id==0)   
             return 0;
         else
-            return  $id;
+            return $id;
     }
 
+    public function modificarInsumo($insumo,$idinsumo,$precio,$idunidad)
+    {
+        $sql="UPDATE `insumos` SET `insumo`='".$insumo."',`precio`=".$precio.", `idunidad`=".$idunidad." WHERE idinsumo=".$idinsumo; //,
+        return $this->bd->modificar($sql);
+    }
+
+    public function borrarInsumo($idinsumo)
+    {
+        $sql="DELETE FROM `insumos` WHERE idinsumo=".$idinsumo;
+        return $this->bd->eliminar($sql);
+    }
 }
 ?>

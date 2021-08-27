@@ -1,14 +1,17 @@
 <?php
 require_once("includes/modelos/CamposModelo.php");
 $oCampos=new camposModel();
-$campos=$oCampos->listarCampos();
+$campos=$oCampos->listarCampos($idUsuarioActivo);
 $cantCampos=$oCampos->cantidadCampos();
 
-$idPrimerCampo=$campos[0]["idcampo"];
-
-$lotes=$oCampos->listarLotes($idPrimerCampo);
-$cantLotes=$oCampos->cantidadLotes();
-$primerSuperficie=$lotes[0]["superficie"];
+if($cantCampos>0)
+{
+    $idPrimerCampo=$campos[0]["idcampo"];
+    $lotes=$oCampos->listarLotes($idPrimerCampo);
+    $cantLotes=$oCampos->cantidadLotes();
+    
+    $primerSuperficie=$cantLotes==0?"":$lotes[0]["superficie"];
+}
 
 
 ?>
@@ -16,7 +19,7 @@ $primerSuperficie=$lotes[0]["superficie"];
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="lbltitulo">Agregar Campos a la Orden</h5>
+                <h5 class="modal-title" id="lbltitulo">Agregar Campos a la Lista</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button> </div>
@@ -111,6 +114,38 @@ $primerSuperficie=$lotes[0]["superficie"];
     </div>
 </div>
 
+<!-- modal para modificar un lote en la base de datos y en el select del campo -->
+<div class="modal fade" id="modalModificarLote" tabindex="-1" role="dialog" aria-labelledby="lbltitulo" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="lbltitulo">Modificar Lote <span class="nombreCampo"></span></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button> </div>
+            <div class="modal-body">
+                <form id="frmModificarLote">
+                    <div class="form-group">
+                        <label for="txtModificarLote" class="col-form-label">Lote:</label>
+                        <input type="text" class="form-control" id="txtModificarLote" name="txtModificarLote" value="">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="txtModificarSupLote" class="col-form-label">Superficie Lote:</label>
+                        <input type="text" class="form-control" id="txtModificarSupLote" name="txtModificarSupLote" value="">
+
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" id="btnModificarLote">Modificar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <!-- modal para insertar un nuevo campo en la base de datos y en el select del campo -->
 <div class="modal fade" id="modalInsertarCampo" tabindex="-1" role="dialog" aria-labelledby="lbltitulo" aria-hidden="true">
@@ -132,6 +167,32 @@ $primerSuperficie=$lotes[0]["superficie"];
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                 <button type="button" class="btn btn-primary" id="btnInsertarCampo">Agregar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- modal para modificar un nuevo campo en la base de datos y en el select del campo -->
+<div class="modal fade" id="modalModificarCampo" tabindex="-1" role="dialog" aria-labelledby="lbltitulo" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="lbltitulo">Modificar Campo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button> </div>
+            <div class="modal-body">
+                <form id="frmModificarCampo">
+                    <div class="form-group">
+                        <label for="txtModificarCampo" class="col-form-label">Campo:</label>
+                        <input type="text" class="form-control" id="txtModificarCampo" name="txtModificarCampo" value="">
+                        <input type="hidden" id="idcampo" name="idcampo" value="">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" id="btnModificarCampo">Modificar</button>
             </div>
         </div>
     </div>

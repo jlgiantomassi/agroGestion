@@ -13,11 +13,12 @@
         
         //sacaremos el ultimo trabajo realizado para seguir cargando los mismos trabajos
         $oOrdenes=new ordenesModel();
-        $ultimoIdLabor=$oOrdenes->idLaborUltimaOrden();
+        $ultimoIdLabor=$oOrdenes->idLaborUltimaOrden($idUsuarioActivo);
         
         $oLabor=new laboresModel();
-        $rowsLabores = $oLabor->listarLabores();
-        $precio=0;
+        $rowsLabores = $oLabor->listarLabores($idUsuarioActivo);
+        $precio=$rowsLabores[0]["precio"];
+        
         ?>
         <div class="container border bg-white">
             <div id="alerta"></div>
@@ -44,7 +45,13 @@
                             <?php
                             foreach ($rowsLabores as $rowLabor) {
                                 ?>
-                                <option value="<?php echo $rowLabor['idlabor']; ?>" <?php if($rowLabor['idlabor']==$ultimoIdLabor) { echo 'SELECTED'; $precio=$rowLabor['precio']; }?> data-foo="<?php echo $rowLabor['precio']; ?>">
+                                <option value="<?php echo $rowLabor['idlabor']; ?>" 
+                                    <?php if($rowLabor['idlabor']==$ultimoIdLabor) 
+                                        {   
+                                            echo 'SELECTED'; 
+                                            $precio=$rowLabor['precio']; 
+                                        }?> 
+                                    data-foo="<?php echo $rowLabor['precio']; ?>">
                                     <?php echo $rowLabor['labor']; ?>
                                 </option>
                             <?php } ?>
@@ -291,7 +298,6 @@
         include 'modales/modalProductores.php';
         include 'modales/modalPersonal.php';
         include 'modales/modalTerceros.php';
-        //mysqli_close($con);
         ?>
         <script>
             $('#fecha').datepicker({

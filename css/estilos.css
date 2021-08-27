@@ -13,3 +13,9 @@ tr{
 .table-sm td, .table-sm th {
     padding: 0rem;
 }
+
+.btn-xxs {
+    height: 1.3rem;
+    vertical-align:middle;
+    font-size:x-small;
+}

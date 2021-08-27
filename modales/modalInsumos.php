@@ -2,7 +2,7 @@
 require_once("includes/modelos/insumosModelo.php");
 require_once("includes/modelos/unidadesModelo.php");
 $oInsumos=new insumosModel();
-$rowsInsumos = $oInsumos->listarInsumos();
+$rowsInsumos = $oInsumos->listarInsumos($idUsuarioActivo);
 $cantInsumos = $oInsumos->cantidadInsumos();
 $primerPrecio = ($cantInsumos > 0) ? $rowsInsumos[0]['precio'] : 0;
 $primerUnidad = ($cantInsumos > 0) ? $rowsInsumos[0]['unidad'] : 0;
@@ -118,6 +118,61 @@ $cantUnidad = $oUnidades->cantidadUnidades();
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                 <button type="button" class="btn btn-primary" id="btnInsertarInsumo">Agregar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- modal para modificar un insumo en la base de datos  -->
+<div class="modal fade" id="modalModificarInsumo" tabindex="-1" role="dialog" aria-labelledby="lbltitulo" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="lbltitulo">Modificar Insumo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button> </div>
+            <div class="modal-body">
+                <form id="frmModificarInsumo">
+                    <div class="form-row">
+                        <div class="form-group col-md-9">
+                            <label for="txtModificarInsumo" class="col-form-label">Insumo:</label>
+                            <input type="text" class="form-control" id="txtModificarInsumo" name="txtModificarInsumo" value="">
+                        </div>
+
+
+                    </div>
+                    <div class="form-group">
+                        <label for="txtModificarPrecio" class="col-form-label">Precio (Unidad):</label>
+                        <input type="text" class="form-control" id="txtModificarPrecio" name="txtModificarPrecio" value="">
+
+                    </div>
+
+                    <!-- <div class="form-group">
+                        <label for="txtInsCantidadInsumo" class="col-form-label">Cantidad/Ha:</label>
+                        <input type="text" class="form-control" id="txtInsCantidadInsumo" name="txtInsCantidadInsumo" value="">
+
+                    </div> -->
+
+                    <div class="form-group">
+                        <label for="sltModifcarUnidad" class="col-form-label">Unidad:</label>
+                        <select id="sltModifcarUnidad" name="sltModifcarUnidad" class="form-control">
+                            <?php
+                            if ($cantUnidad > 0) {
+                                foreach ($rowsUnidades as $rowUnidad) { ?>
+                                    <option value="<?php echo $rowUnidad['idunidad']; ?>"><?php echo $rowUnidad['unidad']; ?></option>
+                                    <?php
+                                } 
+                            } ?>
+                        </select>
+
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" id="btnModificarInsumo">Modificar</button>
             </div>
         </div>
     </div>

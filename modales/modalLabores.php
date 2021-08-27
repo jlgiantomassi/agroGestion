@@ -1,7 +1,7 @@
 <?php
 require_once("includes/modelos/laboresModelo.php");
 $oLabores=new laboresModel();
-$rowsLabores = $oLabores->listarLabores();
+$rowsLabores = $oLabores->listarLabores($idUsuarioActivo);
 $cantLabores = $oLabores->cantidadLabores();
 $primerPrecio = ($cantLabores > 0) ? $rowsLabores[0]['precio'] : "";
 ?>
@@ -94,7 +94,7 @@ $primerPrecio = ($cantLabores > 0) ? $rowsLabores[0]['precio'] : "";
 </div>
 
 <!-- modal para modificar una labor en la base de datos y actualizar la lista de actividades-->
-<div class="modal fade" id="modalModificarLabor" tabindex="-1" role="dialog" aria-labelledby="lbltitulo" aria-hidden="true">
+<div class="modal fade" id="modalModificarActividad" tabindex="-1" role="dialog" aria-labelledby="lbltitulo" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -131,6 +131,41 @@ $primerPrecio = ($cantLabores > 0) ? $rowsLabores[0]['precio'] : "";
                 </form>
             </div>
 
+        </div>
+    </div>
+</div>
+
+<!-- modal para modificar una labor a la base de datos y actualizar la lista -->
+<div class="modal fade" id="modalModificarLabor" tabindex="-1" role="dialog" aria-labelledby="lbltitulo" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="lbltitulo">Modificar Labor</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button> 
+            </div>
+            <div class="modal-body">
+                <form id="frmModificarLabor">
+
+                    <div class="form-group">
+                        <label for="txtModificarLabor" class="col-form-label">Labor:</label>
+                        <input type="text" class="form-control" id="txtModificarLabor" name="txtModificarLabor" value="">
+
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="txtModificarPrecioLabor" class="col-form-label">Precio /Ha:</label>
+                        <input type="number" class="form-control" id="txtModificarPrecioLabor" name="txtModificarPrecioLabor" value="">
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" id="btnModificarLabor">Modificar</button>
+            </div>
         </div>
     </div>
 </div>

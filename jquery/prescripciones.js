@@ -148,6 +148,7 @@ function iniciarEvento() {
 
     $('#btnAgregarProductor').click(function (e) {
         e.preventDefault();
+        let flag = true;
         //validar campos
         if ($("#frmproductores").valid()) {
             let idproductor = 0;
@@ -157,20 +158,21 @@ function iniciarEvento() {
 
             if (partTotal + participacion > 100) {
                 alert("La participacion de los productores debe ser menor al 100%");
-                exit();
+                flag = false;
             }
             $('#tblproductores tr').each(function () {
                 var id = $(this).find(".idproductor").html();
                 if (idproductor == id) {
                     alert("Ya se ingreso a la lista");
-                    exit();
+                    flag = false;
                 }
             });
-            filaProductor += 1;
-            $("#tblproductores").append("<tr id='filaProductor" + filaProductor + "'><td class='d-none idproductor'>" + idproductor + "</td><td>" + nombreProductor + "</td><td class='text-right participacion'>" + participacion + "</td><td class='text-center'><a href='#' onclick='eliminarProductor(" + filaProductor + "," + participacion + ")'><i class='material-icons'>clear</i></a></td></tr>");
-            partTotal += participacion;
-            modificarPresupuesto();
-
+            if (flag) {
+                filaProductor += 1;
+                $("#tblproductores").append("<tr id='filaProductor" + filaProductor + "'><td class='d-none idproductor'>" + idproductor + "</td><td>" + nombreProductor + "</td><td class='text-right participacion'>" + participacion + "</td><td class='text-center'><a href='#' onclick='eliminarProductor(" + filaProductor + "," + participacion + ")'><i class='material-icons'>clear</i></a></td></tr>");
+                partTotal += participacion;
+                modificarPresupuesto();
+            }
         }
         //fin validar campos    
     });
@@ -178,6 +180,7 @@ function iniciarEvento() {
     //agregar terceros a la lista
     $('#btnAgregarTercero').click(function (e) {
         e.preventDefault();
+        let flag = true;
         //validar campos
         if ($("#frmterceros").valid()) {
             let idtercero = 0;
@@ -187,13 +190,13 @@ function iniciarEvento() {
 
             if (filaTercero > 0) {
                 alert("Solo se puede ingresar un contratista para realizar la orden");
-                exit();
+                flag = false;
             }
-
-            filaTercero += 1;
-            $("#tblterceros").append("<tr id='filaTercero" + filaTercero + "'><td class='d-none idtercero'>" + idtercero + "</td><td>" + nombreTercero + "</td><td class='text-right precioHaTercero'>" + $("#txtPrecioLabor").val() + "</td><td class='text-right superficieTercero d-none'>" + supTotal + "</td><td class='text-center'><a href='#' onclick='eliminarTercero(" + filaTercero + ")'><i class='material-icons'>clear</i></a></td></tr>");
-            //modificarPresupuesto();
-
+            if (flag) {
+                filaTercero += 1;
+                $("#tblterceros").append("<tr id='filaTercero" + filaTercero + "'><td class='d-none idtercero'>" + idtercero + "</td><td>" + nombreTercero + "</td><td class='text-right precioHaTercero'>" + $("#txtPrecioLabor").val() + "</td><td class='text-right superficieTercero d-none'>" + supTotal + "</td><td class='text-center'><a href='#' onclick='eliminarTercero(" + filaTercero + ")'><i class='material-icons'>clear</i></a></td></tr>");
+                //modificarPresupuesto();
+            }
         }
         //fin validar campos    
     });
@@ -201,6 +204,7 @@ function iniciarEvento() {
     //agregar personal a la lista
     $('#btnAgregarPersonal').click(function (e) {
         e.preventDefault();
+        let flag = true;
         //validar campos
 
         if ($("#frmpersonales").valid()) {
@@ -214,13 +218,14 @@ function iniciarEvento() {
                 let id = $(this).find(".idpersonal").html();
                 if (idpersonal == id) {
                     alert("Ya se ingreso a la lista");
-                    exit();
+                    flag = false;
                 }
             });
-            filaPersonal += 1;
-            $("#tblpersonales").append("<tr id='filaPersonal" + filaPersonal + "'><td class='d-none idpersonal'>" + idpersonal + "</td><td>" + nombrePersonal + "</td><td class='text-right precioHa'>" + precioHa + "</td><td class='text-center'><a href='#' onclick='eliminarPersonal(" + filaPersonal + ")'><i class='material-icons'>clear</i></a></td></tr>");
-            modificarPresupuesto();
-
+            if (flag) {
+                filaPersonal += 1;
+                $("#tblpersonales").append("<tr id='filaPersonal" + filaPersonal + "'><td class='d-none idpersonal'>" + idpersonal + "</td><td>" + nombrePersonal + "</td><td class='text-right precioHa'>" + precioHa + "</td><td class='text-center'><a href='#' onclick='eliminarPersonal(" + filaPersonal + ")'><i class='material-icons'>clear</i></a></td></tr>");
+                modificarPresupuesto();
+            }
         }
 
         //fin validar campos    
@@ -229,6 +234,7 @@ function iniciarEvento() {
     //agregar campo a la lista
     $('#btnAgregarCampo').click(function (e) {
         e.preventDefault();
+        let flag = true;
         let idlote = 0;
         let nombreCampo = $("#sltcampos option:selected").text();
         let nombreLote = $('#sltlotes option:selected').text();
@@ -239,15 +245,16 @@ function iniciarEvento() {
             let id = $(this).find(".idlote").html();
             if (idlote == id) {
                 alert("Ya se ingreso a la lista");
-                exit();
+                flag = false;
             }
         });
-        filaCampo += 1;
-        $("#tblcampos").append("<tr id='filaCampo" + filaCampo + "'><td class='d-none idlote'>" + idlote + "</td><td>" + nombreCampo + "</td><td>" + nombreLote + "</td><td class='text-right superficie'>" + superficie + "</td><td class='text-center'><a href='#' onclick='eliminarCampo(" + filaCampo + "," + superficie + ")'><i class='material-icons'>clear</i></a></td></tr>");
+        if (flag) {
+            filaCampo += 1;
+            $("#tblcampos").append("<tr id='filaCampo" + filaCampo + "'><td class='d-none idlote'>" + idlote + "</td><td>" + nombreCampo + "</td><td>" + nombreLote + "</td><td class='text-right superficie'>" + superficie + "</td><td class='text-center'><a href='#' onclick='eliminarCampo(" + filaCampo + "," + superficie + ")'><i class='material-icons'>clear</i></a></td></tr>");
 
-        supTotal += superficie;
-        modificarPresupuesto();
-
+            supTotal += superficie;
+            modificarPresupuesto();
+        }
     });
 
     //cargar el combo de insumos
@@ -276,6 +283,7 @@ function iniciarEvento() {
     //agregar insumos a la lista
     $('#btnAgregarInsumo').click(function (e) {
         e.preventDefault();
+        let flag = true;
         if ($("#frmInsertarInsumo").valid()) {
             let idinsumo = 0;
             let nombreInsumo = $("#sltinsumos option:selected").text();
@@ -284,21 +292,22 @@ function iniciarEvento() {
                 let id = $(this).find(".idinsumo").html();
                 if (idinsumo == id) {
                     alert("Ya se ingreso a la lista");
-                    exit();
+                    flag = false;
                 }
             });
+            if (flag) {
+                let precio = 0;
+                let cantidad = 0;
+                let total = 0;
+                precio = ($("#txtprecio").val() == "") ? 0 : parseFloat($("#txtprecio").val());
+                cantidad = ($("#txtcantidadInsumo").val() == "") ? 0 : parseFloat($("#txtcantidadInsumo").val());
+                total = precio * cantidad;
+                totalInsumosha += total;
+                filaInsumo += 1;
+                $("#tblinsumos").append("<tr id='filaInsumo" + filaInsumo + "'><td class='d-none idinsumo'>" + idinsumo + "</td><td>" + nombreInsumo + "</td><td class='text-right cantidadInsumo'>" + cantidad + " " + $("#txtunidad").val() + "</td><td class='text-right precioInsumo'>" + precio + "</td><td class='text-right'>" + total.toFixed(2) + "</td><td class='text-center'><a href='#' onclick='eliminarInsumo(" + filaInsumo + "," + cantidad + "," + precio + ")'><i class='material-icons'>clear</i></a></td></tr>");
 
-            let precio = 0;
-            let cantidad = 0;
-            let total = 0;
-            precio = ($("#txtprecio").val() == "") ? 0 : parseFloat($("#txtprecio").val());
-            cantidad = ($("#txtcantidadInsumo").val() == "") ? 0 : parseFloat($("#txtcantidadInsumo").val());
-            total = precio * cantidad;
-            totalInsumosha += total;
-            filaInsumo += 1;
-            $("#tblinsumos").append("<tr id='filaInsumo" + filaInsumo + "'><td class='d-none idinsumo'>" + idinsumo + "</td><td>" + nombreInsumo + "</td><td class='text-right cantidadInsumo'>" + cantidad + " " + $("#txtunidad").val() + "</td><td class='text-right precioInsumo'>" + precio + "</td><td class='text-right'>" + total.toFixed(2) + "</td><td class='text-center'><a href='#' onclick='eliminarInsumo(" + filaInsumo + "," + cantidad + "," + precio + ")'><i class='material-icons'>clear</i></a></td></tr>");
-
-            modificarPresupuesto();
+                modificarPresupuesto();
+            }
         }
     });
 
@@ -1109,11 +1118,12 @@ function guardarOrden() { //guarda los datos de la orden de trabajo en la BD
     $.ajax({
         data: datos,
         type: "POST",
-        dataType: "json",
+        dataType: "text",
         url: "includes/ajax/guardarOrden.php",
         success: function (datos) {
-            if (datos) {
+            if (datos>0) {
                 $('#alerta').append('<div class="alert alert-success alert-dismissible fade show" id="alerta" role="alert">Se guardaron los datos con exito <button type = "button" class= "close" data-dismiss="alert" aria-label="Close" ><span aria-hidden="true">&times;</span></button ></div >');
+                idOrdenTrabajo=datos;
             }
             else {
                 alert("Se produjo un error");

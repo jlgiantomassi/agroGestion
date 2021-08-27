@@ -1,9 +1,9 @@
 <?php
-include_once '../../conexion/conexion.php';
+$raiz="../../";
+include_once '../modelos/ordenesModelo.php';
 $id=$_GET["idorden"];
-$sql="DELETE FROM ordentrabajos WHERE idordentrabajo =".$id;
-$query = mysqli_query($con, $sql);
+$oOrdenes=new ordenesModel();
+$oOrdenes->borrarOrden($id);
 header('Location:../../verOrdenes.php');
-exit;
 ?>
 

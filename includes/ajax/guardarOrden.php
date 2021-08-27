@@ -20,7 +20,6 @@ if(isset($_REQUEST["productores"]))
         $idproductor = $key->idproductor;
         $superficie = $key->superficie;
         $sql.="INSERT INTO orden_productores (idordentrabajo, idproductor,superficie) VALUES (@id,'" . $idproductor . "','" . $superficie . "');";
-            
     }
     
 }
@@ -72,7 +71,7 @@ if(isset($_REQUEST["terceros"]))
     
 }
 $id=$bd1->insertarVarios($sql);
-
+echo $id;
 /*
 if($flag)
 {

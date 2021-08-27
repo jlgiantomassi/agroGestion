@@ -10,9 +10,9 @@ class personalesModel
         $this->bd = new BaseDatos();
     }
 
-    public function listarPersonales() //retorna todos los campos en un array asociativo
+    public function listarPersonales($idusuario) //retorna todos los campos en un array asociativo
     {
-        $sql="SELECT * FROM personales order by personal ASC";
+        $sql="SELECT * FROM personales WHERE idusuario=".$idusuario." order by personal ASC";
         return $this->bd->sql($sql);
     }
 
@@ -27,11 +27,22 @@ class personalesModel
         return $this->bd->sql($sql);
     }
 
-    public function insertar($personal,$cuil,$precioHa)
+    public function insertar($personal,$cuil,$precioHa,$idusuario)
     {
-        $sql="INSERT INTO `personales`(`personal`,`cuil`,`precioHa`) VALUES ('".$personal."','".$cuil."',".$precioHa.")";
+        $sql="INSERT INTO `personales`(`personal`,`cuil`,`precioHa`,`idusuario`) VALUES ('".$personal."','".$cuil."',".$precioHa.",".$idusuario.")";
         return $this->bd->insertar($sql);
     }
 
+    public function modificarPersonal($personal,$idpersonal,$precioHa,$cuil)
+    {
+        $sql="UPDATE `personales` SET `personal`='".$personal."',`cuil`='".$cuil."',`precioHa`=".$precioHa." WHERE idpersonal=".$idpersonal;
+        return $this->bd->modificar($sql);
+    }
+
+    public function borrarPersonal($idpersonal)
+    {
+        $sql="DELETE FROM `personales` WHERE idpersonal=".$idpersonal;
+        return $this->bd->eliminar($sql);
+    }
 }
 ?>

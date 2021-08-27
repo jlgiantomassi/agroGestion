@@ -1,13 +1,16 @@
 <?php
-    require_once $raiz.'includes/modelos/usuariosModelo.php';
-    $oProductor=new usuariosModel();
-    $rowsProductores = $oProductor->listarProductores();
-    $cantProductores = $oProductor->cantidadUsuarios();
-    $rowProdActivo=$oProductor->usuarioById($idUsuarioActivo);
+    require_once $raiz.'includes/modelos/empresasModelo.php';
+    $oProductor=new empresasModel();
+    $rowsProductores = $oProductor->listarProductores($idUsuarioActivo);
+    $cantProductores = $oProductor->cantidadEmpresas();
+    $rowProdActivo=$oProductor->empresaById($idEmpresaActiva);
     if($cantProductores>0)
     {
         $primerCuit = $rowProdActivo[0]['cuit'];
         $primerDireccion = $rowProdActivo[0]['direccion'];
+    }else{
+        $primerCuit = "";
+        $primerDireccion ="";
     }
 ?>
 <!-- modal para agregar un Productor a la base de datos y actualizar la lista -->
@@ -30,7 +33,7 @@
                             <?php
                             if ($cantProductores > 0) {
                                 foreach ($rowsProductores as $rowProductor) { ?>
-                                    <option value="<?php echo $rowProductor['idusuario']; ?>" <?php echo $rowProductor['idusuario']==$idUsuarioActivo?'SELECTED':'' ?>><?php echo $rowProductor['usuario']; ?></option>
+                                    <option value="<?php echo $rowProductor['idempresa']; ?>" <?php echo $rowProductor['idempresa']==$idEmpresaActiva?'SELECTED':'' ?>><?php echo $rowProductor['empresa']; ?></option>
                                     <?php
                                 } 
                             } ?>
