@@ -17,7 +17,7 @@ class campanasModel
     }
     public function listarCampanas()
     {
-        $sql="SELECT * FROM campanas ORDER BY campana ASC";
+        $sql="SELECT * FROM campanas ORDER BY campana DESC";
         return $this->bd->sql($sql);
     }
 }   

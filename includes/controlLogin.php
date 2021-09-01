@@ -14,3 +14,9 @@ else{
     session_destroy();
     exit();
 }
+if(isset($_GET["idcampana"]))
+{
+    $idCampanaActiva=$_GET["idcampana"];
+    $campanaActiva=$_GET["campana"];
+    $_SESSION["idcampana"]=$idCampanaActiva;
+}

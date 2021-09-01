@@ -6,7 +6,7 @@
 </head>
 
 <body>
-    <?php include_once 'includes/menu.php'; 
+    <?php include_once 'includes/menu.php';
     $raiz = "";
     include_once("includes/modelos/camposModelo.php");
     include_once("includes/modelos/cultivosModelo.php");
@@ -18,7 +18,8 @@
     ?>
 
     <script src="./jquery/actividades.js?version=<?php echo rand(1, 10000); ?>"></script>
-    <div class="container border bg-white">
+    <script src="./jquery/personales.js?version=<?php echo rand(1, 10000); ?>"></script>
+    <div class="container border bg-white col-8">
         <div id="alerta"></div>
         <form id="formactividades">
             <!-- Campos y lotes-->
@@ -33,9 +34,9 @@
                     <!-- Campos -->
                     <div class="form-group col-3 ">
 
-                        <label for="sltcampos" class="col-form-label">Campo</label>
+                        <label for="sltcamposAct" class="col-form-label">Campo</label>
                         <button type="button" class="btn btn-sm p-0 m-0" data-toggle="modal" data-target="#modalInsertarCampo" data-whatever="" id="btnInsCampoModal"><i class="material-icons shadow">add_box</i></button>
-                        <select class="form-control " name="sltcampos" id="sltcampos">
+                        <select class="form-control " name="sltcamposAct" id="sltcamposAct">
                             <option value="0"></option>
                             <?php foreach ($campos as $campo) { ?>
                                 <option value="<?php echo $campo['idcampo']; ?>">
@@ -47,9 +48,10 @@
 
                     <!-- Lotes -->
                     <div class="form-group col-3 ">
-                        <label for="sltlotes" class="col-form-label">Lote</label>
+                        <label for="sltlotesAct" class="col-form-label">Lote</label>
                         <button type="button" class="btn btn-sm p-0 m-0" data-toggle="modal" data-target="#modalInsertarLote" data-whatever="" id="btnInsLoteModal"><i class="material-icons shadow">add_box</i></button>
-                        <select class="form-control " name="sltlotes" id="sltlotes">
+                        <select class="form-control " name="sltlotesAct" id="sltlotesAct">
+
                         </select>
                     </div>
 
@@ -68,7 +70,14 @@
 
                     <div class="form-group col-2 ">
                         <label for="supLote" class="col-form-label">Superficie</label>
-                        <input type="number" class="form-control " id="supLote" />
+                        <input type="number" class="form-control col-8" id="supLote" />
+                    </div>
+
+                    <div class="form-check col-1  d-flex align-items-center ">
+                        <input type="checkbox" class="form-check-input" id="chkCapitalizacion" value="" />
+                        <label class="form-check-label" for="chkCapitalizacion">
+                            Capitalizacion
+                        </label>
                     </div>
 
                 </div>
@@ -103,13 +112,13 @@
                         </div>
                     </div>
 
-                    <div class="col-4 p-0 d-none">
-                        <div class="form-group mb-0 pl-3">
+                    <div class="col-4 pl-0 mr-0 d-none" id="listaProductoresActividades">
+                        <div class="form-group mb-0 pl-4">
                             <strong><label for="" class="col-form-label">Asignacion de Productores</label> </strong>
                             <button type="button" class="btn btn-sm " data-toggle="modal" data-target="#modalProductor" data-whatever="" id="btnActProdModal"><i class="material-icons shadow">add_box</i></button>
                         </div>
                         <div class="">
-                            <table class="table" id="tblproductores">
+                            <table class="table m-0 p-0 table-hover table-sm" id="tblproductoresActividades">
                                 <thead class="thead-light">
                                     <tr>
                                         <th>Productor</th>
@@ -123,7 +132,6 @@
                             </table>
                         </div>
                     </div>
-
                 </div>
             </fieldset>
 
@@ -175,12 +183,12 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-4 pl-0 mr-0 d-none">
+                                    <div class="col-4 pl-0 mr-0 d-none" id="listaProductoresInsumos">
                                         <div class="form-group mb-0 pl-4">
                                             <strong><label for="" class="col-form-label">Asignacion de Productores</label> </strong>
                                             <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#modalProductor" data-whatever="" id="btnInsProdModal"><i class="material-icons shadow">add_box</i></button>
                                         </div>
-                                        <table class="table m-0 p-0 table-hover table-sm" id="tblproductores">
+                                        <table class="table m-0 p-0 table-hover table-sm" id="tblproductoresInsumos">
                                             <thead class="thead-light">
                                                 <tr>
                                                     <th>Productor</th>

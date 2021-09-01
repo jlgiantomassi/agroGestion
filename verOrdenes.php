@@ -3,7 +3,7 @@
 
 <head>
     <?php include_once 'includes/header.php'; ?>
-    <script src="jquery/verOrdenes.js?version=<?php echo rand(1, 10000); ?>"></script>
+    
 </head>
 
 <body>
@@ -109,8 +109,10 @@
                         <td class="text-center">
                             <button type="button" class="btn btn-primary btn-sm btn-xxs" onclick="window.open('generaOrden.php?idorden=<?php echo $row['idordentrabajo'] ?> ')">Ver Orden</button>
                             <button type="button" class="btn btn-primary btn-sm btn-xxs" onclick="window.open('generaInformeProductor.php?idorden=<?php echo $row['idordentrabajo'] ?> ')">Ver Informe</button>
+                            <?php if ($row["realizado"]==0){ ?>
                             <button type="button" class="btn btn-danger btn-sm btn-xxs" data-toggle="modal" data-target="#menuEliminar" onclick="idOrden=<?php echo $row['idordentrabajo'] ?>;">Borrar</button>
-                            <button type="button" class="btn btn-success btn-sm btn-xxs" onclick="window.location='includes/basedatos/realizarOrden.php?idorden=<?php echo $row['idordentrabajo'] ?>'">Realizado</button>
+                            <button type="button" class="btn btn-success btn-sm btn-xxs" onclick="realizar(<?php echo $row['idordentrabajo'] ?>)">Realizado</button>
+                            <?php }?>
                         </td>
                         <?php //href="generaOrden.php?idorden=<?php echo $row['idordentrabajo'] 
                         ?>
@@ -155,6 +157,15 @@
             locale: 'es-es'
 
         });
+        function realizar(idorden){
+            if(confirm("Desea agregar esta orden a la gestion de datos?"))
+            {
+                window.open("includes/basedatos/realizarOrden.php?idorden="+idorden+"&accion=agregar");
+            }else
+            {
+                window.open("includes/basedatos/realizarOrden.php?idorden="+idorden+"&accion=descartar");
+            }
+        }
     </script>
 </body>
 

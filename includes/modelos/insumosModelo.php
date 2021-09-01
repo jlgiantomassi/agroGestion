@@ -21,9 +21,9 @@ class insumosModel
         return $this->bd->cantidadRegistros();
     }
 
-    public function insumoById($id)  //returno un array asociativo con el usuario pasado por id
+    public function insumoById($id,$idusario)  //returno un array asociativo con el usuario pasado por id
     {
-        $sql="SELECT * FROM insumos inner join unidades on insumos.idunidad=unidades.idunidad WHERE idinsumo = ".$id." order by insumo";
+        $sql="SELECT * FROM insumos inner join unidades on insumos.idunidad=unidades.idunidad WHERE idinsumo = ".$id." and idusuario= ".$idusario. " order by insumo";
         return $this->bd->sql($sql);
     }
 

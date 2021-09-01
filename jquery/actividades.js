@@ -17,14 +17,18 @@ function iniciarEventosActividades() {
     idusuario = $("#idUsuarioActivo").val(); //recuperamos en java los id de usuario y campana
 
     //cargamos los lotes a los select de lotes
-    $("#sltcampos").change(function (e) {
+    $("#sltcamposAct").change(function (e) {
         e.preventDefault();
         $("#supLote").val("");
-        $("#sltlotes").empty();
-        $("#sltlotes").append('<option value="0"></option>');
+        $("#sltlotesAct").empty();
+        $("#sltcultivos").val(0);
+        idcultivoSel = 0;
+        superficieSel = 0;
+        $("#sltlotesAct").append('<option value="0"></option>');
         $("#navDatos").addClass("d-none");
         $("#fldActividades").addClass("d-none");
-        let idcampo = $("#sltcampos").val();
+        let idcampo = $("#sltcamposAct").val();
+        //actualizarListaLabores();
         $.ajax({
             type: "GET",
             url: "includes/ajax/ajax.php",
@@ -34,7 +38,7 @@ function iniciarEventosActividades() {
                 if (datos.length > 0) {
                     //$("#supLote").val(datos[0].superficie);
                     $.each(datos, function (index, valor) {
-                        $("#sltlotes").append('<option value="' + valor.idlote + '">' + valor.lote + '</option>');
+                        $("#sltlotesAct").append('<option value="' + valor.idlote + '">' + valor.lote + '</option>');
                     });
                 }
             },
@@ -45,81 +49,12 @@ function iniciarEventosActividades() {
     });
 
     //cargamos los datos de los lotes, el cultivo de la campana y las actividades guardadas
-    $('#sltlotes').change(function (e) {
+    $('#sltlotesAct').change(function (e) {
         e.preventDefault();
-        importeTotalActividades = 0;
-        $("#tblactividades tbody").empty();
-        $("#navDatos").addClass("d-none");
-        $("#supLote").val("");
+
         let idlote;
-        idlote = $("#sltlotes").val();
-        $.ajax({  //cargamos datos del lote
-            data: "accion=lotes&idlote=" + idlote,
-            type: "GET",
-            dataType: "json",
-            url: "includes/ajax/ajax.php",
-            success: function (datos) {
-                if (datos.length > 0) {
-                    $("#supLote").val(datos[0].superficie);
-                    $("#txtsupActividad").val(datos[0].superficie);
-                    $("#fldActividades").removeClass("d-none");
-
-                    $.ajax({  //buscamos si esta definido el cultivo para el lote de la campana actual y el usuario
-                        type: "GET",
-                        url: "includes/ajax/ajax.php",
-                        data: "accion=loteCultivo&idlote=" + idlote + "&idusuario=" + idusuario + "&idcampana=" + idcampana,
-                        dataType: "json",
-                        success: function (datos) {
-                            if (datos.length > 0) {
-                                $("#sltcultivos").val(datos[0].idcultivo);
-                                idlotecampana = datos[0].idloteCampana;
-                                idcultivoSel = datos[0].idcultivo;
-
-                                $.ajax({
-                                    type: "GET",
-                                    url: "includes/ajax/actividades.php",
-                                    data: "accion=cargar&idlotecampana=" + idlotecampana,
-                                    dataType: "json",
-                                    success: function (datos) {
-                                        datos.forEach(dato => {
-                                            $("#tblactividades tbody").append("<tr>\
-                                                                            <td class='d-none idactividad'>" + dato.idactividad + "</td>\
-                                                                            <td class='fechaActividad'>" + dato.fechaDMY + "</td>\
-                                                                            <td class='actividad'>" + dato.labor + "</td>\
-                                                                            <td class='text-right precioHa'>" + dato.precioha + "</td>\
-                                                                            <td class='text-right superficie'>" + dato.superficie + "</td>\
-                                                                            <td class='text-right importeActividad'>" + dato.precioha * dato.superficie + "</td>\
-                                                                            <td class='d-none observaciones'>" + dato.observaciones + "</td>\
-                                                                            <td class='text-center'>\
-                                                                                <a class='modificarActividad' href='#' data-toggle='modal' data-target='#modalModificarActividad' data-whatever=''>\
-                                                                                    <i class='material-icons'>create</i>\
-                                                                                </a>\
-                                                                                <a class='borrarActividad' href='#'>\
-                                                                                    <i class='material-icons'>clear</i>\
-                                                                                </a>\
-                                                                            </td>\
-                                                                        </tr>");
-                                        });
-                                        completarResumen();
-                                    }
-                                });
-                            }
-                            else {
-                                $("#sltcultivos").val(0);
-                                idcultivoSel = 0;
-                                idlotecampana = 0;
-                            }
-
-                        }
-                    });
-                } else {
-                    $("#fldActividades").addClass("d-none");
-                }
-            },
-            error: function () {
-                alert("error de conexion");
-            }
-        });
+        idlote = $("#sltlotesAct").val();
+        actualizarListaActividades(idlote);
     });
 
     $('#sltlabores').change(function (e) {
@@ -236,6 +171,8 @@ function iniciarEventosActividades() {
                             $("#modalInsertarInsumo").hide();
                             $("#modalInsertarInsumo").modal('hide');
                             actualizarListaInsumos();
+                            $("#txtInsInsumo").val("");
+                            $("#txtInsPrecio").val("")
                         } else {
                             alert(datos);
                         }
@@ -251,7 +188,7 @@ function iniciarEventosActividades() {
     $("#btnInsertarCampo").click(function (e) {
         e.preventDefault();
         let nombreCampo = $("#txtInsCampo").val();
-        let slt = $("#sltcampos option");
+        let slt = $("#sltcamposAct option");
         if (estaEnElCombo(nombreCampo, slt)) {
             alert("Este Campo ya existe");
 
@@ -266,7 +203,13 @@ function iniciarEventosActividades() {
                         if (datos != "false") {
                             $("#modalInsertarCampo").hide();
                             $("#modalInsertarCampo").modal('hide');
-                            actualizarListaCampos();
+                            actualizarListaCampos(datos); //le pasamos datos (id) del campo creado para dejar seleccionado el campo en el select
+                            $("#supLote").val("");
+                            $("#sltlotesAct").empty();
+                            $("#sltcultivos").val(0);
+                            idcultivoSel = 0;
+                            superficieSel = 0;
+
                         } else {
                             alert(datos);
                         }
@@ -279,12 +222,11 @@ function iniciarEventosActividades() {
         }
     });
 
-
     $("#btnInsertarLote").click(function (e) {
         e.preventDefault();
-        let idcampo = $("#sltcampos").val();
+        let idcampo = $("#sltcamposAct").val();
         let nombreLote = $("#txtInsLote").val();
-        let slt = $("#sltlotes option");
+        let slt = $("#sltlotesAct option");
         if (estaEnElCombo(nombreLote, slt)) {
             alert("Este Lote ya existe");
 
@@ -340,7 +282,7 @@ function iniciarEventosActividades() {
                                                     <td class='actividad'>" + nombreLabor + "</td>\
                                                     <td class='text-right precioHa'>" + precioHa + "</td>\
                                                     <td class='text-right superficie'>" + superficie + "</td>\
-                                                    <td class='text-right'>" + precioHa * superficie + "</td>\
+                                                    <td class='text-right importeActividad'>" + precioHa * superficie + "</td>\
                                                     <td class='d-none observaciones'></td>\
                                                     <td class='text-center'>\
                                                         <a class='modificarActividad' href='#' data-toggle='modal' data-target='#modalModificarActividad' data-whatever=''>\
@@ -352,6 +294,22 @@ function iniciarEventosActividades() {
                                                     </td>\
                                                 </tr>");
                     completarResumen();
+                    if ($("#chkCapitalizacion").prop("checked") == false) {
+                        let idempresaSel = $("#idEmpresaActiva").val();
+                        let total = precioHa * superficie;
+                        $.ajax({
+                            type: "GET",
+                            url: "includes/ajax/actividades.php",
+                            data: "accion=insProductorActividad&idactividad=" + id + "&idempresa=" + idempresaSel + "&total=" + total,
+                            dataType: "text",
+                            success: function (datos) {
+                                if (datos == 0)
+                                    alert("Se produjo un error al guardar el Productor para esta Actividad");
+                                else
+                                    actualizaProductoresActividades(id);
+                            }
+                        });
+                    }
                 },
                 error: function () {
                     alert("ocurrio un error al guardar la actividad");
@@ -384,7 +342,8 @@ function iniciarEventosActividades() {
                             $("#modalLabor").hide();
                             $("#modalLabor").modal('hide');
                             actualizarListaLabores(datos);
-                            modificarPresupuesto();
+                            $("#txtInsPrecioLabor").val("");
+                            $("#txtInsLabor").val("")
 
                         } else {
                             alert(datos);
@@ -445,6 +404,7 @@ function iniciarEventosActividades() {
                 $("#navDatos").removeClass("d-none");
                 actualizarListaInsumosActividades(idactividadSel);
                 actualizarListaMaquinariaActividades(idactividadSel);
+                actualizaProductoresActividades(idactividadSel)
                 break;
         }
         completarResumen();
@@ -494,7 +454,7 @@ function iniciarEventosActividades() {
                 completarResumen();
                 break;
         }
-        
+
     });
 
     $("#tblterceros").click(function (e) {
@@ -533,16 +493,23 @@ function iniciarEventosActividades() {
     $("#sltcultivos").change(function (e) {
         e.preventDefault();
         let idcultivo = $("#sltcultivos").val();
-        let idlote = $("#sltlotes").val();
+        let idlote = $("#sltlotesAct").val();
         if (idcultivoSel == 0) {
 
             $.ajax({
                 type: "GET",
                 url: "includes/ajax/ajax.php",
-                data: "accion=loteCultivoGuardar&idlote=" + idlote + "&idusuario=" + idusuario + "&idcampana=" + idcampana + "&idcultivo=" + idcultivo,
+                data: "accion=loteCultivoGuardar&idlote=" + idlote + "&idcultivo=" + idcultivo,
                 dataType: "json",
                 success: function (datos) {
                     idlotecampana = datos;
+                    $("#fldActividades").removeClass("d-none");
+                    actualizarListaActividades(idlote);
+                    actualizarListaInsumosActividades();
+                    actualizarListaInsumosActividades();
+                    actualizarListaMaquinariaActividades();
+                    actualizarListaPersonalesActividades();
+                    actualizarListaPersonalesActividades();
                 }
             });
         } else {
@@ -550,7 +517,7 @@ function iniciarEventosActividades() {
                 $.ajax({
                     type: "GET",
                     url: "includes/ajax/ajax.php",
-                    data: "accion=loteCultivoModificar&idlote=" + idlote + "&idusuario=" + idusuario + "&idcampana=" + idcampana + "&idcultivo=" + idcultivo,
+                    data: "accion=loteCultivoModificar&idlote=" + idlote + "&idcultivo=" + idcultivo,
                     dataType: "json",
                     success: function (datos) {
 
@@ -695,7 +662,7 @@ function iniciarEventosActividades() {
                 if (datos == 0)
                     alert("Ocurrio un error al modificar la actividad");
                 else
-                    $("#sltlotes").change();
+                    $("#sltlotesAct").change();
 
             },
             error: function () {
@@ -725,8 +692,8 @@ function iniciarEventosActividades() {
     });
 
     $("input:radio[name='maquinaria']").change(function (e) {
-        e.preventDefault();
-        opt = $("input:radio[name='maquinaria']:checked").val(); //sacamos el valor de la opcion seleccionada
+        //e.preventDefault();
+        opt = $(this).val(); //sacamos el valor de la opcion seleccionada
         if (tipoMaquinaria == 0) {
             $.ajax({
                 type: "GET",
@@ -736,6 +703,8 @@ function iniciarEventosActividades() {
                 success: function (datos) {
                     if (datos == 0)
                         alert("Ocurrio un error al guardar los datos");
+                    else
+                        actualizarListaMaquinariaActividades(idactividadSel);
                 },
                 error: function () {
                     alert("Ocurrio un error al guardar los datos");
@@ -758,7 +727,10 @@ function iniciarEventosActividades() {
                         alert("Ocurrio un error al guardar los datos");
                     }
                 });
-
+            }else{
+                opt=="1"?$("input[name='maquinaria'][value='2']").prop("checked",true):$("input[name='maquinaria'][value='1']").prop("checked",true);
+                
+                
             }
         }
     });
@@ -782,6 +754,8 @@ function iniciarEventosActividades() {
         e.preventDefault();
         let idtercero = $("#sltterceros").val();
         let cantidad = 0;
+        console.log(idtercero);
+        console.log(idactividadSel);
         $("#tblterceros tbody tr").each(function () {
             cantidad += 1;
         });
@@ -819,22 +793,146 @@ function iniciarEventosActividades() {
 
     });
 
-    $("#btnInformeCostos").click(function (e) { 
+    $("#btnInformeCostos").click(function (e) {
         e.preventDefault();
-        window.open("generarCostosLote.php?idloteCampana="+idlotecampana);
+        window.open("generarCostosLote.php?idloteCampana=" + idlotecampana);
     });
 
-    $("#btnInformeDetallado").click(function (e) { 
+    $("#btnInformeDetallado").click(function (e) {
         e.preventDefault();
-        window.open("generarInformeCostosDetallado.php?idloteCampana="+idlotecampana);
+        window.open("generarInformeCostosDetallado.php?idloteCampana=" + idlotecampana);
     });
+
+    $("#sltcampanas").change(function (e) {
+        e.preventDefault();
+        $("#sltcamposAct").val(0);
+        $("#sltcamposAct").change();
+    });
+
+    $("#chkCapitalizacion").change(function (e) {
+        e.preventDefault();
+
+        if ($("#chkCapitalizacion").prop("checked")) {
+            $("#listaProductoresActividades").removeClass("d-none");
+            $("#listaProductoresInsumos").removeClass("d-none");
+
+        }
+        else {
+            $("#listaProductoresActividades").addClass("d-none");
+            $("#listaProductoresInsumos").addClass("d-none");
+        }
+
+    });
+
+    $("#chkCapitalizacion").click(function (e) {
+        //e.preventDefault();
+        let estado = $("#chkCapitalizacion").prop("checked");
+        if (idlotecampana > 0) {
+            $.ajax({
+                type: "GET",
+                url: "includes/ajax/actividades.php",
+                data: "accion=capitalizacion&idlotecampana=" + idlotecampana + "&estado=" + estado,
+                dataType: "text",
+                success: function (datos) {
+                    if (datos == 0) {
+                        alert("Se produjo un error al actualizar la base de datos");
+                    } else {
+                        $("#chkCapitalizacion").change();
+                    }
+                }
+            });
+        }
+    });
+
 }//fin iniciar eventos actividades
+
+function actualizarListaActividades(idlote) {
+    importeTotalActividades = 0;
+    $("#tblactividades tbody").empty();
+    $("#tblproductoresActividades tbody").empty();
+    $("#tblproductoresInsumos tbody").empty();
+    $("#tblinsumos tbody").empty();
+    
+    $("#navDatos").addClass("d-none");
+    $("#supLote").val("");
+    $("#chkCapitalizacion").prop("checked", false);
+    $.ajax({  //cargamos datos del lote
+        data: "accion=lotes&idlote=" + idlote,
+        type: "GET",
+        dataType: "json",
+        url: "includes/ajax/ajax.php",
+        success: function (datos) {
+            if (datos.length > 0) {
+                $("#supLote").val(datos[0].superficie);
+                $("#txtsupActividad").val(datos[0].superficie);
+                $("#fldActividades").removeClass("d-none");
+
+                $.ajax({  //buscamos si esta definido el cultivo para el lote de la campana actual y el usuario
+                    type: "GET",
+                    url: "includes/ajax/ajax.php",
+                    data: "accion=loteCultivo&idlote=" + idlote,
+                    dataType: "json",
+                    success: function (datos) {
+                        if (datos.length > 0) {
+                            $("#sltcultivos").val(datos[0].idcultivo);
+                            datos[0].capitalizacion == 1 ? $("#chkCapitalizacion").prop("checked", true) : $("#chkCapitalizacion").prop("checked", false);
+                            $("#chkCapitalizacion").change();
+                            idlotecampana = datos[0].idloteCampana;
+                            idcultivoSel = datos[0].idcultivo;
+
+                            $.ajax({
+                                type: "GET",
+                                url: "includes/ajax/actividades.php",
+                                data: "accion=cargar&idlotecampana=" + idlotecampana,
+                                dataType: "json",
+                                success: function (datos) {
+                                    datos.forEach(dato => {
+                                        $("#tblactividades tbody").append("<tr>\
+                                                                        <td class='d-none idactividad'>" + dato.idactividad + "</td>\
+                                                                        <td class='fechaActividad'>" + dato.fechaDMY + "</td>\
+                                                                        <td class='actividad'>" + dato.labor + "</td>\
+                                                                        <td class='text-right precioHa'>" + dato.precioha + "</td>\
+                                                                        <td class='text-right superficie'>" + dato.superficie + "</td>\
+                                                                        <td class='text-right importeActividad'>" + dato.precioha * dato.superficie + "</td>\
+                                                                        <td class='d-none observaciones'>" + dato.observaciones + "</td>\
+                                                                        <td class='text-center'>\
+                                                                            <a class='modificarActividad' href='#' data-toggle='modal' data-target='#modalModificarActividad' data-whatever=''>\
+                                                                                <i class='material-icons'>create</i>\
+                                                                            </a>\
+                                                                            <a class='borrarActividad' href='#'>\
+                                                                                <i class='material-icons'>clear</i>\
+                                                                            </a>\
+                                                                        </td>\
+                                                                    </tr>");
+                                    });
+                                    completarResumen();
+                                }
+                            });
+                        }
+                        else {
+                            $("#sltcultivos").val(0);
+                            idcultivoSel = 0;
+                            idlotecampana = 0;
+                            $("#fldActividades").addClass("d-none");
+                        }
+
+                    }
+                });
+            } else {
+                $("#fldActividades").addClass("d-none");
+            }
+        },
+        error: function () {
+            alert("error de conexion");
+        }
+    });
+}
 
 
 //funciones complementarias
 function actualizarListaLotes(idcampo, idlote) {
-    $("#sltlotes").empty();
-    $("#sltlotes").append('<option value="0"></option>');
+    $("#sltlotesAct").empty();
+    $("#sltlotesAct").append('<option value="0"></option>');
     $.ajax({
         data: "accion=campos&idcampo=" + idcampo,
         type: "GET",
@@ -847,9 +945,13 @@ function actualizarListaLotes(idcampo, idlote) {
                         var sel = "selected";
                         $("#supLote").val(valor.superficie);
                     }
-                    $("#sltlotes").append('<option value="' + valor.idlote + '" ' + sel + '>' + valor.lote + '</option>');
+                    $("#sltlotesAct").append('<option value="' + valor.idlote + '" ' + sel + '>' + valor.lote + '</option>');
 
                 });
+                $("#fldActividades").addClass("d-none");
+                $("#navDatos").addClass("d-none");
+                $("#sltcultivos").val(0);
+                idcultivoSel = 0;
             }
         },
         error: function () {
@@ -858,9 +960,9 @@ function actualizarListaLotes(idcampo, idlote) {
     });
 }
 
-function actualizarListaCampos() {
-    $("#sltcampos").empty();
-    $("#sltcampos").append('<option value="0"></option>');
+function actualizarListaCampos(id) {
+    $("#sltcamposAct").empty();
+    $("#sltcamposAct").append('<option value="0"></option>');
     $.ajax({
         data: "accion=todosCampos",
         type: "GET",
@@ -869,8 +971,18 @@ function actualizarListaCampos() {
         success: function (datos) {
             if (datos.length > 0) {
                 $.each(datos, function (index, valor) {
-                    $("#sltcampos").append('<option value="' + valor.idcampo + '">' + valor.campo + '</option>');
+                    $("#sltcamposAct").append('<option value="' + valor.idcampo + '">' + valor.campo + '</option>');
+                    if (valor.idcampo == id) {
+                        $("#sltcamposAct").val(id);
+                    }
                 });
+                $("#fldActividades").addClass("d-none");
+                $("#navDatos").addClass("d-none");
+                $("#sltlotesAct").val(0);
+                $("#sltcultivos").val(0);
+                $("#supLote").val("");
+                idcultivoSel = 0;
+                superficieSel = 0;
             }
         },
         error: function () {
@@ -978,27 +1090,29 @@ function actualizarListaMaquinariaActividades(idactividad) {
         data: "accion=tipoMaquinaria&idactividad=" + idactividad,
         dataType: "json",
         success: function (datos) {
-            tipoMaquinaria = datos[0].maquinaria;
-            if (datos[0].maquinaria == 1) //si la maquinaria es contratada
-            {
-                $("#maquinariaContratada").prop("checked", true);
-                $("#tblMaquinaria").addClass("d-none");
-                $("#tblContratistas").removeClass("d-none");
-                actualizarListaTercerosActividades(idactividadSel);
-            }
-            if (datos[0].maquinaria == 2) //si la maquinaria es propia
-            {
-                $("#maquinariaPropia").prop("checked", true);
-                $("#tblContratistas").addClass("d-none");
-                $("#tblMaquinaria").removeClass("d-none");
-                actualizarListaPersonalesActividades(idactividadSel);
-                //actualizarPersonal(idactividad);
-            }
-            if (datos[0].maquinaria == 0) {
-                $("#maquinariaContratada").prop("checked", false);
-                $("#maquinariaPropia").prop("checked", false);
-                $("#tblMaquinaria").addClass("d-none");
-                $("#tblContratistas").addClass("d-none");
+            if (datos.length > 0) {
+                tipoMaquinaria = datos[0].maquinaria;
+                if (datos[0].maquinaria == 1) //si la maquinaria es contratada
+                {
+                    $("#maquinariaContratada").prop("checked", true);
+                    $("#tblMaquinaria").addClass("d-none");
+                    $("#tblContratistas").removeClass("d-none");
+                    actualizarListaTercerosActividades(idactividadSel);
+                }
+                if (datos[0].maquinaria == 2) //si la maquinaria es propia
+                {
+                    $("#maquinariaPropia").prop("checked", true);
+                    $("#tblContratistas").addClass("d-none");
+                    $("#tblMaquinaria").removeClass("d-none");
+                    actualizarListaPersonalesActividades(idactividadSel);
+                    //actualizarPersonal(idactividad);
+                }
+                if (datos[0].maquinaria == 0) {
+                    $("#maquinariaContratada").prop("checked", false);
+                    $("#maquinariaPropia").prop("checked", false);
+                    $("#tblMaquinaria").addClass("d-none");
+                    $("#tblContratistas").addClass("d-none");
+                }
             }
         }
     });
@@ -1062,9 +1176,28 @@ function actualizarListaTercerosActividades(idactividad) {
 
 }
 
+function actualizaProductoresActividades(idactividad) {
+    $("#tblproductoresActividades tbody").empty();
+    $.ajax({
+        type: "GET",
+        url: "includes/ajax/actividades.php",
+        data: "accion=ProductorActividad&idactividad=" + idactividad,
+        dataType: "json",
+        success: function (datos) {
+            datos.forEach(dato => {
+                $("#tblproductoresActividades tbody").append("<tr>\
+                                                                <td class='d-none idactividad_empresa'>" + dato.idactividad_empresa + "</td>\
+                                                                <td class='tercero'>" + dato.empresa + "</td>\
+                                                                <td class='text-right total'>" + dato.total + "</td>\
+                                                        </tr>");
+            });
+        }
+    });
+}
+
 function completarResumen() {
     let importeTotalActividades = 0;
-    let importeInsumos=0;
+    let importeInsumos = 0;
     $("#tblactividades tbody tr .importeActividad").each(function () { //buscar si el insumo se encuentra ingresado en la lista
         importeTotalActividades += parseFloat($(this).text());
     });
@@ -1077,7 +1210,7 @@ function completarResumen() {
         data: "accion=importeInsumosLote&idlotecampana=" + idlotecampana,
         dataType: "json",
         success: function (datos) {
-            importeInsumos = datos[0].importe==null?0:parseFloat(datos[0].importe);
+            importeInsumos = datos[0].importe == null ? 0 : parseFloat(datos[0].importe);
             $("#tdTotalInsumos").html(importeInsumos.toFixed(2));
             $("#tdTotal").html(importeInsumos + importeTotalActividades);
         }

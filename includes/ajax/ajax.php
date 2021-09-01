@@ -42,9 +42,9 @@ switch ($accion) {
         echo json_encode($datos);
         break;
     case "personales":
-        $id = $_GET['idpersonal'];
+        $idpersonal = $_GET['idpersonal'];
         $oPersonales = new personalesModel();
-        $datos = $oPersonales->personalById($id);
+        $datos = $oPersonales->personalById($idpersonal,$idUsuarioActivo);
         echo json_encode($datos);
         break;
     case "lotes":
@@ -55,19 +55,15 @@ switch ($accion) {
         break;
     case "loteCultivo":
         $idlote = $_GET['idlote'];
-        $idusuario = $_GET['idusuario'];
-        $idcampana = $_GET['idcampana'];
         $oCultivos = new cultivosModel();
-        $datos = $oCultivos->cultivoPorCampana($idlote, $idusuario, $idcampana);
+        $datos = $oCultivos->cultivoPorCampana($idlote, $idUsuarioActivo, $idCampanaActiva);
         echo json_encode($datos);
         break;
     case "loteCultivoGuardar":
         $idlote = $_GET['idlote'];
-        $idusuario = $_GET['idusuario'];
-        $idcampana = $_GET['idcampana'];
         $idcultivo = $_GET['idcultivo'];
         $oCultivos = new cultivosModel();
-        $id = $oCultivos->insertarCultivoEnCampana($idlote, $idusuario, $idcampana, $idcultivo);
+        $id = $oCultivos->insertarCultivoEnCampana($idlote, $idUsuarioActivo, $idCampanaActiva, $idcultivo);
         if ($id > 0) {
             echo $id;
         } else {
@@ -76,11 +72,9 @@ switch ($accion) {
         break;
     case "loteCultivoModificar":
         $idlote = $_GET['idlote'];
-        $idusuario = $_GET['idusuario'];
-        $idcampana = $_GET['idcampana'];
         $idcultivo = $_GET['idcultivo'];
         $oCultivos = new cultivosModel();
-        $id = $oCultivos->modificarCultivoEnCampana($idlote, $idusuario, $idcampana, $idcultivo);
+        $id = $oCultivos->modificarCultivoEnCampana($idlote, $idUsuarioActivo, $idCampanaActiva, $idcultivo);
         if ($id > 0) {
             echo $id;
         } else {
@@ -90,19 +84,18 @@ switch ($accion) {
     case "labores":
         $id = $_GET['idlabor'];
         $oLabores = new laboresModel();
-        $datos = $oLabores->laborById($id);
+        $datos = $oLabores->laborById($id,$idUsuarioActivo);
         echo json_encode($datos);
         break;
     case "insumos":
         $id = $_GET['idinsumo'];
         $oInsumos = new insumosModel();
-        $datos = $oInsumos->insumoById($id);
+        $datos = $oInsumos->insumoById($id,$idUsuarioActivo);
         echo json_encode($datos);
         break;
     case "insLabor":
         $labor = $_GET['labor'];
         $precioLabor = $_GET['precio'];
-        $idusuario = $_GET['idusuario'];
         $id = 0;
         $oLabores = new laboresModel();
         $id = $oLabores->insertar($labor, $precioLabor, $idUsuarioActivo);
@@ -134,10 +127,9 @@ switch ($accion) {
         $contratista = $_GET['contratista'];
         $proveedor = $_GET['proveedor'];
         $otro = $_GET['otro'];
-        $idusuario = $_GET['idusuario'];
         $id = 0;
         $oEmpresas = new empresasModel();
-        echo $oEmpresas->insertar($empresa, $cuit, $direccion, $productor, $contratista, $proveedor, $otro, $idusuario);
+        echo $oEmpresas->insertar($empresa, $cuit, $direccion, $productor, $contratista, $proveedor, $otro, $idUsuarioActivo);
         break;
     case "modificarEmpresa":
         $cuit = $_GET['cuit'];
@@ -168,10 +160,9 @@ switch ($accion) {
         $personal = $_GET['personal'];
         $cuil = $_GET['cuil'];
         $precioHa = $_GET['precioHa'];
-        $idusuario = $_GET['idusuario'];
         $id = 0;
         $oPersonales = new personalesModel();
-        $id = $oPersonales->insertar($personal, $cuil, $precioHa, $idusuario);
+        $id = $oPersonales->insertar($personal, $cuil, $precioHa, $idUsuarioActivo);
         if ($id > 0) {
             echo $id;
         } else {
@@ -182,10 +173,9 @@ switch ($accion) {
         $idunidad = $_GET['idunidad'];
         $insumo = $_GET['insumo'];
         $precio = $_GET['precio'];
-        $idusuario = $_GET['idusuario'];
         $id = 0;
         $oInsumos = new insumosModel();
-        $id = $oInsumos->insertar($insumo, $precio, $idunidad, $idusuario);
+        $id = $oInsumos->insertar($insumo, $precio, $idunidad, $idUsuarioActivo);
         if ($id > 0) {
             echo $id;
         } else {
@@ -207,10 +197,9 @@ switch ($accion) {
         break;
     case "insCampo":
         $campo = $_GET['campo'];
-        $idusuario = $_GET['idusuario'];
         $id = 0;
         $oCampos = new camposModel();
-        $id = $oCampos->insertarCampo($campo, $idusuario);
+        $id = $oCampos->insertarCampo($campo, $idUsuarioActivo);
         if ($id > 0) {
             echo $id;
         } else {

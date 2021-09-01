@@ -21,9 +21,9 @@ class laboresModel
         return $this->bd->cantidadRegistros();
     }
 
-    public function laborById($id)  //returno un array asociativo con el usuario pasado por id
+    public function laborById($id,$idusuario)  //returno un array asociativo con el usuario pasado por id
     {
-        $sql="SELECT * FROM labores WHERE idlabor = ".$id;
+        $sql="SELECT * FROM labores WHERE idlabor = ".$id. " and idusuario=".$idusuario;
         return $this->bd->sql($sql);
     }
 

@@ -119,7 +119,7 @@ class actividadesModel
 
     public function guardarActividadTercero($idactividad,$idtercero,$precioHa)
     {
-        $sql="INSERT INTO `actividades_terceros`(`idactividad`, `idusuario`, `precioHa`) VALUES (".$idactividad.",".$idtercero.",".$precioHa.")";
+        $sql="INSERT INTO `actividades_terceros`(`idactividad`, `idempresa`, `precioHa`) VALUES (".$idactividad.",".$idtercero.",".$precioHa.")";
         return $this->bd->insertar($sql);
     }
 
@@ -131,7 +131,7 @@ class actividadesModel
 
     public function listarTerceros($idactividad)
     {
-        $sql="SELECT a.idactividad_tercero,u.usuario as tercero,a.precioHa FROM actividades_terceros a INNER JOIN usuarios u ON a.idusuario=u.idusuario WHERE idactividad=".$idactividad;
+        $sql="SELECT a.idactividad_tercero,e.empresa as tercero,a.precioHa FROM actividades_terceros a INNER JOIN empresas e ON a.idempresa=e.idempresa WHERE idactividad=".$idactividad;
         return $this->bd->sql($sql);
     }
 
@@ -185,6 +185,18 @@ class actividadesModel
     {
         //devuelve cantidad, insumo, importe de cada insumo por lote
         $sql="SELECT SUM(ai.cantidadTotal) as cantidad,i.insumo,SUM(ai.cantidadTotal*ai.precio) as importe FROM `actividades_lotes` al INNER JOIN `actividades_insumos` ai ON al.idactividad=ai.idactividad INNER JOIN insumos i ON ai.idinsumo=i.idinsumo WHERE al.idloteCampana=".$idloteCampana." GROUP BY i.idinsumo";
+        return $this->bd->sql($sql);
+    }
+
+    public function guardarProductorActividad($idactividad,$idempresa,$total)
+    {
+        $sql="INSERT INTO `actividades_empresas`(`idactividad`, `idempresa`, `total`) VALUES (".$idactividad.",".$idempresa.",".$total.")";
+        return $this->bd->insertar($sql);
+    }
+
+    public function ProductorActividad($idactividad)
+    {
+        $sql="SELECT * FROM actividades_empresas ae INNER JOIN empresas e ON ae.idempresa=e.idempresa WHERE idactividad=".$idactividad;
         return $this->bd->sql($sql);
     }
 }

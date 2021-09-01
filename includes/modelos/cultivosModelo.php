@@ -38,5 +38,11 @@ class cultivosModel
         $sql="UPDATE lotescampanas SET idcultivo=".$idcultivo." WHERE idlote= ".$idlote." and idusuario= ".$idusuario."  and idcampana=".$idcampana;
         return $this->bd->sql($sql);
     }
+
+    public function capitalizacion($id,$estado)
+    {
+        $sql="UPDATE lotescampanas SET capitalizacion=".$estado." WHERE idlotecampana=".$id;
+        return $this->bd->modificar($sql);
+    }
 }   
 ?>

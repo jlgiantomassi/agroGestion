@@ -21,9 +21,9 @@ class personalesModel
         return $this->bd->cantidadRegistros();
     }
 
-    public function personalById($id)  //returno un array asociativo con el usuario pasado por id
+    public function personalById($idpersonal,$idusuario)  //returno un array asociativo con el usuario pasado por id
     {
-        $sql="SELECT * FROM personales WHERE idpersonal = ".$id;
+        $sql="SELECT * FROM personales WHERE idpersonal = ".$idpersonal. " and idusuario=".$idusuario;
         return $this->bd->sql($sql);
     }
 

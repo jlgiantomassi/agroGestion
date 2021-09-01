@@ -55,7 +55,7 @@ class ordenesModel
             }
         }
         $sql1.=")";
-        $sql = "select DATE_FORMAT(o.fecha,'%d/%m/%Y') as fecha,l.labor,o.superficie,o.idordentrabajo from ordentrabajos as o inner join labores as l on o.idlabor=l.idlabor where o.idusuario=" . $idusuario . " and idcampana=" . $idcampana . " and fecha>='" . $fechaDesde . "' and fecha<='" . $fechaHasta . "'".$sql1;
+        $sql = "select DATE_FORMAT(o.fecha,'%d/%m/%Y') as fecha,l.labor,o.superficie,o.idordentrabajo,o.realizado from ordentrabajos as o inner join labores as l on o.idlabor=l.idlabor where o.idusuario=" . $idusuario . " and idcampana=" . $idcampana . " and fecha>='" . $fechaDesde . "' and fecha<='" . $fechaHasta . "'".$sql1;
         return $this->bd->sql($sql);
     }
 
@@ -82,4 +82,11 @@ class ordenesModel
         $sql = "DELETE FROM ordentrabajos WHERE idordentrabajo=" . $id;
         $this->bd->eliminar($sql);
     }
+
+    public function realizarOrden($idorden)
+    {
+        $sql="UPDATE ordentrabajos SET realizado=1 WHERE idordentrabajo =".$idorden;
+        $this->bd->modificar($sql);
+    }
+
 }

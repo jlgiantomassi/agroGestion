@@ -88,7 +88,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-9">
-                                <table class="table" id="tblproductores">
+                                <table class="table table-sm" id="tblproductores">
                                     <thead class="thead-light">
                                         <tr>
                                             <th>Productor</th>
@@ -115,7 +115,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-9">
-                                <table class="table" id="tblcampos">
+                                <table class="table table-sm" id="tblcampos">
                                     <thead class="thead-light">
                                         <tr>
                                             <th class="d-none" data-visible="false">idlote</th>
@@ -145,7 +145,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-9">
-                                <table class="table" id="tblinsumos">
+                                <table class="table table-sm" id="tblinsumos">
                                     <thead class="thead-light">
                                         <tr>
                                             <th>Insumo</th>
@@ -191,7 +191,7 @@
                                 <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#modalPersonal" data-whatever=""><i class="material-icons">add_box</i></button>
                             </div>
                             <div class="col-md-9">
-                                <table class="table" id="tblpersonales">
+                                <table class="table table-sm" id="tblpersonales">
                                     <thead class="thead-light">
                                         <tr>
                                             <th>Personal asignado</th>
@@ -214,7 +214,7 @@
                                 <button type="button" class="btn btn-sm" data-toggle="modal" data-target="#modalContratistas" data-whatever=""><i class="material-icons">add_box</i></button>
                             </div>
                             <div class="col-md-9">
-                                <table class="table" id="tblterceros" >
+                                <table class="table table-sm" id="tblterceros" >
                                     <thead class="thead-light">
                                         <tr>
                                             <th>Maquinaria Contratada</th>

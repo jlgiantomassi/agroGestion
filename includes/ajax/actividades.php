@@ -1,7 +1,9 @@
 <?php
 $raiz="../../";
 include_once $raiz.'includes/modelos/actividadesModelo.php';
+include_once $raiz.'includes/modelos/cultivosModelo.php';
 $oActividad=new actividadesModel();
+$oCultivo=new cultivosModel();
 
 $accion = $_GET['accion'];
 switch ($accion) {
@@ -132,5 +134,21 @@ switch ($accion) {
         $id=$_GET["idlotecampana"];
         echo json_encode($oActividad->importeInsumos($id));
     break;
+    case "capitalizacion":
+        $id=$_GET["idlotecampana"];
+        $estado=$_GET["estado"];
+        echo $oCultivo->capitalizacion($id,$estado);
+    break;
+    case "insProductorActividad":
+        $idactividad=$_GET["idactividad"];
+        $idempresa=$_GET["idempresa"];
+        $total=$_GET["total"];
+        echo $oActividad->guardarProductorActividad($idactividad,$idempresa,$total);
+    break;
+    case "ProductorActividad":
+        $idactividad=$_GET["idactividad"];
+        echo json_encode($oActividad->ProductorActividad($idactividad));
+    break;
+
 }
 ?>

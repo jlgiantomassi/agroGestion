@@ -1,14 +1,20 @@
 <?php
-    include_once '../../conexion/conexion.php';
+    $raiz="../../";
+    include_once("../modelos/ordenesModelo.php");
+
     //actualizar ordentrabajos y dejar la orden como realizada
     $id=$_GET["idorden"];
-    $sql="UPDATE ordentrabajos SET realizado=1 WHERE idordentrabajo =".$id;
-    $query = mysqli_query($con, $sql);
+    $accion=$_GET["accion"];
+    $oOrden=new ordenesModel();
 
-    //cargar los datos de la orden a actividades
-    
+    if($accion=="agregar") //agregamos la orden a las tablas de actividades
+    {
+        $oOrden->realizarOrden($id);    
+    }
+    if($accion=="descartar") //agregamos la orden a las tablas de actividades
+    {
+        $oOrden->realizarOrden($id);
+    }
 
-    header('Location:../../verOrdenes.php');
-    exit;
 ?>
 

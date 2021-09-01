@@ -20,13 +20,15 @@ $().ready(function () {
             $.ajax({
                 type: "GET",
                 url: "includes/ajax/ajax.php",
-                data: "accion=insPersonal&personal=" + personal + "&idusuario=" + idUsuarioActivo+"&precioHa="+precio+"&cuil="+cuil,
+                data: "accion=insPersonal&personal=" + personal +"&precioHa="+precio+"&cuil="+cuil,
                 dataType: "text",
                 success: function (id) {
                     if (id == "false") {
                         alert("se genero un error al guardar el personal");
                     } else {
-                        location.reload();
+                        $("#modalInsPersonal").hide();
+                        $("#modalInsPersonal").modal('hide');
+                        actualizarListaPersonales(id);
                     }
 
                 }
@@ -91,4 +93,30 @@ function modificarPersonal(id) {
         }
     });
     
+}
+
+function actualizarListaPersonales(id) {
+    let idpersonal = 'idpersonal';
+    $("#sltpersonales").empty();
+    $.ajax({
+        data: "accion=personales&idpersonal=" + idpersonal,
+        type: "GET",
+        dataType: "json",
+        url: "includes/ajax/ajax.php",
+        success: function (datos) {
+            if (datos.length > 0) {
+                $.each(datos, function (index, valor) {
+                    if (valor.idpersonal == parseInt(id)) {
+                        var sel = "selected";
+                        $("#txtCuil").val(valor.cuil);
+                        $("#txtPrecioHa").val(valor.precioHa);
+                    }
+                    $("#sltpersonales").append('<option value="' + valor.idpersonal + '" ' + sel + '>' + valor.personal + '</option>');
+                });
+            }
+        },
+        error: function () {
+            alert("error de conexion");
+        }
+    });
 }
