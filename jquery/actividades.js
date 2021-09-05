@@ -5,12 +5,18 @@ let idusuario = 0;
 let idcultivoSel = 0;
 let idlotecampana = 0;
 let idactividadSel = 0; //toma los id de la tabla de actividades que se seleccionan
-let superficieSel = 0 //toma las superficies de la tabla de actividades que se seleccionan
+let superficieSel = 0; //toma las superficies de la tabla de actividades que se seleccionan
+//let totalActividadSel=0; //toma el importe de la tabla de actividades que se seleccionan
 let idinsumoSel = 0;
+let totalInsumoSel = 0;
 let idactividadInsumoSel = 0;
 let idactividadPersonalSel = 0;
 let idactividadTerceroSel = 0;
 let precioHaSel = 0;
+let opcionProductor = 0;  //establece desde donde se llama la ventana modal para agragar productores a Actividades(1) o Insumos(1)
+let totalProductorActividadSel = 0;
+let totalProductorInsumoSel = 0;
+let totalOldParticipacion = 0;
 
 function iniciarEventosActividades() {
     idcampana = $("#idCampanaActiva").val();
@@ -386,7 +392,7 @@ function iniciarEventosActividades() {
             case "modificarActividad":
                 dato = e.target.parentNode.parentNode.parentNode;
                 idactividadSel = $(dato).children().html();
-                superficieSel = $(dato).find(".superficie").html();
+                superficieSel = parseFloat($(dato).find(".superficie").html());
                 $("#txtActividadModificar").val($(dato).find(".actividad").html());
                 $("#txtFechaActividadModificar").val($(dato).find(".fechaActividad").html());
                 $("#txtPrecioActividadModificar").val($(dato).find(".precioHa").html());
@@ -395,8 +401,8 @@ function iniciarEventosActividades() {
             default:
                 dato = e.target.parentNode
                 idactividadSel = $(dato).children().html();  //es lo mismo que -> console.log(dato.children[0].innerHTML);
-                superficieSel = $(dato).find(".superficie").html();
-                precioHaSel = $(dato).find(".precioHa").html();
+                superficieSel = parseFloat($(dato).find(".superficie").html());
+                precioHaSel = parseFloat($(dato).find(".precioHa").html());
                 //$("#txtobservaciones").val($(dato).find(".observaciones").html()=="null"?"":$(dato).find(".observaciones").html());
                 $("#txtobservaciones").val($(dato).find(".observaciones").html());
                 $('#tblactividades tbody tr').removeClass("table-active");
@@ -404,7 +410,8 @@ function iniciarEventosActividades() {
                 $("#navDatos").removeClass("d-none");
                 actualizarListaInsumosActividades(idactividadSel);
                 actualizarListaMaquinariaActividades(idactividadSel);
-                actualizaProductoresActividades(idactividadSel)
+                actualizaProductoresActividades(idactividadSel);
+                $("#btnActProdModal").prop("disabled", false);
                 break;
         }
         completarResumen();
@@ -418,7 +425,7 @@ function iniciarEventosActividades() {
         actualizarListaInsumosActividades();
     });
 
-    $("#tblinsumos").click(function (e) {
+    $("#tblinsumos tbody").click(function (e) {
         e.preventDefault();
         switch (e.target.parentNode.className) {
             case "borrarInsumo":
@@ -453,6 +460,14 @@ function iniciarEventosActividades() {
                 $("#txtcantidadInsumoTotal").val($(dato).find(".cantidadTotal").html());
                 completarResumen();
                 break;
+            default:
+                dato = e.target.parentNode
+                idinsumoSel = $(dato).children().html();  //es lo mismo que -> console.log(dato.children[0].innerHTML);
+                totalInsumoSel = parseFloat($(dato).find(".precioTotal").html());
+                $('#tblinsumos tbody tr').removeClass("table-active");
+                dato.className = "table-active";
+                $("#btnInsProdModal").prop("disabled", false);
+                actualizaProductoresInsumos(idinsumoSel);
         }
 
     });
@@ -486,6 +501,84 @@ function iniciarEventosActividades() {
                         }
                     });
                 }
+                break;
+        }
+    });
+
+    $("#tblproductoresActividades tbody").click(function (e) {
+        e.preventDefault();
+        switch (e.target.parentNode.className) {
+            case "borrarProductorActividad":
+                if (confirm("Desea borrar este Productor?")) {
+                    dato = e.target.parentNode.parentNode.parentNode;
+                    idProductorActividadSel = $(dato).children().html();
+                    $.ajax({
+                        type: "GET",
+                        url: "includes/ajax/actividades.php",
+                        data: "accion=borrarProductorActividad&idactividad_empresa=" + idProductorActividadSel,
+                        dataType: "text",
+                        success: function (id) {
+                            if (id) {
+                                $(dato).remove();
+                                //completarResumen();
+                                //$("#navDatos").addClass("d-none");
+                                idProductorActividadSel = 0;
+                                actualizaProductoresActividades(idactividadSel);
+                            } else {
+                                alert("Hubo un error al borrar el productor");
+                            }
+                        }
+                    });
+                }
+                break;
+
+            case "modificarProductorActividad":
+                dato = e.target.parentNode.parentNode.parentNode;
+                idProductorActividadSel = $(dato).find(".idactividad_empresa").html();
+                totalOldParticipacion = parseFloat($(dato).find(".total").html());
+                $("#txtModProductor").val($(dato).find(".empresa").html());
+                $("#txtModParticipacionProductor").val($(dato).find(".total").html());
+                opcionProductor = 1;
+                //completarResumen();
+                break;
+        }
+    });
+
+    $("#tblproductoresInsumos tbody").click(function (e) {
+        e.preventDefault();
+        switch (e.target.parentNode.className) {
+            case "borrarProductorInsumo":
+                if (confirm("Desea borrar este Productor?")) {
+                    dato = e.target.parentNode.parentNode.parentNode;
+                    idProductorInsumoSel = $(dato).children().html();
+                    $.ajax({
+                        type: "GET",
+                        url: "includes/ajax/actividades.php",
+                        data: "accion=borrarProductorInsumo&idinsumo_empresa=" + idProductorInsumoSel,
+                        dataType: "text",
+                        success: function (id) {
+                            if (id) {
+                                $(dato).remove();
+                                //completarResumen();
+                                //$("#navDatos").addClass("d-none");
+                                idProductorInsumoSel = 0;
+                                actualizaProductoresInsumos(idinsumoSel);
+                            } else {
+                                alert("Hubo un error al borrar el productor");
+                            }
+                        }
+                    });
+                }
+                break;
+
+            case "modificarProductorInsumo":
+                dato = e.target.parentNode.parentNode.parentNode;
+                idProductorInsumoSel = $(dato).find(".idinsumo_empresa").html();
+                totalOldParticipacion = parseFloat($(dato).find(".total").html());
+                $("#txtModProductor").val($(dato).find(".empresa").html());
+                $("#txtModParticipacionProductor").val($(dato).find(".total").html());
+                opcionProductor = 2;
+                //completarResumen();
                 break;
         }
     });
@@ -548,7 +641,6 @@ function iniciarEventosActividades() {
             if ($(this).text() == nombreInsumo) {
                 flag = true;
             }
-
         });
         if (flag) {
             alert("Este insumo ya se encuentra en la lista");
@@ -691,6 +783,57 @@ function iniciarEventosActividades() {
         }
     });
 
+    $("#btnModParticipacionProductor").click(function (e) {
+        e.preventDefault();
+        $("#modalModificarProductor").hide();
+        $("#modalModificarProductor").modal('hide');
+        let total = parseFloat($("#txtModParticipacionProductor").val());
+        if (opcionProductor == 1) {
+            if ((totalProductorActividadSel + total - totalOldParticipacion) > (superficieSel * precioHaSel))
+                alert("La suma de aportes de Productores es mayor al valor de la actividad");
+            else {
+                $.ajax({
+                    type: "GET",
+                    url: "includes/ajax/actividades.php",
+                    data: "accion=modificarProductorActividad&idactividad_empresa=" + idProductorActividadSel + "&total=" + total,
+                    dataType: "text",
+                    success: function (datos) {
+                        if (datos == 0)
+                            alert("Ocurrio un error al modificar el productor");
+                        else
+                            actualizaProductoresActividades(idactividadSel);
+
+                    },
+                    error: function () {
+                        alert("Ocurrio un error al modificar el productor");
+                    }
+                });
+            }
+        }
+        if (opcionProductor == 2) {
+            if ((totalProductorInsumoSel + total - totalOldParticipacion) > (totalInsumoSel))
+                alert("La suma de aportes de Productores es mayor al valor del insumo");
+            else {
+                $.ajax({
+                    type: "GET",
+                    url: "includes/ajax/actividades.php",
+                    data: "accion=modificarProductorInsumo&idinsumo_empresa=" + idProductorInsumoSel + "&total=" + total,
+                    dataType: "text",
+                    success: function (datos) {
+                        if (datos == 0)
+                            alert("Ocurrio un error al modificar el productor");
+                        else
+                            actualizaProductoresInsumos(idinsumoSel);
+
+                    },
+                    error: function () {
+                        alert("Ocurrio un error al modificar el productor");
+                    }
+                });
+            }
+        }
+    });
+
     $("input:radio[name='maquinaria']").change(function (e) {
         //e.preventDefault();
         opt = $(this).val(); //sacamos el valor de la opcion seleccionada
@@ -727,10 +870,10 @@ function iniciarEventosActividades() {
                         alert("Ocurrio un error al guardar los datos");
                     }
                 });
-            }else{
-                opt=="1"?$("input[name='maquinaria'][value='2']").prop("checked",true):$("input[name='maquinaria'][value='1']").prop("checked",true);
-                
-                
+            } else {
+                opt == "1" ? $("input[name='maquinaria'][value='2']").prop("checked", true) : $("input[name='maquinaria'][value='1']").prop("checked", true);
+
+
             }
         }
     });
@@ -739,15 +882,26 @@ function iniciarEventosActividades() {
         e.preventDefault();
         let idpersonal = $("#sltpersonales").val();
         let precioHa = $("#txtPrecioHa").val();
-        $.ajax({
-            type: "GET",
-            url: "includes/ajax/actividades.php",
-            data: "accion=agregarPersonal&idactividad=" + idactividadSel + "&idpersonal=" + idpersonal + "&precioHa=" + precioHa,
-            dataType: "json",
-            success: function (datos) {
-                actualizarListaPersonalesActividades(idactividadSel);
-            }
+        let flag = false;
+        $("#tblpersonales tbody tr").each(function () {
+            if ($(this).find(".idpersonal").html() == idpersonal)
+                flag = true;
         });
+        console.log(flag);
+        if (flag) {
+            alert("Ya se ingreso a la lista este personal");
+        }
+        else {
+            $.ajax({
+                type: "GET",
+                url: "includes/ajax/actividades.php",
+                data: "accion=agregarPersonal&idactividad=" + idactividadSel + "&idpersonal=" + idpersonal + "&precioHa=" + precioHa,
+                dataType: "json",
+                success: function (datos) {
+                    actualizarListaPersonalesActividades(idactividadSel);
+                }
+            });
+        }
     });
 
     $("#btnAgregarTercero").click(function (e) {
@@ -844,15 +998,143 @@ function iniciarEventosActividades() {
         }
     });
 
+    $("#btnAgregarProductor").click(function (e) {
+        e.preventDefault();
+        let flag = false;
+        let idproductor = 0;
+        let total = 0;
+        if (opcionProductor == 1)  //se agreaga el productor a la lista de Actividades
+        {
+            idproductor = $("#sltproductores").val();
+
+            $("#tblproductoresActividades tbody tr .idempresa").each(function () { //buscar si el insumo se encuentra ingresado en la lista
+                if ($(this).text() == idproductor) {
+                    flag = true;
+                }
+            });
+            if (flag) {
+                alert("Este productor ya se encuentra en la lista");
+            } else {
+                total = parseFloat($("#txtParticipacion").val())
+                if ((totalProductorActividadSel + total) > (superficieSel * precioHaSel)) {
+                    alert("La suma de las participaciones es mayor al valor de la actividad");
+                } else {
+                    $.ajax({
+                        type: "GET",
+                        url: "includes/ajax/actividades.php",
+                        data: "accion=insProductorActividad&idempresa=" + idproductor + "&idactividad=" + idactividadSel + "&total=" + total,
+                        dataType: "text",
+                        success: function (id) {
+                            if (id > 0) {
+                                actualizaProductoresActividades(idactividadSel);
+                            } else {
+                                alert("Se produjo un error al guardar el productor para esta actividad");
+                            }
+                            //opcionProductor = 0;
+                        }
+                    });
+                }
+            }
+        } else if (opcionProductor == 2) {
+            idproductor = $("#sltproductores").val();
+
+            $("#tblproductoresInsumos tbody tr .idempresa").each(function () { //buscar si el insumo se encuentra ingresado en la lista
+                if ($(this).text() == idproductor) {
+                    flag = true;
+                }
+            });
+            if (flag) {
+                alert("Este productor ya se encuentra en la lista");
+            } else {
+                total = parseFloat($("#txtParticipacion").val())
+                if ((totalProductorInsumoSel + total) > totalInsumoSel) {
+                    alert("La suma de las participaciones es mayor al valor del Insumo");
+                } else {
+                    $.ajax({
+                        type: "GET",
+                        url: "includes/ajax/actividades.php",
+                        data: "accion=insProductorInsumo&idempresa=" + idproductor + "&idactividad_insumo=" + idinsumoSel + "&total=" + total,
+                        dataType: "text",
+                        success: function (id) {
+                            if (id > 0) {
+                                actualizaProductoresInsumos(idinsumoSel);
+                            } else {
+                                alert("Se produjo un error al guardar la participacion del productor para este insumos");
+                            }
+                            //opcionProductor = 0;
+                        }
+                    });
+                }
+            }
+        } else {
+            alert("No se asigno hacia donde se va a asignar el productor");
+        }
+    });
+
+    $("#btnInsertarProductor").click(function (e) {
+        e.preventDefault();
+        let nombreProductor = $("#txtInsProductor").val();
+        let cuit = ($("#txtInsCuit").val() == "") ? 0 : parseInt($("#txtInsCuit").val());
+        let direccion = $("#txtInsDireccion").val();
+        let slt = $("#sltproductores option");
+        if (estaEnElCombo(nombreProductor, slt)) {
+            alert("Este Productor ya existe");
+
+        } else {
+            if ($("#frmAgregarProductor").valid()) {
+                $.ajax({
+                    data: "accion=insProductor&productor=" + nombreProductor + "&cuit=" + cuit + "&direccion=" + direccion,
+                    type: "GET",
+                    dataType: "text",
+                    url: "includes/ajax/ajax.php",
+                    success: function (datos) {
+                        if (datos != "false") {
+                            $("#modalInsProductor").hide();
+                            $("#modalInsProductor").modal('hide');
+                            actualizarListaProductores(datos);
+                            //modificarPresupuesto();
+
+                        } else if (datos == 0) {
+                            alert("El usuario ya se encuentra registrado. Cambie el rol del usuario para encontrarlo en la lista de productores");
+                        } else {
+                            alert("Hubo otro error");
+                        }
+                    },
+                    error: function () {
+                        alert("error de conexion");
+                    }
+                });
+            }
+        }
+    });
+
+    $("#btnActProdModal").click(function (e) { //se abre la ventana modal para agregar productores a la actividad
+        opcionProductor = 1;
+        $("#txtParticipacion").val(precioHaSel * superficieSel);
+
+    });
+
+    $("#btnInsProdModal").click(function (e) { //se abre la ventana modal para agregar productores a los insumos
+        //e.preventDefault();
+        opcionProductor = 2;
+        $("#txtParticipacion").val(totalInsumoSel);
+    });
+
 }//fin iniciar eventos actividades
 
 function actualizarListaActividades(idlote) {
+    superficieSel = 0;
+    precioHaSel = 0;
+    idactividadSel = 0;
     importeTotalActividades = 0;
+    totalProductorActividadSel = 0;
+    opcionProductor = 0;
     $("#tblactividades tbody").empty();
     $("#tblproductoresActividades tbody").empty();
     $("#tblproductoresInsumos tbody").empty();
     $("#tblinsumos tbody").empty();
-    
+    $("#btnActProdModal").prop("disabled", true);
+
     $("#navDatos").addClass("d-none");
     $("#supLote").val("");
     $("#chkCapitalizacion").prop("checked", false);
@@ -927,7 +1209,6 @@ function actualizarListaActividades(idlote) {
         }
     });
 }
-
 
 //funciones complementarias
 function actualizarListaLotes(idcampo, idlote) {
@@ -1005,6 +1286,7 @@ function estaEnElCombo(nombre, slt) {
 //actualiza la lista de insumos en la tabla de insumos correspondiente a una actividad
 function actualizarListaInsumosActividades(idactividad) {
     $("#tblinsumos tbody").empty();
+    $("#btnInsProdModal").prop("disabled", true);
     $.ajax({
         type: "GET",
         url: "includes/ajax/actividades.php",
@@ -1129,6 +1411,7 @@ function actualizarListaPersonalesActividades(idactividad) {
             datos.forEach(dato => {
                 $("#tblpersonales tbody").append("<tr>\
                                                             <td class='d-none idactividad_personal'>" + dato.idactividad_personal + "</td>\
+                                                            <td class='d-none idpersonal'>" + dato.idpersonal + "</td>\
                                                             <td class='personal'>" + dato.personal + "</td>\
                                                             <td class='text-right precioHaPersonal'>" + dato.precioHa + "</td>\
                                                             <td class='text-right precioTotalPersonal'>" + dato.precioHa * superficieSel + "</td>\
@@ -1178,6 +1461,7 @@ function actualizarListaTercerosActividades(idactividad) {
 
 function actualizaProductoresActividades(idactividad) {
     $("#tblproductoresActividades tbody").empty();
+    totalProductorActividadSel = 0;
     $.ajax({
         type: "GET",
         url: "includes/ajax/actividades.php",
@@ -1185,12 +1469,94 @@ function actualizaProductoresActividades(idactividad) {
         dataType: "json",
         success: function (datos) {
             datos.forEach(dato => {
+                totalProductorActividadSel += parseFloat(dato.total);
                 $("#tblproductoresActividades tbody").append("<tr>\
                                                                 <td class='d-none idactividad_empresa'>" + dato.idactividad_empresa + "</td>\
-                                                                <td class='tercero'>" + dato.empresa + "</td>\
+                                                                <td class='d-none idempresa'>" + dato.idempresa + "</td>\
+                                                                <td class='empresa'>" + dato.empresa + "</td>\
                                                                 <td class='text-right total'>" + dato.total + "</td>\
+                                                                <td class='text-center'>\
+                                                                            <a class='modificarProductorActividad' href='#' data-toggle='modal' data-target='#modalModificarProductor' data-whatever=''>\
+                                                                                <i class='material-icons'>create</i>\
+                                                                            </a>\
+                                                                            <a class='borrarProductorActividad' href='#'>\
+                                                                                <i class='material-icons'>clear</i>\
+                                                                            </a>\
+                                                                        </td>\
                                                         </tr>");
             });
+            if (totalProductorActividadSel != (superficieSel * precioHaSel)) {
+                $("#tblproductoresActividades thead").removeClass("thead-light");
+                $("#tblproductoresActividades thead").addClass("table-danger");
+            } else {
+                $("#tblproductoresActividades thead").removeClass("table-danger");
+                $("#tblproductoresActividades thead").addClass("thead-light");
+            }
+        }
+    });
+
+}
+
+function actualizaProductoresInsumos(idactividad_insumo) {
+    $("#tblproductoresInsumos tbody").empty();
+    totalProductorInsumoSel = 0;
+    $.ajax({
+        type: "GET",
+        url: "includes/ajax/actividades.php",
+        data: "accion=ProductorInsumo&idactividad_insumo=" + idactividad_insumo,
+        dataType: "json",
+        success: function (datos) {
+            datos.forEach(dato => {
+                totalProductorInsumoSel += parseFloat(dato.total);
+                $("#tblproductoresInsumos tbody").append("<tr>\
+                                                                <td class='d-none idinsumo_empresa'>" + dato.idinsumo_empresa + "</td>\
+                                                                <td class='d-none idempresa'>" + dato.idempresa + "</td>\
+                                                                <td class='empresa'>" + dato.empresa + "</td>\
+                                                                <td class='text-right total'>" + dato.total + "</td>\
+                                                                <td class='text-center'>\
+                                                                            <a class='modificarProductorInsumo' href='#' data-toggle='modal' data-target='#modalModificarProductor' data-whatever=''>\
+                                                                                <i class='material-icons'>create</i>\
+                                                                            </a>\
+                                                                            <a class='borrarProductorInsumo' href='#'>\
+                                                                                <i class='material-icons'>clear</i>\
+                                                                            </a>\
+                                                                        </td>\
+                                                        </tr>");
+            });
+            if (totalProductorInsumoSel != (totalInsumoSel)) {
+                $("#tblproductoresInsumos thead").removeClass("thead-light");
+                $("#tblproductoresInsumos thead").addClass("table-danger");
+            } else {
+                $("#tblproductoresInsumos thead").removeClass("table-danger");
+                $("#tblproductoresInsumos thead").addClass("thead-light");
+            }
+        }
+    });
+
+}
+
+function actualizarListaProductores(id) {
+    let idproductor = 'idempresa';
+    $("#sltproductores").empty();
+    $.ajax({
+        data: "accion=productores&idproductor=" + idproductor,
+        type: "GET",
+        dataType: "json",
+        url: "includes/ajax/ajax.php",
+        success: function (datos) {
+            if (datos.length > 0) {
+                $.each(datos, function (index, valor) {
+                    if (valor.idempresa == parseInt(id)) {
+                        var sel = "selected";
+                        $("#txtCuit").val(valor.cuit);
+                        $("#txtDireccion").val(valor.direccion);
+                    }
+                    $("#sltproductores").append('<option value="' + valor.idempresa + '" ' + sel + '>' + valor.empresa + '</option>');
+                });
+            }
+        },
+        error: function () {
+            alert("error de conexion al actualizar la lista de empresas de productores");
         }
     });
 }

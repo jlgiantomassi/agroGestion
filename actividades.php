@@ -119,7 +119,7 @@
                         </div>
                         <div class="">
                             <table class="table m-0 p-0 table-hover table-sm" id="tblproductoresActividades">
-                                <thead class="thead-light">
+                                <thead class="thead-light ">
                                     <tr>
                                         <th>Productor</th>
                                         <th class="text-right">Participacion</th>
@@ -237,6 +237,7 @@
                                                     <thead class="thead-light">
                                                         <tr>
                                                             <th class="d-none">idactividad_personal</th>
+                                                            <th class="d-none">idpersonal</th>
                                                             <th>Personal asignado</th>
                                                             <th class="text-right">Labor Precio/ha</th>
                                                             <th class="text-right">Total</th>

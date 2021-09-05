@@ -149,6 +149,33 @@ switch ($accion) {
         $idactividad=$_GET["idactividad"];
         echo json_encode($oActividad->ProductorActividad($idactividad));
     break;
-
+    case "insProductorInsumo":
+        $idactividad_insumo=$_GET["idactividad_insumo"];
+        $idempresa=$_GET["idempresa"];
+        $total=$_GET["total"];
+        echo $oActividad->guardarProductorInsumo($idactividad_insumo,$idempresa,$total);
+    break;
+    case "ProductorInsumo":
+        $idactividad_insumo=$_GET["idactividad_insumo"];
+        echo json_encode($oActividad->ProductorInsumo($idactividad_insumo));
+    break;
+    case "borrarProductorActividad":
+        $idactividad_empresa=$_GET["idactividad_empresa"];
+        echo $oActividad->borrarProductorActividad($idactividad_empresa);
+    break;
+    case "modificarProductorActividad":
+        $idactividad_empresa=$_GET["idactividad_empresa"];
+        $total=$_GET["total"];
+        echo $oActividad->modificarProductorActividad($idactividad_empresa,$total);
+    break;
+    case "borrarProductorInsumo":
+        $idinsumo_empresa=$_GET["idinsumo_empresa"];
+        echo $oActividad->borrarProductorInsumo($idinsumo_empresa);
+    break;
+    case "modificarProductorInsumo":
+        $idinsumo_empresa=$_GET["idinsumo_empresa"];
+        $total=$_GET["total"];
+        echo $oActividad->modificarProductorInsumo($idinsumo_empresa,$total);
+    break;
 }
 ?>

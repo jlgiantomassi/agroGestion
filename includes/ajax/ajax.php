@@ -110,9 +110,9 @@ switch ($accion) {
         $cuit = $_GET['cuit'];
         $direccion = $_GET['direccion'];
         $id = 0;
-        $oProductores = new usuariosModel();
-        $datos = $oProductores->usuarioById($productor);
-        $id = $oProductores->insertar($productor, $cuit, $direccion, 'true', 'false', 'false');
+        $oProductores = new empresasModel();
+        //$datos = $oProductores->empresaById($productor);
+        $id = $oProductores->insertar($productor, $cuit, $direccion, 'true', 'false', 'false','false',$idUsuarioActivo);
         if ($id > 0) {
             echo $id;
         } else {

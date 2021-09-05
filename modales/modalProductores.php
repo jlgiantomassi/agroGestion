@@ -4,14 +4,14 @@
     $rowsProductores = $oProductor->listarProductores($idUsuarioActivo);
     $cantProductores = $oProductor->cantidadEmpresas();
     $rowProdActivo=$oProductor->empresaById($idEmpresaActiva);
-    if($cantProductores>0)
+    /*if($cantProductores>0)
     {
         $primerCuit = $rowProdActivo[0]['cuit'];
         $primerDireccion = $rowProdActivo[0]['direccion'];
     }else{
         $primerCuit = "";
         $primerDireccion ="";
-    }
+    }*/
 ?>
 <!-- modal para agregar un Productor a la base de datos y actualizar la lista -->
 <div class="modal fade" id="modalProductor" tabindex="-1" role="dialog" aria-labelledby="lbltitulo" aria-hidden="true">
@@ -39,7 +39,7 @@
                             } ?>
                         </select>
                     </div>
-
+                    <!--
                     <div class="form-group">
                         <label for="txtCuit" class="col-form-label">CUIT:</label>
                         <input type="text" class="form-control" id="txtCuit" name="txtCuit" value="<?php echo $primerCuit; ?>">
@@ -49,9 +49,9 @@
                         <label for="txtDireccion" class="col-form-label">Direccion:</label>
                         <input type="text" class="form-control" id="txtDireccion" name="txtDireccion" value="<?php echo $primerDireccion; ?>">
                     </div>
-
+                        -->
                     <div class="form-group">
-                        <label for="txtParticipacion" class="col-form-label">Porcentaje participacion:</label>
+                        <label for="txtParticipacion" class="col-form-label">Participacion Total:</label>
                         <input type="text" class="form-control" id="txtParticipacion" name="txtParticipacion" value="100">
                     </div>
                     <div class="modal-footer">
@@ -99,6 +99,44 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                         <button type="button" class="btn btn-primary" id="btnInsertarProductor">Agregar</button>
+                    </div>
+
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- modal para modificar un productor a la lista de datos y actualizar la bd -->
+<div class="modal fade" id="modalModificarProductor" tabindex="-1" role="dialog" aria-labelledby="lbltitulo" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="lbltitulo">Modificar Productores</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button> 
+            </div>
+            <div class="modal-body">
+                <form id="frmAgregarProductor" >
+
+                    <div class="form-group">
+                        <label for="txtModProductor" class="col-form-label">Productor:</label>
+                        <input type="text" class="form-control" id="txtModProductor" name="txtModProductor" value="" disabled>
+
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="txtModParticipacionProductor" class="col-form-label">Participacion Total:</label>
+                        <input type="number" class="form-control" id="txtModParticipacionProductor" name="txtModParticipacionProductor" value="">
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-primary" id="btnModParticipacionProductor">Agregar</button>
                     </div>
 
 

@@ -14,6 +14,8 @@ $actividades = $oActividad->cargarActividades($idloteCampana);
 $totalActividades = 0;
 
 $totalInsumos = 0;
+
+$productores=$oActividad->participacionProductores($idloteCampana);
 ?>
 
 <body>
@@ -21,14 +23,24 @@ $totalInsumos = 0;
         <div class="card p-1 mb-2 shadow bg-white rounded ">
             <h3 class="text-center ">Informe de Costos Detallado</h3>
         </div>
-        <div class="card" id="datos">
+
+        <div class="card col-12" id="datos">
+            
             <div class="row">
                 <div class="col-3 text-right">
-                    Productor
+                    Usuario
                 </div>
                 <div class="col-3 text-left">
                     <strong><?php echo $datos[0]["usuario"]; ?></strong>
                 </div>
+                
+                <div class="col-3 text-right">
+                    Lote
+                </div>
+                <div class="col-3 text-left">
+                    <strong><?php echo $datos[0]["lote"]; ?></strong>
+                
+            </div>
             </div>
             <div class="row">
                 <div class="col-3 text-right">
@@ -36,6 +48,12 @@ $totalInsumos = 0;
                 </div>
                 <div class="col-3 text-left">
                     <strong><?php echo $datos[0]["campana"]; ?></strong>
+                </div>
+                <div class="col-3 text-right">
+                    Cultivo
+                </div>
+                <div class="col-3 text-left">
+                    <strong><?php echo $datos[0]["cultivo"]; ?></strong>
                 </div>
             </div>
             <div class="row">
@@ -45,16 +63,6 @@ $totalInsumos = 0;
                 <div class="col-3 text-left">
                     <strong><?php echo $datos[0]["campo"]; ?></strong>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-3 text-right">
-                    Lote
-                </div>
-                <div class="col-3 text-left">
-                    <strong><?php echo $datos[0]["lote"]; ?></strong>
-                </div>
-            </div>
-            <div class="row">
                 <div class="col-3 text-right">
                     Superficie
                 </div>
@@ -62,7 +70,7 @@ $totalInsumos = 0;
                     <strong><?php echo $datos[0]["superficie"]; ?></strong>
                 </div>
             </div>
-        </div>
+    </div>
 
         <div class="card mt-2 p-3" id="actividades">
             <h6>Resumen de Actividades e Insumos</h6>
@@ -86,7 +94,7 @@ $totalInsumos = 0;
                                 <td><strong><?php echo $actividad["labor"]; ?></strong></td>
                                 <td class="text-right"><strong><?php echo $actividad["superficie"]; ?></strong></td>
                                 <td class="text-right"><strong><?php echo $actividad["precioha"]; ?></strong></td>
-                                <td class="text-right"><strong><?php echo $actividad["superficie"] * $actividad["precioha"]; ?></strong></td>
+                                <td class="text-right"><strong><?php echo number_format($actividad["superficie"] * $actividad["precioha"],2); ?></strong></td>
                                 
                             </tr>
                             <?php foreach ($insumos as $insumo) {
@@ -104,9 +112,37 @@ $totalInsumos = 0;
                         <tr class="bg-light">
 
                             <td colspan="4" class="text-right"><strong>Total</strong></td>
-                            <td class="text-right"><strong><?php echo $totalActividades+$totalInsumos; ?></strong></td>
+                            <td class="text-right"><strong><?php echo number_format($totalActividades+$totalInsumos,2); ?></strong></td>
 
                         </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card mt-2 p-3" id="participaciones">
+            <h6>Participaciones de Productores</h6>
+            <div class="row p-2">
+                <table class="table table-sm">
+                    <thead>
+                        <th>Productores</th>
+                        <th class="text-right">Participacion Total</th>
+                        <th class="text-right">Porcentaje aportado</th>
+                    </thead>
+                    <tbody>
+                    <?php 
+                        $totalAportes=0;
+                        foreach ($productores as $productor) {
+                            $totalAportes += $productor["total"]; 
+                        }
+                            ?>
+                        <?php foreach ($productores as $productor) { ?>
+                            <tr>
+                                <td><?php echo $productor["empresa"]; ?></td>
+                                <td class="text-right"><?php echo number_format($productor["total"],2); ?></td>
+                                <td class="text-right"><?php echo number_format((($productor["total"]/$totalAportes)*100),2); ?></td>
+                            </tr>
+                        <?php } ?>
                     </tbody>
                 </table>
             </div>

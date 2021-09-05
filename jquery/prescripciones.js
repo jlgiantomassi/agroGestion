@@ -1022,7 +1022,7 @@ function actualizarListaCampos() {
 }
 
 function actualizarListaProductores(id) {
-    let idproductor = 'idusuario';
+    let idproductor = 'idempresa';
     $("#sltproductores").empty();
     $.ajax({
         data: "accion=productores&idproductor=" + idproductor,
@@ -1032,17 +1032,17 @@ function actualizarListaProductores(id) {
         success: function (datos) {
             if (datos.length > 0) {
                 $.each(datos, function (index, valor) {
-                    if (valor.idproductor == parseInt(id)) {
+                    if (valor.idempresa == parseInt(id)) {
                         var sel = "selected";
                         $("#txtCuit").val(valor.cuit);
                         $("#txtDireccion").val(valor.direccion);
                     }
-                    $("#sltproductores").append('<option value="' + valor.idusuario + '" ' + sel + '>' + valor.usuario + '</option>');
+                    $("#sltproductores").append('<option value="' + valor.idempresa + '" ' + sel + '>' + valor.empresa + '</option>');
                 });
             }
         },
         error: function () {
-            alert("error de conexion al actualizar la lista de productores");
+            alert("error de conexion al actualizar la lista de empresas de productores");
         }
     });
 }
