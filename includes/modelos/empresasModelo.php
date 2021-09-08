@@ -1,6 +1,7 @@
 <?php
 include_once($raiz."conexion/BaseDatos.php");
 
+
 class empresasModel 
 {
     private $bd;
@@ -20,6 +21,12 @@ class empresasModel
         return $this->bd->sql($sql);
     }
 
+    
+    public function listarEmpresasRubros($productor,$contratista,$proveedor,$otro,$idUsuario)
+    {
+        $sql="SELECT * FROM empresas WHERE idusuario=".$idUsuario." and productor=".$productor." and contratista=".$contratista." and proveedor=".$proveedor." and otro=".$otro." ORDER BY empresa ASC";
+        return $this->bd->sql($sql);
+    }
     public function listarProductores($idusuario)
     {
         $sql="SELECT * FROM empresas WHERE productor=1 and idusuario=".$idusuario." ORDER BY empresa ASC";
@@ -40,7 +47,14 @@ class empresasModel
     public function insertar($empresa,$cuit,$direccion,$productor,$contratista,$proveedor,$otro,$idusuario)
     {
         $sql="INSERT INTO `empresas`(`empresa`, `cuit`, `direccion`, `productor`, `contratista`, `proveedor`, `otro`, `idusuario`) VALUES ('".$empresa."','".$cuit."','".$direccion."',".$productor.",".$contratista.",".$proveedor.",".$otro.",".$idusuario.")";
-        return $this->bd->insertar($sql);
+        $idempresa= $this->bd->insertar($sql);
+        
+        if($productor==true) //vamos a crear el deposito de insumo principal para la empresa
+        {
+            $sql="INSERT INTO `depositos`(`deposito`,`idempresa`,`idproveedor`) VALUES('Deposito Principal',".$idempresa.",".$idempresa.")";
+            $this->bd->insertar($sql);
+        }
+        return $idempresa;
     }
 
     public function modificar($cuit, $direccion, $productor, $contratista, $proveedor, $otro, $idempresa){

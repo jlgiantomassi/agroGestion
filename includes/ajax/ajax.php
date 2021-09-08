@@ -29,6 +29,15 @@ switch ($accion) {
         $datos = $oProductores->empresaById($id);
         echo json_encode($datos);
         break;
+    case "listarEmpresas":
+        $productor=$_GET["productor"];
+        $contratista=$_GET["contratista"];
+        $proveedor=$_GET["proveedor"];
+        $otro=$_GET["otro"];
+        $oEmpresa=new empresasModel();
+        $datos=$oEmpresa->listarEmpresasRubros($productor,$contratista,$proveedor,$otro,$idUsuarioActivo);
+        echo json_encode($datos);
+    break;
     case "empresas":
         $id = $_GET['idempresa'];
         $oEmpresas = new empresasModel();

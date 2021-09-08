@@ -54,6 +54,43 @@ class actividadesModel
         return $this->bd->insertar($sql);
     }
 
+    public function salidaDepositoPrimario($idEmpresa,$idactividad_insumo,$cantidad)
+    {
+        //buscamos el id de insumo
+        $sql="SELECT idinsumo FROM actividades_insumos WHERE idactividad_insumo=".$idactividad_insumo;
+        $datos=$this->bd->sql($sql);
+        $idinsumo=$datos[0]["idinsumo"];
+        $sql="SELECT stock,iddeposito_insumo FROM depositos d INNER JOIN depositos_insumos di ON d.iddeposito=di.iddeposito WHERE d.idempresa=".$idEmpresa." and d.idproveedor=".$idEmpresa." and di.idinsumo=".$idinsumo;
+        $datos= $this->bd->sql($sql);
+        $iddeposito=0;
+        if($datos)
+        {
+            // 'se actualiza el stock en depositos insumos';
+            $stock=$datos[0]["stock"]-$cantidad;
+            $id=$datos[0]["iddeposito_insumo"];
+            $sql="UPDATE  depositos_insumos SET stock=".$stock." WHERE iddeposito_insumo=".$id;
+            $this->bd->modificar($sql);
+        }else{
+            // "se busca si existe el deposito principal para esta empresa";
+            $sql="SELECT iddeposito FROM depositos WHERE idempresa=".$idEmpresa." and idproveedor=".$idEmpresa;
+            $datos=$this->bd->sql($sql);
+            if($datos)
+            {
+                // "se encontro un deposito principal";
+                $iddeposito=$datos[0]["iddeposito"];
+            }else
+            {
+                // "se va a crear un deposito principal";
+                $sql="INSERT INTO depositos (`deposito`,`idempresa`,`idproveedor`) VALUES ('Deposito Principal',".$idEmpresa.",".$idEmpresa.")";
+                // "<br>".$sql."<br>";
+                $iddeposito=$this->bd->insertar($sql);
+            }
+            // "se va a crear un stock nuevo para este insumo";
+            $sql="INSERT INTO depositos_insumos (`iddeposito`,`idinsumo`,`stock`) VALUES (".$iddeposito.",".$idinsumo.",".-$cantidad.")";
+            $this->bd->insertar($sql);
+        }
+    }
+
     public function borrarActividadInsumo($id)
     {
         $sql = "DELETE FROM `actividades_insumos` WHERE idactividad_insumo=" . $id;
@@ -193,9 +230,9 @@ class actividadesModel
         $sql = "INSERT INTO `actividades_empresas`(`idactividad`, `idempresa`, `total`) VALUES (" . $idactividad . "," . $idempresa . "," . $total . ")";
         return $this->bd->insertar($sql);
     }
-    public function guardarProductorInsumo($idactividad_insumo, $idempresa, $total)
+    public function guardarProductorInsumo($idactividad_insumo, $idempresa, $total,$cantidad)
     {
-        $sql = "INSERT INTO `insumos_empresas`(`idactividad_insumo`, `idempresa`, `total`) VALUES (" . $idactividad_insumo . "," . $idempresa . "," . $total . ")";
+        $sql = "INSERT INTO `insumos_empresas`(`idactividad_insumo`, `idempresa`, `total`,`cantidad`) VALUES (" . $idactividad_insumo . "," . $idempresa . "," . $total . "," . $cantidad . ")";
         return $this->bd->insertar($sql);
     }
     public function ProductorActividad($idactividad)
@@ -206,7 +243,7 @@ class actividadesModel
 
     public function ProductorInsumo($idactividad_insumo)
     {
-        $sql = "SELECT ie.idinsumo_empresa,ie.idactividad_insumo,e.idempresa,e.empresa,ie.total FROM insumos_empresas ie INNER JOIN empresas e ON ie.idempresa=e.idempresa WHERE idactividad_insumo=" . $idactividad_insumo;
+        $sql = "SELECT ie.idinsumo_empresa,ie.idactividad_insumo,e.idempresa,e.empresa,ie.total,ie.cantidad FROM insumos_empresas ie INNER JOIN empresas e ON ie.idempresa=e.idempresa WHERE idactividad_insumo=" . $idactividad_insumo;
         return $this->bd->sql($sql);
     }
 
@@ -245,9 +282,17 @@ class actividadesModel
         return $this->bd->eliminar($sql);
     }
 
-    public function modificarProductorInsumo($idinsumo_empresa,$total)
+    public function modificarProductorInsumo($idinsumo_empresa,$total,$cantidadTotal)
     {
-        $sql="UPDATE insumos_empresas SET total=".$total." WHERE idinsumo_empresa=".$idinsumo_empresa;
+        $sql="SELECT * FROM insumos_empresas WHERE idinsumo_empresa=".$idinsumo_empresa;
+        $datos=$this->bd->sql($sql);
+        $idempresa=$datos[0]["idempresa"];
+        $cantidadOld=$datos[0]["cantidad"];
+        $idactividad_insumo=$datos[0]["idactividad_insumo"];
+        $this->salidaDepositoPrimario($idempresa,$idactividad_insumo,$cantidadTotal-$cantidadOld);
+        
+        $sql="UPDATE insumos_empresas SET `total`=".$total.",`cantidad`=".$cantidadTotal." WHERE idinsumo_empresa=".$idinsumo_empresa;
         return $this->bd->modificar($sql);
+        
     }
 }

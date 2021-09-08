@@ -1,5 +1,6 @@
 <?php
 $raiz="../../";
+include_once($raiz . "includes/controlLogin.php");
 include_once $raiz.'includes/modelos/actividadesModelo.php';
 include_once $raiz.'includes/modelos/cultivosModelo.php';
 $oActividad=new actividadesModel();
@@ -44,7 +45,9 @@ switch ($accion) {
         $precio=        $_GET["precio"];
         $cantidadha=    $_GET["cantidadha"];
         $idinsumo=      $_GET["idinsumo"];
+        $cantidad=$cantidadha*$superficie;
         echo $oActividad->insertarActividadInsumo($idactividad,$idinsumo,$precio,$cantidadha,$superficie*$cantidadha);
+
     break;
     case "insLabor":
         $labor=$_GET["labor"];
@@ -153,7 +156,9 @@ switch ($accion) {
         $idactividad_insumo=$_GET["idactividad_insumo"];
         $idempresa=$_GET["idempresa"];
         $total=$_GET["total"];
-        echo $oActividad->guardarProductorInsumo($idactividad_insumo,$idempresa,$total);
+        $cantidad=$_GET["cantidad"];
+        $oActividad->salidaDepositoPrimario($idempresa,$idactividad_insumo,$cantidad);
+        echo $oActividad->guardarProductorInsumo($idactividad_insumo,$idempresa,$total,$cantidad);
     break;
     case "ProductorInsumo":
         $idactividad_insumo=$_GET["idactividad_insumo"];
@@ -175,7 +180,8 @@ switch ($accion) {
     case "modificarProductorInsumo":
         $idinsumo_empresa=$_GET["idinsumo_empresa"];
         $total=$_GET["total"];
-        echo $oActividad->modificarProductorInsumo($idinsumo_empresa,$total);
+        $cantidadTotal=$_GET["cantidadTotal"];
+        echo $oActividad->modificarProductorInsumo($idinsumo_empresa,$total,$cantidadTotal);
     break;
 }
 ?>

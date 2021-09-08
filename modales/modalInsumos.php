@@ -214,7 +214,7 @@ $cantUnidad = $oUnidades->cantidadUnidades();
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary" id="btnModificarInsumo">Modificar</button>
+                <button type="button" class="btn btn-primary" id="btnModificarInsumoActividad">Modificar</button>
             </div>
         </div>
     </div>

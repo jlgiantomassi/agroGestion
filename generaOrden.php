@@ -105,6 +105,7 @@ $cantInsumos = $oOrden->cantidadRegistros();
                                     <th>Campo</th>
                                     <th>Lote</th>
                                     <th class="text-right">Superficie</th>
+                                    <th class="text-right col-2">Superf. Realizada</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -113,6 +114,7 @@ $cantInsumos = $oOrden->cantidadRegistros();
                                         <td><?php echo $rowCampo['campo'] ?></td>
                                         <td><?php echo $rowCampo['lote'] ?></td>
                                         <td class="text-right"><?php echo $rowCampo['superficie'] ?></td>
+                                        <td></td>
                                     </tr>
                                 <?php } ?>
                             </tbody>
@@ -137,6 +139,7 @@ $cantInsumos = $oOrden->cantidadRegistros();
                                     <th class="text-right">Cant/ha</th>
                                     <th class="text-right">Unidad</th>
                                     <th class="text-right">Total</th>
+                                    <th class="text-right col-2">Total Usado</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -146,6 +149,7 @@ $cantInsumos = $oOrden->cantidadRegistros();
                                         <td class="text-right"><?php echo $rowInsumo['cantidadHa'] ?></td>
                                         <td class="text-right"><?php echo $rowInsumo['unidad'] ?></td>
                                         <td class="text-right"><?php echo $rowInsumo['cantidadTotal'] ?></td>
+                                        <td></td>
                                     </tr>
                                 <?php } ?>
                             </tbody>

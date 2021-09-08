@@ -192,6 +192,7 @@
                                             <thead class="thead-light">
                                                 <tr>
                                                     <th>Productor</th>
+                                                    <th class="text-right">Cantidad</th>
                                                     <th class="text-right">Participacion</th>
                                                     <th class='text-center'>Accion</th>
                                                 </tr>

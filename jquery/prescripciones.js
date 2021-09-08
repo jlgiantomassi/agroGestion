@@ -14,6 +14,7 @@ let error = false;
 function iniciarEvento() {
     totalLabores = $("#txtPrecioLabor").val();
 
+    $("#cantidadAportadoProductor").addClass("d-none");//ocultamos este div porque se usa solamente en actividades
     $("#resumen").hide();
     //cargar el combo de lotes
     //$('#alerta').alert('close');

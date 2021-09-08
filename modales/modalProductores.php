@@ -44,12 +44,12 @@
                         <label for="txtCuit" class="col-form-label">CUIT:</label>
                         <input type="text" class="form-control" id="txtCuit" name="txtCuit" value="<?php echo $primerCuit; ?>">
                     </div>
-
-                    <div class="form-group">
-                        <label for="txtDireccion" class="col-form-label">Direccion:</label>
-                        <input type="text" class="form-control" id="txtDireccion" name="txtDireccion" value="<?php echo $primerDireccion; ?>">
+                    -->
+                    <div class="form-group" id="cantidadAportadoProductor">
+                        <label for="txtProductorCantidad" class="col-form-label">Cantidad Total aportado:</label>
+                        <input type="number" class="form-control" id="txtProductorCantidad" name="txtProductorCantidad" value="">
                     </div>
-                        -->
+                        
                     <div class="form-group">
                         <label for="txtParticipacion" class="col-form-label">Participacion Total:</label>
                         <input type="text" class="form-control" id="txtParticipacion" name="txtParticipacion" value="100">
@@ -127,7 +127,10 @@
                         <input type="text" class="form-control" id="txtModProductor" name="txtModProductor" value="" disabled>
 
                     </div>
-
+                    <div class="form-group">
+                        <label for="txtModCantidadProductor" class="col-form-label">Cantidad Total Participacion:</label>
+                        <input type="number" class="form-control" id="txtModCantidadProductor" name="txtModCantidadProductor" value="">
+                    </div>
 
                     <div class="form-group">
                         <label for="txtModParticipacionProductor" class="col-form-label">Participacion Total:</label>
@@ -136,7 +139,7 @@
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                        <button type="button" class="btn btn-primary" id="btnModParticipacionProductor">Agregar</button>
+                        <button type="button" class="btn btn-primary" id="btnModParticipacionProductor">Modificar</button>
                     </div>
 
 
