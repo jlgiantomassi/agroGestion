@@ -151,7 +151,7 @@
                                             <th>Insumo</th>
                                             <th class="text-right">Cant/ha</th>
                                             <th class="text-right">Precio unit.</th>
-                                            <th class="text-right">Total/ha</th>
+                                            <th class="text-right">Cant.Total</th>
                                             <th class='text-center'>Accion</th>
                                         </tr>
                                     </thead>

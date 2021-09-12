@@ -10,9 +10,9 @@ class personalesModel
         $this->bd = new BaseDatos();
     }
 
-    public function listarPersonales($idusuario) //retorna todos los campos en un array asociativo
+    public function listarPersonales($idempresa) //retorna todos los campos en un array asociativo
     {
-        $sql="SELECT * FROM personales WHERE idusuario=".$idusuario." order by personal ASC";
+        $sql="SELECT * FROM personales WHERE idempresa=".$idempresa." order by personal ASC";
         return $this->bd->sql($sql);
     }
 
@@ -21,15 +21,15 @@ class personalesModel
         return $this->bd->cantidadRegistros();
     }
 
-    public function personalById($idpersonal,$idusuario)  //returno un array asociativo con el usuario pasado por id
+    public function personalById($idpersonal,$idempresa)  //returno un array asociativo con el usuario pasado por id
     {
-        $sql="SELECT * FROM personales WHERE idpersonal = ".$idpersonal. " and idusuario=".$idusuario;
+        $sql="SELECT * FROM personales WHERE idpersonal = ".$idpersonal. " and idempresa=".$idempresa;
         return $this->bd->sql($sql);
     }
 
-    public function insertar($personal,$cuil,$precioHa,$idusuario)
+    public function insertar($personal,$cuil,$precioHa,$idempresa)
     {
-        $sql="INSERT INTO `personales`(`personal`,`cuil`,`precioHa`,`idusuario`) VALUES ('".$personal."','".$cuil."',".$precioHa.",".$idusuario.")";
+        $sql="INSERT INTO `personales`(`personal`,`cuil`,`precioHa`,`idempresa`) VALUES ('".$personal."','".$cuil."',".$precioHa.",".$idempresa.")";
         return $this->bd->insertar($sql);
     }
 

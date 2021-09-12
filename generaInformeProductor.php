@@ -52,14 +52,14 @@ ob_start();
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/estilos.css" />
+    <link rel="stylesheet" href="css/estilosOrdenes.css?version=<?php echo rand(1,10000); ?>" />
 
     <title>Orden de Trabajo</title>
 </head>
 
 
 <body>
-    <div class="container col-5 mt-2">
+    <div class="container col-8 mt-2">
         <div class="card mb-2 shadow">
             <h4 class="text-center">Orden de Trabajo - Informe Productor</h4>
         </div>

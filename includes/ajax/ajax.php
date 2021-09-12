@@ -53,7 +53,7 @@ switch ($accion) {
     case "personales":
         $idpersonal = $_GET['idpersonal'];
         $oPersonales = new personalesModel();
-        $datos = $oPersonales->personalById($idpersonal,$idUsuarioActivo);
+        $datos = $oPersonales->personalById($idpersonal,$idEmpresaActiva);
         echo json_encode($datos);
         break;
     case "lotes":
@@ -171,7 +171,7 @@ switch ($accion) {
         $precioHa = $_GET['precioHa'];
         $id = 0;
         $oPersonales = new personalesModel();
-        $id = $oPersonales->insertar($personal, $cuil, $precioHa, $idUsuarioActivo);
+        $id = $oPersonales->insertar($personal, $cuil, $precioHa, $idEmpresaActiva);
         if ($id > 0) {
             echo $id;
         } else {

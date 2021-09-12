@@ -9,7 +9,7 @@ let superficieSel = 0; //toma las superficies de la tabla de actividades que se 
 //let totalActividadSel=0; //toma el importe de la tabla de actividades que se seleccionan
 let idinsumoSel = 0;
 let totalInsumoSel = 0;
-let cantidadInsumoSel=0;
+let cantidadInsumoSel = 0;
 let idactividadInsumoSel = 0;
 let idactividadPersonalSel = 0;
 let idactividadTerceroSel = 0;
@@ -384,6 +384,7 @@ function iniciarEventosActividades() {
                                 $("#navDatos").addClass("d-none");
                                 idactividadSel = 0;
                                 superficieSel = 0;
+                                actualizaProductoresActividades(idactividadSel);
                             } else {
                                 alert("Hubo un error al borrar la actividad");
                             }
@@ -445,6 +446,7 @@ function iniciarEventosActividades() {
                                 completarResumen();
                                 //$("#navDatos").addClass("d-none");
                                 idinsumoSel = 0;
+                                actualizarListaInsumosActividades(idactividadSel);
                             } else {
                                 alert("Hubo un error al borrar la actividad");
                             }
@@ -692,9 +694,28 @@ function iniciarEventosActividades() {
                 url: "includes/ajax/actividades.php",
                 data: "accion=insertarInsumo&idactividad=" + idactividadSel + "&superficie=" + superficieSel + "&precio=" + precio + "&cantidadha=" + cantidadha + "&idinsumo=" + idinsumo,
                 dataType: "text",
-                success: function (id) {
+                success: function (idactividad_insumo) {
                     actualizarListaInsumosActividades(idactividadSel);
                     completarResumen();
+                    if ($("#chkCapitalizacion").prop("checked") == false) {
+                        let idempresaSel = $("#idEmpresaActiva").val();
+                        let total = precio * superficieSel*cantidadha;
+                        let cantProductor = superficieSel*cantidadha;
+                        $.ajax({
+                            type: "GET",
+                            url: "includes/ajax/actividades.php",
+                            data: "accion=insProductorInsumo&idempresa=" + idempresaSel + "&idactividad_insumo=" + idactividad_insumo + "&total=" + total + "&cantidad=" + cantProductor,
+                            dataType: "text",
+                            success: function (id) {
+                                if (id > 0) {
+                                    actualizaProductoresInsumos(idactividad_insumo);
+                                } else {
+                                    alert("Se produjo un error al guardar la participacion del productor para este insumos");
+                                }
+                                //opcionProductor = 0;
+                            }
+                        });
+                    }
                 },
                 error: function () {
                     alert("ocurrio un error al guardar la actividad");
@@ -825,7 +846,7 @@ function iniciarEventosActividades() {
         $("#modalModificarProductor").hide();
         $("#modalModificarProductor").modal('hide');
         let total = parseFloat($("#txtModParticipacionProductor").val());
-        let cantidadTotal=0;
+        let cantidadTotal = 0;
         if (opcionProductor == 1) {
             if ((totalProductorActividadSel + total - totalOldParticipacion) > (superficieSel * precioHaSel))
                 alert("La suma de aportes de Productores es mayor al valor de la actividad");
@@ -852,11 +873,11 @@ function iniciarEventosActividades() {
             if ((totalProductorInsumoSel + total - totalOldParticipacion) > (totalInsumoSel))
                 alert("La suma de aportes de Productores es mayor al valor del insumo");
             else {
-                cantidadTotal=parseFloat($("#txtModCantidadProductor").val());
+                cantidadTotal = parseFloat($("#txtModCantidadProductor").val());
                 $.ajax({
                     type: "GET",
                     url: "includes/ajax/actividades.php",
-                    data: "accion=modificarProductorInsumo&idinsumo_empresa=" + idProductorInsumoSel + "&total=" + total+ "&cantidadTotal=" + cantidadTotal,
+                    data: "accion=modificarProductorInsumo&idinsumo_empresa=" + idProductorInsumoSel + "&total=" + total + "&cantidadTotal=" + cantidadTotal,
                     dataType: "text",
                     success: function (datos) {
                         if (datos == 0)
@@ -1042,7 +1063,7 @@ function iniciarEventosActividades() {
         let flag = false;
         let idproductor = 0;
         let total = 0;
-        let cantProductor=0;
+        let cantProductor = 0;
         if (opcionProductor == 1)  //se agreaga el productor a la lista de Actividades
         {
             idproductor = $("#sltproductores").val();
@@ -1087,15 +1108,15 @@ function iniciarEventosActividades() {
                 alert("Este productor ya se encuentra en la lista");
             } else {
                 total = parseFloat($("#txtParticipacion").val())
-                cantProductor= parseFloat($("#txtProductorCantidad").val())
+                cantProductor = parseFloat($("#txtProductorCantidad").val())
                 if ((totalProductorInsumoSel + total) > totalInsumoSel) {
                     alert("La suma de las participaciones es mayor al valor del Insumo");
                 } else {
-                    let cantProductor=$("#txtProductorCantidad").val();
+                    let cantProductor = $("#txtProductorCantidad").val();
                     $.ajax({
                         type: "GET",
                         url: "includes/ajax/actividades.php",
-                        data: "accion=insProductorInsumo&idempresa=" + idproductor + "&idactividad_insumo=" + idinsumoSel + "&total=" + total+ "&cantidad=" + cantProductor,
+                        data: "accion=insProductorInsumo&idempresa=" + idproductor + "&idactividad_insumo=" + idinsumoSel + "&total=" + total + "&cantidad=" + cantProductor,
                         dataType: "text",
                         success: function (id) {
                             if (id > 0) {
@@ -1329,6 +1350,7 @@ function estaEnElCombo(nombre, slt) {
 //actualiza la lista de insumos en la tabla de insumos correspondiente a una actividad
 function actualizarListaInsumosActividades(idactividad) {
     $("#tblinsumos tbody").empty();
+    $("#tblproductoresInsumos tbody").empty();
     $("#btnInsProdModal").prop("disabled", true);
     $.ajax({
         type: "GET",
@@ -1541,7 +1563,7 @@ function actualizaProductoresActividades(idactividad) {
 function actualizaProductoresInsumos(idactividad_insumo) {
     $("#tblproductoresInsumos tbody").empty();
     totalProductorInsumoSel = 0;
-    let cantidadTotal=0;
+    let cantidadTotal = 0;
     $.ajax({
         type: "GET",
         url: "includes/ajax/actividades.php",
@@ -1550,7 +1572,7 @@ function actualizaProductoresInsumos(idactividad_insumo) {
         success: function (datos) {
             datos.forEach(dato => {
                 totalProductorInsumoSel += parseFloat(dato.total);
-                cantidadTotal+=parseFloat(dato.cantidad);
+                cantidadTotal += parseFloat(dato.cantidad);
                 $("#tblproductoresInsumos tbody").append("<tr>\
                                                                 <td class='d-none idinsumo_empresa'>" + dato.idinsumo_empresa + "</td>\
                                                                 <td class='d-none idempresa'>" + dato.idempresa + "</td>\
@@ -1567,8 +1589,8 @@ function actualizaProductoresInsumos(idactividad_insumo) {
                                                                         </td>\
                                                         </tr>");
             });
-            
-            if ((totalProductorInsumoSel != totalInsumoSel) || (cantidadTotal !=cantidadInsumoSel) ) {
+
+            if ((totalProductorInsumoSel != totalInsumoSel) || (cantidadTotal != cantidadInsumoSel)) {
                 $("#tblproductoresInsumos thead").removeClass("thead-light");
                 $("#tblproductoresInsumos thead").addClass("table-danger");
             } else {

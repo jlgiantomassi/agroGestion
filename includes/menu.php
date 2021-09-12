@@ -36,19 +36,33 @@ $empresaActiva=$empresas[0]["empresa"];
                     <a class="dropdown-item" href="insumos.php">Insumos</a>
                     <a class="dropdown-item" href="labores.php">Labores</a>
                     <a class="dropdown-item" href="personales.php">Personales</a>
+                    <a class="dropdown-item" href="ejemplopdf.php">PDF</a>
                 </div>
             </li>
 
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Ordenes
+                    Gestion
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="actividades.php">Agregar Actividad</a>
+                    
                     <a class="dropdown-item" href="prescripciones.php">Agregar Orden</a>
                     <a class="dropdown-item" href="verOrdenes.php">Ver Ordenes</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">Reservado</a>
+                    <a class="dropdown-item" href="actividades.php">Agregar Actividad</a>
+                </div>
+            </li>
+
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Facturacion
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    
+                    <a class="dropdown-item" href="facturas.php">Facturas</a>
+                    <a class="dropdown-item" href="remitos.php">Remitos</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#">Otros</a>
                 </div>
             </li>
 

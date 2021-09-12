@@ -1,7 +1,7 @@
 <?php
     require_once("includes/modelos/personalesModelo.php");
     $oPersonales=new personalesModel();
-    $rowsPersonales = $oPersonales->listarPersonales($idUsuarioActivo);
+    $rowsPersonales = $oPersonales->listarPersonales($idEmpresaActiva);
     $cantPersonales = $oPersonales->cantidadPersonales();
     $primerPrecioHa = ($cantPersonales > 0) ? $rowsPersonales[0]['precioHa'] : "";
     $primerCuil = ($cantPersonales > 0) ? $rowsPersonales[0]['cuil'] : "";

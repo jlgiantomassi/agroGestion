@@ -19,3 +19,6 @@ tr{
     vertical-align:middle;
     font-size:x-small;
 }
+label{
+    font-size: 80%;
+}

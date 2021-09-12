@@ -1,4 +1,5 @@
 <?php
+
 $raiz = "";
 include_once("./includes/controlLogin.php");
 include_once("./includes/modelos/ordenesModelo.php");
@@ -15,6 +16,8 @@ $cantCampos = $oOrden->cantidadRegistros();
 
 $insumos = $oOrden->verOrdenInsumos($idordentrabajo);
 $cantInsumos = $oOrden->cantidadRegistros();
+
+
 ?>
 
 <html lang='es'>
@@ -23,13 +26,13 @@ $cantInsumos = $oOrden->cantidadRegistros();
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/estilos.css" />
+    <link rel="stylesheet" href="css/estilosOrdenes.css?version=<?php echo rand(1, 10000); ?>" />
 
     <title>Orden de Trabajo</title>
 </head>
 
 <body>
-    <div class="container col-5 mt-2">
+    <div class="container col-8 mt-2">
         <div class="card mb-2 shadow">
             <h4 class="text-center">Orden de Trabajo</h4>
         </div>
@@ -104,8 +107,9 @@ $cantInsumos = $oOrden->cantidadRegistros();
                                 <tr>
                                     <th>Campo</th>
                                     <th>Lote</th>
-                                    <th class="text-right">Superficie</th>
-                                    <th class="text-right col-2">Superf. Realizada</th>
+                                    <th class="text-right ">Superficie</th>
+                                    <th class="text-right ">Superf. Realizada</th>
+                                    <th class="text-right ">Fecha Realizada</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -114,6 +118,7 @@ $cantInsumos = $oOrden->cantidadRegistros();
                                         <td><?php echo $rowCampo['campo'] ?></td>
                                         <td><?php echo $rowCampo['lote'] ?></td>
                                         <td class="text-right"><?php echo $rowCampo['superficie'] ?></td>
+                                        <td></td>
                                         <td></td>
                                     </tr>
                                 <?php } ?>
@@ -139,7 +144,7 @@ $cantInsumos = $oOrden->cantidadRegistros();
                                     <th class="text-right">Cant/ha</th>
                                     <th class="text-right">Unidad</th>
                                     <th class="text-right">Total</th>
-                                    <th class="text-right col-2">Total Usado</th>
+                                    <th class="text-right">Total Usado</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -157,6 +162,14 @@ $cantInsumos = $oOrden->cantidadRegistros();
                     </div>
                 </div>
             <?php } ?>
+
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-10 ml-5">
+            <strong>Observaciones de Operario</strong>
+        </div>
+        <div class="card">
 
         </div>
     </div>

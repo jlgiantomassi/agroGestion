@@ -93,6 +93,16 @@ class actividadesModel
 
     public function borrarActividadInsumo($id)
     {
+        //se van a actualizar los stock de las empresas
+        $sql="SELECT * FROM `insumos_empresas` WHERE idactividad_insumo=".$id;
+        $datos=$this->bd->sql($sql);
+        foreach ($datos as $dato) {
+            $cantidadBorrar=$dato["cantidad"];
+            $idempresa=$dato["idempresa"];
+            $idactividad_insumo=$dato["idactividad_insumo"];
+            $this->salidaDepositoPrimario($idempresa,$idactividad_insumo,-$cantidadBorrar);
+        }
+
         $sql = "DELETE FROM `actividades_insumos` WHERE idactividad_insumo=" . $id;
         $resultado = $this->bd->eliminar($sql);
         if ($resultado) {
@@ -277,8 +287,15 @@ class actividadesModel
 
     public function borrarProductorInsumo($idinsumo_empresa)
     {
-        $sql="DELETE FROM insumos_empresas WHERE idinsumo_empresa=".$idinsumo_empresa;
+        //buscamos la cantidad que tiene la empresa aportada
+        $sql="SELECT * FROM insumos_empresas WHERE idinsumo_empresa=".$idinsumo_empresa;
+        $datos=$this->bd->sql($sql);
+        $cantidadBorrar=$datos[0]["cantidad"];
+        $idempresa=$datos[0]["idempresa"];
+        $idactividad_insumo=$datos[0]["idactividad_insumo"];
         //echo $sql;
+        $this->salidaDepositoPrimario($idempresa,$idactividad_insumo,-$cantidadBorrar);
+        $sql="DELETE FROM insumos_empresas WHERE idinsumo_empresa=".$idinsumo_empresa;
         return $this->bd->eliminar($sql);
     }
 
