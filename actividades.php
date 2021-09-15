@@ -34,7 +34,7 @@
                     <!-- Campos -->
                     <div class="form-group col-3 ">
 
-                        <label for="sltcamposAct" class="col-form-label">Campo</label>
+                        <label for="sltcamposAct" class="col-form-label ml-2">Campo</label>
                         <button type="button" class="btn btn-sm p-0 m-0" data-toggle="modal" data-target="#modalInsertarCampo" data-whatever="" id="btnInsCampoModal"><i class="material-icons shadow">add_box</i></button>
                         <select class="form-control " name="sltcamposAct" id="sltcamposAct">
                             <option value="0"></option>
@@ -48,7 +48,7 @@
 
                     <!-- Lotes -->
                     <div class="form-group col-3 ">
-                        <label for="sltlotesAct" class="col-form-label">Lote</label>
+                        <label for="sltlotesAct" class="col-form-label ml-2">Lote</label>
                         <button type="button" class="btn btn-sm p-0 m-0" data-toggle="modal" data-target="#modalInsertarLote" data-whatever="" id="btnInsLoteModal"><i class="material-icons shadow">add_box</i></button>
                         <select class="form-control " name="sltlotesAct" id="sltlotesAct">
 
@@ -57,7 +57,7 @@
 
                     <!-- cultivos -->
                     <div class="form-group col-2 ">
-                        <label for="sltcultivos" class="col-form-label">Cultivo</label>
+                        <label for="sltcultivos" class="col-form-label ml-2">Cultivo</label>
                         <select class="form-control " name="sltcultivos" id="sltcultivos">
                             <option value="0"></option>
                             <?php foreach ($cultivos as $cultivo) { ?>
@@ -69,7 +69,7 @@
                     </div>
 
                     <div class="form-group col-2 ">
-                        <label for="supLote" class="col-form-label">Superficie</label>
+                        <label for="supLote" class="col-form-label ml-2 lblActividades">Superficie</label>
                         <input type="number" class="form-control col-8" id="supLote" />
                     </div>
 

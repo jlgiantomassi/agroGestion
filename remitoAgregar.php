@@ -21,15 +21,15 @@
 
     ?>
 
-    <script src="jquery/facturas.js?version=<?php echo rand(1, 10000); ?>"></script>
+    <script src="jquery/remitos.js?version=<?php echo rand(1, 10000); ?>"></script>
     <div class="container border bg-white col-8">
         <div id="alerta"></div>
-        <form id="formAddFactura">
+        <form id="formAddRemito">
             <!-- Campos y lotes-->
             <div>
                 <div class="row">
                     <div class="shadow p-3 mb-3 bg-white rounded col-md-12 ">
-                        <h5>Agregar Factura</h5>
+                        <h5>Agregar Remito</h5>
                     </div>
                 </div>
             </div>
@@ -37,13 +37,17 @@
             <div class="card">
                 <div class="card-body col-12">
                     <div class="form-row">
-                        <div class="form-group col-md-3">
+                        <div class="form-group col-md-2">
                             <label for="fecha" class="m-0 ml-2">Fecha</label>
-                            <input type="text" class="form-control col-6" id="fecha" name="fecha" value="<?php echo date("d/m/Y"); ?>">
+                            <input type="text" class="form-control col-9" id="fecha" name="fecha" value="<?php echo date("d/m/Y"); ?>">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="nroRemito" class="m-0 ml-2">Nro Remito</label>
+                            <input type="text" class="form-control col-9" id="nroRemito" name="nroRemito" value="">
                         </div>
                         <div class="form-group col-md-3">
                             <label for="txtempresa" class="m-0 ml-2">Empresa</label>
-                            <select id="sltempresas" class="form-control">
+                            <select id="sltempresas" class="form-control col-10">
                                 <?php foreach ($empresas as $empresa) { ?>
                                     <option value="<?php echo $empresa["idempresa"]; ?>"><?php echo $empresa["empresa"]; ?></option>
                                 <?php } ?>
@@ -66,16 +70,13 @@
                                 <?php } ?>
                             </select>
                         </div>
-                        <div class="form-group col-md-2">
-                            <label for="precioUn" class="m-0 ml-2">Precio Un.</label>
-                            <input type="number" class="form-control" id="precioUn" name="precioUn" value="<?php echo $primerPrecio; ?>">
-                        </div>
+                        
                         <div class="form-group col-md-2">
                             <label for="cantidadInsumo" class="m-0 ml-2">Cantidad</label>
                             <input type="number" class="form-control" id="cantidadInsumo" name="cantidadInsumo" value="">
                         </div>
                         <div class="form-group col-md-2">
-                            <label for="cantidadInsumo" class="m-0 ml-2">Agregar a la lista </label>
+                            <label for="btnAgregar" class="m-0 ml-2">Agregar a la lista </label>
                             <button class="form-control btn btn-success col-md-8" id="btnAgregar" name="btnAgregar">Agregar</button>
                         </div>
                     </div>
@@ -88,9 +89,7 @@
                         <thead>
                             <th class="d-none">id</th>
                             <th>Insumos</th>
-                            <th class='text-right'>Precio Un.</th>
                             <th class='text-right'>Cantidad</th>
-                            <th class='text-right'>Total</th>
                         </thead>
                         <tbody>
 
@@ -100,7 +99,8 @@
             </div>
             <div class="card">
                 <div class="card-body col-12 text-center">
-                    <button class="btn btn-success" id="btnGuardarFactura">Guardar</button>
+                    <button class="btn btn-success col-1" id="btnGuardarRemito">Guardar</button>
+                    <a href="remitos.php" class="btn btn-primary col-1" id="btnVolverRemito">Volver</a>
                 </div>
             </div>
         </form>
@@ -109,12 +109,3 @@
 </body>
 
 </html>
-
-<script>
-    $('#fecha').datepicker({
-        uiLibrary: 'bootstrap4',
-        format: 'dd/mm/yyyy',
-        locale: 'es-es'
-
-    });
-</script>

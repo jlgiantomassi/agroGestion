@@ -31,7 +31,7 @@
 
                 <div class="row"> 
                     <div class="form-group col-md-12">
-                        <label for="fecha">Fecha</label>
+                        <label for="fecha" class="m-0 ml-2">Fecha</label>
                         <input class="form-control col-md-2" type="text" value="<?php echo date('d/m/Y'); ?>" id="fecha" name="fecha">
                     </div>
                 </div>
@@ -39,7 +39,7 @@
 
                 <div class="row mb-3">
                     <div class="form-group col-md-4 ">
-                        <label for="sltlabores" class="col-md-5">Tipo de Labor</label>
+                        <label for="sltlabores" class="m-0  col-md-5">Tipo de Labor</label>
                         <button type="button" class="btn btn-sm p-0 m-0" data-toggle="modal" data-target="#modalLabor" data-whatever="" id="btnAbrirNuevoLabor"><i class="material-icons">add_box</i></button>
                         <select class="form-control " name="sltlabores" id="sltlabores">
                             <?php

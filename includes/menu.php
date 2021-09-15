@@ -62,7 +62,7 @@ $empresaActiva=$empresas[0]["empresa"];
                     <a class="dropdown-item" href="facturas.php">Facturas</a>
                     <a class="dropdown-item" href="remitos.php">Remitos</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">Otros</a>
+                    <a class="dropdown-item" href="stockInsumos.php">Stock de Insumos</a>
                 </div>
             </li>
 
