@@ -66,7 +66,7 @@ if($cantCampos>0)
 
                     <div class="form-group">
                         <label for="txtsuperficie" class="col-form-label">Superficie:</label>
-                        <input type="text" class="form-control" id="txtsuperficie" name="txtsuperficie" value="<?php echo $primerSuperficie; ?>">
+                        <input type="number" class="form-control" id="txtsuperficie" name="txtsuperficie" value="<?php echo $primerSuperficie; ?>">
 
                     </div>
 
@@ -100,7 +100,7 @@ if($cantCampos>0)
 
                     <div class="form-group">
                         <label for="txtInsSupLote" class="col-form-label">Superficie Lote:</label>
-                        <input type="text" class="form-control" id="txtInsSupLote" name="txtInsSupLote" value="">
+                        <input type="number" class="form-control" id="txtInsSupLote" name="txtInsSupLote" value="">
 
                     </div>
 
@@ -132,7 +132,7 @@ if($cantCampos>0)
 
                     <div class="form-group">
                         <label for="txtModificarSupLote" class="col-form-label">Superficie Lote:</label>
-                        <input type="text" class="form-control" id="txtModificarSupLote" name="txtModificarSupLote" value="">
+                        <input type="number" class="form-control" id="txtModificarSupLote" name="txtModificarSupLote" value="">
 
                     </div>
 

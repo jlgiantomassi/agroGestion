@@ -13,7 +13,8 @@
     include_once 'includes/modelos/empresasModelo.php';
     $oEmpresa = new empresasModel();
     $empresas = $oEmpresa->listarEmpresas($idUsuarioActivo);
-    
+    if($oEmpresa->cantidadEmpresas()==1)
+        $idempresaActiva=$empresas[0]["idempresa"];
     ?>
     <script src="./jquery/empresas.js?version=<?php echo rand(1, 10000); ?>"></script>
     <div class="container border bg-white">

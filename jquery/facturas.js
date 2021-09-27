@@ -17,14 +17,42 @@ function iniciarEventosFacturas() {
 
     $('#fecha').change(function (e) {
         e.preventDefault();
-        if ($('#fecha').val() > $('#fechaVencimiento').val())
+        if (comparaFechasdmY($('#fecha').val(),$('#fechaVencimiento').val())==true)
             $('#fechaVencimiento').val($('#fecha').val());
     });
 
     $('#fechaVencimiento').change(function (e) {
         e.preventDefault();
-        if ($('#fechaVencimiento').val() < $('#fecha').val())
+        if (comparaFechasdmY($('#fecha').val(),$('#fechaVencimiento').val())==true)
             $('#fechaVencimiento').val($('#fecha').val());
+    });
+
+    $("#btnInsertarInsumo").click(function (e) {
+        e.preventDefault();
+        let flag = false;
+        let insumo = $("#txtInsInsumo").val();
+        let precio=0;
+        let idunidad=$("#sltunidad").val();
+        let slt = $("#sltinsumos option");
+        if (estaEnElCombo(insumo, slt)) {
+            alert("El nombre de este insumo ya existe");
+        }
+        else{
+            $.ajax({
+                type: "GET",
+                url: "includes/ajax/ajax.php",
+                data: "accion=insInsumos&insumo=" + insumo + "&idusuario=" + idUsuarioActivo+"&precio="+precio+"&idunidad="+idunidad,
+                dataType: "text",
+                success: function (id) {
+                    if (id == "false") {
+                        alert("se genero un error al guardar el insumo");
+                    } 
+                    actualizarListaInsumos();
+                    
+
+                }
+            });
+        }
     });
 
     $("#sltinsumos").change(function (e) {
@@ -181,9 +209,41 @@ function estaEnLaTabla(tbl, idinsumo) {
     return flag;
 }
 
+function estaEnElCombo(nombre, slt) {
+    let estado = false;
+    slt.each(function () {
+        if ($(this).text().trim() == nombre) {
+            estado = true;
+        }
+    });
+    return estado;
+
+}
+
 function actualizarResumen()
 {
     $("#resSubtotal").html(_importe.toFixed(2));
     $("#resIva").html(_iva.toFixed(2));
     $("#resTotal").html((_importe+_iva).toFixed(2));
+}
+
+function actualizarListaInsumos() {
+    let idinsumo = 'idinsumo';
+    $("#sltinsumos").empty();
+    $.ajax({
+        data: "accion=insumos&idinsumo=" + idinsumo,
+        type: "GET",
+        dataType: "json",
+        url: "includes/ajax/ajax.php",
+        success: function (datos) {
+            if (datos.length > 0) {
+                $.each(datos, function (index, valor) {
+                    $("#sltinsumos").append('<option value="' + valor.idinsumo + '">' + valor.insumo + '</option>');
+                });
+            }
+        },
+        error: function () {
+            alert("error de conexion");
+        }
+    });
 }

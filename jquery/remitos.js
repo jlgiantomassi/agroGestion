@@ -7,7 +7,7 @@ function iniciarEventosRemitos() {
         format: 'dd/mm/yyyy',
         locale: 'es-es'
     });
-
+   
     $("#btnAgregar").click(function (e) {
         e.preventDefault();
         let idinsumo = $("#sltinsumos").val();
@@ -28,6 +28,34 @@ function iniciarEventosRemitos() {
                 alert("Este insumo ya se encuentra en la lista");
             }
 
+        }
+    });
+
+    $("#btnInsertarInsumo").click(function (e) {
+        e.preventDefault();
+        let flag = false;
+        let insumo = $("#txtInsInsumo").val();
+        let precio=0;
+        let idunidad=$("#sltunidad").val();
+        let slt = $("#sltinsumos option");
+        if (estaEnElCombo(insumo, slt)) {
+            alert("El nombre de este insumo ya existe");
+        }
+        else{
+            $.ajax({
+                type: "GET",
+                url: "includes/ajax/ajax.php",
+                data: "accion=insInsumos&insumo=" + insumo + "&idusuario=" + idUsuarioActivo+"&precio="+precio+"&idunidad="+idunidad,
+                dataType: "text",
+                success: function (id) {
+                    if (id == "false") {
+                        alert("se genero un error al guardar el insumo");
+                    } 
+                    actualizarListaInsumos();
+                    
+
+                }
+            });
         }
     });
 
@@ -73,4 +101,36 @@ function estaEnLaTabla(tbl, idinsumo) {
         }
     });
     return flag;
+}
+
+function estaEnElCombo(nombre, slt) {
+    let estado = false;
+    slt.each(function () {
+        if ($(this).text().trim() == nombre) {
+            estado = true;
+        }
+    });
+    return estado;
+
+}
+
+function actualizarListaInsumos() {
+    let idinsumo = 'idinsumo';
+    $("#sltinsumos").empty();
+    $.ajax({
+        data: "accion=insumos&idinsumo=" + idinsumo,
+        type: "GET",
+        dataType: "json",
+        url: "includes/ajax/ajax.php",
+        success: function (datos) {
+            if (datos.length > 0) {
+                $.each(datos, function (index, valor) {
+                    $("#sltinsumos").append('<option value="' + valor.idinsumo + '">' + valor.insumo + '</option>');
+                });
+            }
+        },
+        error: function () {
+            alert("error de conexion");
+        }
+    });
 }

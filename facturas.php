@@ -61,7 +61,7 @@
 
                         </select>
                     </div>
-                    <div class="col-1 form-group d-flex align-items-center p-0 m-0 mt-1">
+                    <div class="col-1 form-group d-flex align-items-center p-0 m-0 mt-0">
                         <input class="col-10 btn btn-success" type="submit" value="Filtrar" name="enviar">
                     </div>
                 </div>
@@ -92,8 +92,8 @@
                                     <td class="text-right"><?php echo $factura["iva"]; ?></td>
                                     <td class="text-right"><?php echo $factura["total"]; ?></td>
                                     <td class="text-center">
-                                        <a href='facturaVer.php?idfactura=<?php echo $factura["idfactura"]; ?>' class='btn btn-success btn-sm btn-xxs col-4'>Ver</a>
-                                        <a href='facturaBorrar.php?idfactura=<?php echo $factura["idfactura"]; ?>' class='btn btn-danger btn-sm btn-xxs col-4' onclick="return confirm('Desea Borrar esta factura?')">Eliminar</a>
+                                        <a href='facturaVer.php?idfactura=<?php echo $factura["idfactura"]; ?>' ><i class='material-icons'>info</i></a>
+                                        <a href='facturaBorrar.php?idfactura=<?php echo $factura["idfactura"]; ?>'  onclick="return confirm('Desea Borrar esta factura?')"><i class='material-icons'>clear</i></a>
                                     </td>
                                 </tr>
                             <?php } ?>
@@ -107,6 +107,7 @@
 </body>
 
 </html>
+<script src="jquery/funciones.js"></script>
 <script>
     $('#fechaDesde').datepicker({
         uiLibrary: 'bootstrap4',
@@ -121,12 +122,12 @@
     });
 
     $('#fechaDesde').change(function() {
-        if ($('#fechaDesde').val() > $('#fechaHasta').val())
+        if (comparaFechasdmY($('#fechaDesde').val(),$('#fechaHasta').val())==true)
             $('#fechaHasta').val($('#fechaDesde').val());
     });
 
     $('#fechaHasta').change(function() {
-        if ($('#fechaHasta').val() < $('#fechaDesde').val())
+        if (comparaFechasdmY( $('#fechaDesde').val() , $('#fechaHasta').val() )==true)
             $('#fechaDesde').val($('#fechaHasta').val());
     });
 </script>

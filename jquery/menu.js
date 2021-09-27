@@ -7,6 +7,7 @@ function iniciarEventosMenu(){
         e.preventDefault();
         console.log("se clickeo");
     });
+
     $("#sltcampanas").change(function (e) { 
         e.preventDefault();
         $("#idCampanaActiva").val($("#sltcampanas").val());
@@ -22,6 +23,24 @@ function iniciarEventosMenu(){
             }
         });
         
+    });
+
+    $("#sltEmpresaActiva").change(function(e){
+        e.preventDefault();
+        $("#idEmpresaActiva").val($("#sltEmpresaActiva").val());
+        let idempresaActiva=$("#sltEmpresaActiva").val();
+        console.log(idempresaActiva);
+        $("#idEmpresaActiva").val(idempresaActiva);
+        let empresa=$("#sltEmpresaActiva option:selected").text()
+        $.ajax({
+            type: "GET",
+            url: "includes/controlLogin.php",
+            data: "MenuIdempresa="+idempresaActiva+"&MenuEmpresa="+empresa,
+            dataType: "text",
+            success: function (datos) {
+                location.reload();
+            }
+        });
     });
 
 }

@@ -39,6 +39,9 @@ if (isset($_REQUEST["descripcion"])) {
             $importeTotal = $importe + $dato->iva;
             $sql = "INSERT INTO `facturas_descripcion` (`idfactura`,`idinsumo`,`cantidad`,`precioUn`,`iva`,`importe`,`importeTotal`) VALUES (" . $idfactura . "," . $dato->idinsumo . "," . $dato->cantidad . "," . $dato->precioUn . "," . $dato->iva . "," . $importe . "," . $importeTotal . ")";
             $bd->insertar($sql);
+            //actualizamos el precio de los insumos
+            $sql="UPDATE `insumos` SET `precio`=".$dato->precioUn." WHERE idinsumo=".$dato->idinsumo;
+            $bd->modificar($sql);
             //actualizar deposito de empresa
             $sql = "SELECT * FROM depositos_insumos WHERE iddeposito=" . $iddeposito . " and idinsumo=" . $dato->idinsumo;
             $depositoInsumo = $bd->sql($sql);

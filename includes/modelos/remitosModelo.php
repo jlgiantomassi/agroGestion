@@ -18,7 +18,7 @@ class remitosModel
         $fechaHasta = fecha_a_mysql($fechaHasta);
         $subsql = " and fecha>='" . $fechaDesde . "' and fecha <='" . $fechaHasta . "'";
         if ($idproveedor > 0)
-            $subsql .= " and f.idproveedor=" . $idproveedor;
+            $subsql .= " and r.idproveedor=" . $idproveedor;
 
         $sql = "SELECT r.idremito,SUM(rd.cantidad) as total,DATE_FORMAT(r.fecha,'%d/%m/%Y') as fecha,e.empresa  FROM remitos r INNER JOIN remitos_descripcion rd ON r.idremito=rd.idremito INNER JOIN empresas e ON r.idproveedor=e.idempresa WHERE r.idempresa=" . $idempresa . $subsql . " GROUP by r.idremito";
         return $this->bd->sql($sql);

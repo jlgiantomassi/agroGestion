@@ -19,7 +19,7 @@ class facturasModel
         if ($idproveedor > 0)
             $subsql .= " and f.idproveedor=" . $idproveedor;
 
-        $sql = "SELECT f.idfactura,importe,iva,importeTotal as total,DATE_FORMAT(f.fecha,'%d/%m/%Y') as fecha,DATE_FORMAT(f.vencimiento,'%d/%m/%Y') as vencimiento,e.empresa  FROM facturas f INNER JOIN empresas e ON f.idproveedor=e.idempresa WHERE f.idempresa=" . $idempresa . $subsql;
+        $sql = "SELECT f.idfactura,numero,importe,iva,importeTotal as total,DATE_FORMAT(f.fecha,'%d/%m/%Y') as fecha,DATE_FORMAT(f.vencimiento,'%d/%m/%Y') as vencimiento,e.empresa  FROM facturas f INNER JOIN empresas e ON f.idproveedor=e.idempresa WHERE f.idempresa=" . $idempresa . $subsql. " ORDER BY f.fecha ASC";
         /*$sql="SELECT f.idfactura,SUM(ifnull(fd.importeTotal,0)) + SUM(ifnull(fdet.importeTotal,0)) as total,DATE_FORMAT(f.fecha,'%d/%m/%Y') as fecha,DATE_FORMAT(f.vencimiento,'%d/%m/%Y') as vencimiento,e.empresa  
         FROM facturas f 
         LEFT JOIN facturas_descripcion fd ON f.idfactura=fd.idfactura 
@@ -27,6 +27,12 @@ class facturasModel
         INNER JOIN empresas e ON f.idproveedor=e.idempresa 
         WHERE f.idempresa=" . $idempresa . $subsql . " GROUP by f.idfactura";
         */
+        return $this->bd->sql($sql);
+    }
+
+    public function saldoProveedor($fecha,$idproveedor,$idempresa)
+    {
+        $sql="SELECT SUM(importeTotal) as saldo FROM facturas f WHERE fecha<'".fecha_a_mysql($fecha)."' and idproveedor=".$idproveedor." and idempresa=".$idempresa;
         return $this->bd->sql($sql);
     }
 

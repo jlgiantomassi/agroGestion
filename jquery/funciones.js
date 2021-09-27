@@ -1,7 +1,15 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+function comparaFechasdmY(fecha1,fecha2) {
+    // convierte las fechas a yyyymmdd
+    tmp = fecha1.split('/');
+    fini = tmp[2] + tmp[1] + tmp[0];
+    tmp = fecha2.split('/');
+    ffin = tmp[2] + tmp[1] + tmp[0];
+    // la comparación
+    if (fini > ffin) {
+        return true;
+    }else{
+        return false
+    }
+}
 
 

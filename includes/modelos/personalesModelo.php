@@ -1,5 +1,6 @@
 <?php
 include_once($raiz."conexion/BaseDatos.php");
+include_once($raiz . "includes/funciones.php");
 
 class personalesModel 
 {
@@ -43,6 +44,19 @@ class personalesModel
     {
         $sql="DELETE FROM `personales` WHERE idpersonal=".$idpersonal;
         return $this->bd->eliminar($sql);
+    }
+
+    public function actividadesPersonales($fechaDesde,$fechaHasta,$idpersonal)
+    {
+        $fechaDesde = fecha_a_mysql($fechaDesde);
+        $fechaHasta = fecha_a_mysql($fechaHasta);
+        $subsql = " and fecha>='" . $fechaDesde . "' and fecha <='" . $fechaHasta . "'";
+        $sql="SELECT DATE_FORMAT(fecha, '%d/%m/%Y') as fecha ,CONCAT(l.labor,' - ',c.campo,' - ',lo.lote) as descripcion,al.superficie, al.superficie*ap.precioHa as importe 
+        FROM actividades_lotes al 
+        INNER JOIN lotescampanas lc ON al.idloteCampana=lc.idloteCampana
+        INNER JOIN lotes lo ON lc.idlote=lo.idlote
+        INNER JOIN campos c ON lo.idcampo=c.idcampo INNER JOIN labores l ON al.idlabor=l.idlabor INNER JOIN actividades_personales ap ON al.idactividad=ap.idactividad WHERE ap.idpersonal=".$idpersonal.$subsql. "ORDER BY fecha";
+        return $this->bd->sql($sql);
     }
 }
 ?>

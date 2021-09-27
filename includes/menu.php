@@ -6,9 +6,17 @@ include_once("includes/modelos/empresasModelo.php");
 $oCampanas = new campanasModel();
 $campanas = $oCampanas->listarCampanas();
 
-$oEmpesas=new empresasModel();
-$empresas=$oEmpesas->empresaById($idEmpresaActiva);
-$empresaActiva=$empresas[0]["empresa"];
+$oEmpesas = new empresasModel();
+$empresas = $oEmpesas->empresaById($idEmpresaActiva);
+if ($empresas) {
+    $empresaActiva = $empresas[0]["empresa"];
+    $idempresaActiva = $empresas[0]["idempresa"];
+} else {
+    $empresaActiva = "";
+    $idempresaActiva = 0;
+}
+
+$emp = $oEmpesas->listarEmpresasRubros(1, 0, 0, 0, $idUsuarioActivo);
 
 ?>
 <script src="jquery/menu.js?version=<?php echo rand(1, 10000); ?>"></script>
@@ -20,12 +28,11 @@ $empresaActiva=$empresas[0]["empresa"];
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
+            <!--
             <li class="nav-item active">
-                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="#">Home</a>
             </li>
-
-
-
+            -->
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Datos
@@ -36,7 +43,7 @@ $empresaActiva=$empresas[0]["empresa"];
                     <a class="dropdown-item" href="insumos.php">Insumos</a>
                     <a class="dropdown-item" href="labores.php">Labores</a>
                     <a class="dropdown-item" href="personales.php">Personales</a>
-                    <a class="dropdown-item" href="ejemplopdf.php">PDF</a>
+
                 </div>
             </li>
 
@@ -45,7 +52,7 @@ $empresaActiva=$empresas[0]["empresa"];
                     Gestion
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    
+
                     <a class="dropdown-item" href="prescripciones.php">Agregar Orden</a>
                     <a class="dropdown-item" href="verOrdenes.php">Ver Ordenes</a>
                     <div class="dropdown-divider"></div>
@@ -55,42 +62,95 @@ $empresaActiva=$empresas[0]["empresa"];
 
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Facturacion
+                    Financiero
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    
-                    <a class="dropdown-item" href="facturas.php">Facturas</a>
-                    <a class="dropdown-item" href="remitos.php">Remitos</a>
+
+                    <a class="dropdown-item" href="cuentas.php">Cuentas</a>
+                    <a class="dropdown-item" href="pagos.php">Pagos</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="stockInsumos.php">Stock de Insumos</a>
+                    <a class="dropdown-item" href="#">Otros</a>
                 </div>
             </li>
 
-            <li class="nav-item">
-                <a class="nav-link" href="cerrarsesion.php">Cerrar</a>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Proveedores
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+
+                    <a class="dropdown-item" href="facturas.php">Facturas</a>
+                    <a class="dropdown-item" href="remitos.php">Remitos</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="ctasCtes.php">Cuentas Corrientes</a>
+                </div>
             </li>
+
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Stocks
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="stockInsumos.php">Stock de Insumos</a>
+                    <a class="dropdown-item" href="stockcereales.php">Stock de Cereales</a>
+                </div>
+            </li>
+
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Personales
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+
+                    <a class="dropdown-item" href="personalesPagos.php">Pagos</a>
+                    <a class="dropdown-item" href="personalesSaldos.php">Saldos</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#">reservado</a>
+                </div>
+            </li>
+
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <?php echo $usuarioActivo; ?>
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+
+                    <a class="nav-link" href="cerrarsesion.php">Cerrar Sesion</a>
+                    
+                </div>
+            </li>
+
         </ul>
         <form class="form-inline my-2 my-lg-0">
-            <label class="form-control mr-sm-2" id="usuarioActivo"><?php echo $usuarioActivo; ?></label>
-            <label class="form-control mr-sm-2" id="empresaActiva"><?php echo $empresaActiva; ?></label>
+            <select class="form-control mr-2" name="sltEmpresaActiva" id="sltEmpresaActiva">
+                <?php
+                foreach ($emp as $row) {
+                    if ($row['idempresa'] == $idEmpresaActiva) {
+                        $idSel = "selected";
+                    } else {
+                        $idSel = "";
+                    }
+                ?>
+                    <option <?php echo $idSel; ?> value="<?php echo $row['idempresa']; ?>"><?php echo $row['empresa']; ?></option>
+                <?php } ?>
+            </select>
             <input type="hidden" id="idUsuarioActivo" value="<?php echo $idUsuarioActivo; ?>">
             <input type="hidden" id="idEmpresaActiva" value="<?php echo $idEmpresaActiva; ?>">
+            <input type="hidden" id="idCampanaActiva" value="<?php echo $idCampanaActiva; ?>">
             <select class="form-control" name="sltcampanas" id="sltcampanas">
                 <?php
                 foreach ($campanas as $campana) {
-                    if($campana['idcampana']==$idCampanaActiva)
-                    {
-                        $idSel="selected";
-                    }else
-                    {
-                        $idSel="";
+                    if ($campana['idcampana'] == $idCampanaActiva) {
+                        $idSel = "selected";
+                    } else {
+                        $idSel = "";
                     }
                 ?>
                     <option <?php echo $idSel; ?> value="<?php echo $campana['idcampana']; ?>"><?php echo $campana['campana']; ?></option>
                 <?php } ?>
             </select>
 
-            <input type="hidden" id="idCampanaActiva" value="<?php echo $idCampanaActiva; ?>">
+
         </form>
     </div>
 </nav>

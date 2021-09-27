@@ -39,7 +39,7 @@
                     
                     <div class="form-group">
                         <label for="txtPrecioHa" class="col-form-label">Precio por Ha:</label>
-                        <input type="text" class="form-control" id="txtPrecioHa" name="txtPrecioHa" value="<?php echo $primerPrecioHa; ?>">
+                        <input type="number" class="form-control" id="txtPrecioHa" name="txtPrecioHa" value="<?php echo $primerPrecioHa; ?>">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
@@ -80,7 +80,7 @@
                     
                     <div class="form-group">
                         <label for="txtPrecioHa" class="col-form-label">precio Ha:</label>
-                        <input type="text" class="form-control" id="txtInsPrecioHa" name="txtPrecioHa" value="">
+                        <input type="number" class="form-control" id="txtInsPrecioHa" name="txtPrecioHa" value="">
                     </div>
 
                     <div class="modal-footer">
@@ -121,7 +121,7 @@
                     
                     <div class="form-group">
                         <label for="txtModificarPrecioHaPersonal" class="col-form-label">Precio por Ha:</label>
-                        <input type="text" class="form-control" id="txtModificarPrecioHaPersonal" name="txtModificarPrecioHaPersonal" value="">
+                        <input type="number" class="form-control" id="txtModificarPrecioHaPersonal" name="txtModificarPrecioHaPersonal" value="">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
@@ -154,7 +154,7 @@
                     
                     <div class="form-group">
                         <label for="txtModificarPrecioHaPersonalAct" class="col-form-label">Precio por Ha:</label>
-                        <input type="text" class="form-control" id="txtModificarPrecioHaPersonalAct" name="txtModificarPrecioHaPersonalAct" value="">
+                        <input type="number" class="form-control" id="txtModificarPrecioHaPersonalAct" name="txtModificarPrecioHaPersonalAct" value="">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>

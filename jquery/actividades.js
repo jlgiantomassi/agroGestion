@@ -1098,6 +1098,7 @@ function iniciarEventosActividades() {
             }
         } else if (opcionProductor == 2) {
             idproductor = $("#sltproductores").val();
+            console.log("productor: "+idproductor);
 
             $("#tblproductoresInsumos tbody tr .idempresa").each(function () { //buscar si el insumo se encuentra ingresado en la lista
                 if ($(this).text() == idproductor) {
@@ -1107,8 +1108,10 @@ function iniciarEventosActividades() {
             if (flag) {
                 alert("Este productor ya se encuentra en la lista");
             } else {
-                total = parseFloat($("#txtParticipacion").val())
-                cantProductor = parseFloat($("#txtProductorCantidad").val())
+                total = parseFloat($("#txtParticipacion").val());
+                cantProductor = parseFloat($("#txtProductorCantidad").val());
+                console.log("total: "+total);
+                console.log("cantidad: "+idinsumoSel);
                 if ((totalProductorInsumoSel + total) > totalInsumoSel) {
                     alert("La suma de las participaciones es mayor al valor del Insumo");
                 } else {
@@ -1122,7 +1125,7 @@ function iniciarEventosActividades() {
                             if (id > 0) {
                                 actualizaProductoresInsumos(idinsumoSel);
                             } else {
-                                alert("Se produjo un error al guardar la participacion del productor para este insumos");
+                                alert("Se produjo un error al guardar la participacion del productor para este insumo");
                             }
                             //opcionProductor = 0;
                         }

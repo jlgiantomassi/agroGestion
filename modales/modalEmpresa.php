@@ -3,6 +3,9 @@ require_once $raiz . 'includes/modelos/empresasModelo.php';
 $oEmpresa = new empresasModel();
 $empresas = $oEmpresa->listarEmpresas($idUsuarioActivo);
 $cantEmpresas = $oEmpresa->cantidadEmpresas();
+if ($cantEmpresas == 1) {
+    $idEmpresaActiva = $empresas[0]["idempresa"];
+}
 $rowEmpresaActiva = $oEmpresa->empresaById($idEmpresaActiva);
 if ($cantEmpresas > 0) {
     $primerCuit = $rowEmpresaActiva[0]['cuit'];

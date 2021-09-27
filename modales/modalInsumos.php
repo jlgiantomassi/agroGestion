@@ -89,7 +89,7 @@ $cantUnidad = $oUnidades->cantidadUnidades();
                     </div>
                     <div class="form-group">
                         <label for="txtInsPrecio" class="col-form-label">Precio (Unidad):</label>
-                        <input type="text" class="form-control" id="txtInsPrecio" name="txtInsPrecio" value="">
+                        <input type="number" class="form-control" id="txtInsPrecio" name="txtInsPrecio" value="">
 
                     </div>
 
@@ -144,7 +144,7 @@ $cantUnidad = $oUnidades->cantidadUnidades();
                     </div>
                     <div class="form-group">
                         <label for="txtModificarPrecio" class="col-form-label">Precio (Unidad):</label>
-                        <input type="text" class="form-control" id="txtModificarPrecio" name="txtModificarPrecio" value="">
+                        <input type="number" class="form-control" id="txtModificarPrecio" name="txtModificarPrecio" value="">
 
                     </div>
 

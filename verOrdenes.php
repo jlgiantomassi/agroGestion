@@ -40,7 +40,7 @@
     ?>
 
     <div class="container border bg-white">
-
+        <div id="alerta"></div>
         <div class="row">
             <div class="shadow p-3 mb-3 bg-white rounded col-md-12 ">
                 <h5>Ordenes de Trabajo</h5>
@@ -124,8 +124,9 @@
                 </table>
             </div>
         </div>
-    </div>
 
+    </div>
+    
     <?php
     include 'includes/footer.php';
     ?>
@@ -163,9 +164,26 @@
 
         function realizar(idorden) {
             if (confirm("Desea agregar esta orden a la gestion de datos?")) {
-                window.open("includes/basedatos/realizarOrden.php?idorden=" + idorden + "&accion=agregar");
+                $('#alerta').append('<div class="alert alert-success alert-dismissible fade show" id="alerta" role="alert">Espere un momento por favor <button type = "button" class= "close" data-dismiss="alert" aria-label="Close" ><span aria-hidden="true">&times;</span></button ></div >');
+                $.ajax({
+                    type: "GET",
+                    url: "includes/basedatos/realizarOrden.php",
+                    data: "idorden=" + idorden + "&accion=agregar",
+                    dataType: "text",
+                    success: function(response) {
+                        location.reload();
+                    }
+                });
             } else {
-                window.open("includes/basedatos/realizarOrden.php?idorden=" + idorden + "&accion=descartar");
+                $.ajax({
+                    type: "GET",
+                    url: "includes/basedatos/realizarOrden.php",
+                    data: "idorden=" + idorden + "&accion=descartar",
+                    dataType: "text",
+                    success: function(response) {
+                        location.reload();
+                    }
+                });
             }
         }
     </script>

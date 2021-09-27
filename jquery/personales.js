@@ -28,7 +28,8 @@ $().ready(function () {
                     } else {
                         $("#modalInsPersonal").hide();
                         $("#modalInsPersonal").modal('hide');
-                        actualizarListaPersonales(id);
+                        //actualizarListaPersonales(id);
+                        location.reload();
                     }
 
                 }

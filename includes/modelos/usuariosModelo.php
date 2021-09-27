@@ -46,5 +46,11 @@ class usuariosModel
         else
             return  $id;
     }
+
+    public function modificarUltimoIdEmpresa($idUsuarioActivo,$idEmpresaActiva)
+    {
+        $sql="UPDATE `usuarios` SET `idUltimaEmpresa`=".$idEmpresaActiva." WHERE idusuario=".$idUsuarioActivo;
+        $this->bd->modificar($sql);
+    }
 }
 ?>

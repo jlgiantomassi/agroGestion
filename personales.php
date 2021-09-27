@@ -12,7 +12,7 @@
     include_once 'includes/menu.php';
     include_once 'includes/modelos/personalesModelo.php';
     $oPersonal = new personalesModel();
-    $personales = $oPersonal->listarPersonales($idUsuarioActivo);
+    $personales = $oPersonal->listarPersonales($idEmpresaActiva);
     
     ?>
     <script src="./jquery/personales.js?version=<?php echo rand(1, 10000); ?>"></script>

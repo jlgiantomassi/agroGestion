@@ -7,40 +7,40 @@
 
 <body>
     <?php
-    include 'includes/menu.php';
-    include_once "includes/modelos/remitosModelo.php";
-    include_once "includes/modelos/empresasModelo.php";
+    include_once 'includes/menu.php';
+    include_once "includes/modelos/personalesModelo.php";
+    //include_once "includes/modelos/empresasModelo.php";
 
-    $oEmpresas = new empresasModel();
-    $empresas = $oEmpresas->listarEmpresasRubros(0, 0, 1, 0, $idUsuarioActivo);
+    $oPersonales = new personalesModel();
+    $personales = $oPersonales->listarPersonales($idempresaActiva);
 
     if (isset($_POST["enviar"])) {
         $fechaDesde = $_POST["fechaDesde"];
         $fechaHasta = $_POST["fechaHasta"];
-        $idempresa = $_POST["sltempresas"];
+        $idpersonal = $_POST["sltpersonales"];
+        $detalles = $oPersonales->actividadesPersonales($fechaDesde,$fechaHasta,$idpersonal);
     } else {
         $fechaDesde = date("01/m/Y");
         $fechaHasta = date("d/m/Y");
-        $idempresa = 0;
+        $idpersonal = 0;
+        $detalles=[];
     }
-    $oRemitos = new remitosModel();
-    $remitos = $oRemitos->listarRemitos($fechaDesde, $fechaHasta, $idempresa, $idEmpresaActiva);
     ?>
     <div class="container border bg-white col-8">
         <div id="alerta"></div>
-        <div id="formRemitos">
+        <div id="formFacturas">
             <div class="row">
                 <div class="shadow p-3 mb-3 bg-white rounded col-md-12 ">
-                    <h5>Remitos</h5>
+                    <h5>Saldos de Personales</h5>
                 </div>
             </div>
             <div class="row">
                 <div class="col-2 ml-4 mb-2">
-                    <a href="remitoAgregar.php" class="btn btn-primary btn-sm" id="btnAgregarRemito">Agregar Remito</a>
+                    <a href="personalesPagos.php" class="btn btn-primary btn-sm" id="btnAgregarFactura">Agregar Pago</a>
                 </div>
             </div>
 
-            <form action="remitos.php" method="POST" class="p-2">
+            <form action="personalesSaldos.php" method="POST" class="p-2">
                 <div class="shadow p-3 bg-white rounded row ">
                     <div class="col-2 form-group">
                         <label class="m-0 ml-2" for="fecha">Fecha Desde</label>
@@ -51,11 +51,11 @@
                         <input class=" col-md-10" type="text" value="<?php echo isset($_POST["fechaHasta"]) ? $fechaHasta : date('d/m/Y'); ?>" id="fechaHasta" name="fechaHasta">
                     </div>
                     <div class="col-3 form-group ">
-                        <label class="m-0 ml-2" for="sltEmpresa">Empresa</label>
-                        <select class="form-control col-md-12" id="sltempresas" name="sltempresas">
+                        <label class="m-0 ml-2" for="sltpersonales">Personal</label>
+                        <select class="form-control col-md-12" id="sltpersonales" name="sltpersonales">
                             <option value="0"></option>
-                            <?php foreach ($empresas as $empresa) { ?>
-                                <option value="<?php echo $empresa["idempresa"]; ?>" <?php echo $idempresa == $empresa["idempresa"] ? "selected" : ""; ?>><?php echo $empresa["empresa"]; ?></option>
+                            <?php foreach ($personales as $personal) { ?>
+                                <option value="<?php echo $personal["idpersonal"]; ?>" <?php echo $idpersonal == $personal["idpersonal"] ? "selected" : ""; ?>><?php echo $personal["personal"]; ?></option>
                             <?php } ?>
 
                         </select>
@@ -64,29 +64,30 @@
                         <input class="col-10 btn btn-success" type="submit" value="Filtrar" name="enviar">
                     </div>
                 </div>
+
             </form>
             <div class="card">
                 <div class="card-body col-9">
-                    <table class="table table-sm" id="tblremitos">
+                    <table class="table table-sm" id="tblfacturas">
                         <thead>
-                            <th class="d-none"></th>
                             <th>Fecha</th>
-                            <th>Empresas</th>
-                            <th class="text-right">cantidad Total</th>
-                            <th class="text-center">Acciones</th>
+                            <th>Descripcion</th>
+                            <th class="text-right">Cantidad</th>
+                            <th class="text-right">Importe</th>
+                            <th class="text-right">Saldo</th>
                         </thead>
                         <tbody>
                             <?php
-                            foreach ($remitos as $remito) { ?>
+                            $saldo=0;
+                            foreach ($detalles as $detalle) { 
+                                $saldo+=$detalle["importe"];
+                                ?>
                                 <tr>
-                                    <td class="d-none"><?php echo $remito["idremito"]; ?></td>
-                                    <td><?php echo $remito["fecha"]; ?></td>
-                                    <td><?php echo $remito["empresa"]; ?></td>
-                                    <td class="text-right"><?php echo $remito["total"]; ?></td>
-                                    <td class="text-center">
-                                        <a href='remitoVer.php?idremito=<?php echo $remito["idremito"]; ?>' class='' ><i class='material-icons'>info</i></a>
-                                        <a href='remitoBorrar.php?idremito=<?php echo $remito["idremito"]; ?>' class='' onclick="return confirm('Desea Borrar este remito?')"><i class='material-icons'>clear</i></a>
-                                    </td>
+                                    <th><?php echo $detalle["fecha"] ?></th>
+                                    <th><?php echo $detalle["descripcion"] ?></th>
+                                    <th class="text-right"><?php echo number_format($detalle["superficie"],2); ?></th>
+                                    <th class="text-right"><?php echo number_format($detalle["importe"],2); ?></th>
+                                    <th class="text-right"><?php echo number_format($saldo,2); ?></th>
                                 </tr>
                             <?php } ?>
                         </tbody>
@@ -114,12 +115,12 @@
     });
 
     $('#fechaDesde').change(function() {
-        if (comparaFechasdmY($('#fechaDesde').val(),$('#fechaHasta').val())==true)
+        if (comparaFechasdmY($('#fechaDesde').val(), $('#fechaHasta').val()) == true)
             $('#fechaHasta').val($('#fechaDesde').val());
     });
 
     $('#fechaHasta').change(function() {
-        if (comparaFechasdmY( $('#fechaDesde').val() , $('#fechaHasta').val() )==true)
+        if (comparaFechasdmY($('#fechaDesde').val(), $('#fechaHasta').val()) == true)
             $('#fechaDesde').val($('#fechaHasta').val());
     });
 </script>
