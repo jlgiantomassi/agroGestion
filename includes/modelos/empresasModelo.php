@@ -24,15 +24,34 @@ class empresasModel
 
     public function listarEmpresasRubros($productor, $contratista, $proveedor, $otro, $idUsuario)
     {
-        $subsql = "";
+        $subsql = " and (";
         if ($productor == 1)
-            $subsql .= " and productor=1";
+            $subsql .= "productor=1";
         if ($contratista == 1)
-            $subsql .= " and contratista=1";
+        {
+            if(strlen($subsql)>10)
+            {
+                $subsql .=" or ";    
+            }
+            $subsql .= "contratista=1";
+        }
         if ($proveedor == 1)
-            $subsql .= " and proveedor=1";
+        {
+            if(strlen($subsql)>10)
+            {
+                $subsql .=" or ";    
+            }
+            $subsql .= "proveedor=1";
+        }
         if ($otro == 1)
-            $subsql .= " and otro=1";
+        {
+            if(strlen($subsql)>10)
+            {
+                $subsql .=" or ";    
+            }
+            $subsql .= "otro=1";
+        }
+        $subsql .=")";
         $sql = "SELECT * FROM empresas WHERE idusuario=" . $idUsuario . $subsql . " ORDER BY empresa ASC";
         return $this->bd->sql($sql);
     }

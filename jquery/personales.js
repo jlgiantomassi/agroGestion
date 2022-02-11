@@ -54,11 +54,11 @@ $().ready(function () {
             });
         }
     });
-
+    
     $("#btnModificarPersonal").click(function (e) {
         e.preventDefault();
-        $("#txtPersonal").attr("disabled", true);
-        personal = $("#txtPersonal").val();
+        $("#txtModificarPersonal").attr("disabled", true);
+        personal = $("#txtModificarPersonal").val();
         precio = $("#txtModificarPrecioHaPersonal").val();
         cuil=$("#txtModificarCuil").val();
         $.ajax({
@@ -78,6 +78,7 @@ $().ready(function () {
     
 });
 
+
 function modificarPersonal(id) {
     idpersonalSel = id;
     $("#txtPersonal").attr("disabled", false);
@@ -87,7 +88,7 @@ function modificarPersonal(id) {
         data: "accion=personales&idpersonal="+id,
         dataType: "json",
         success: function (datos) {
-            $("#txtPersonal").val(datos[0].personal);
+            $("#txtModificarPersonal").val(datos[0].personal);
             $("#txtModificarPrecioHaPersonal").val(datos[0].precioHa);
             $("#txtModificarCuil").val(datos[0].cuil);
             

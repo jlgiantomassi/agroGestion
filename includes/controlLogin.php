@@ -8,7 +8,7 @@ if (isset($_SESSION["idusuario"])) {
     $idUsuarioActivo = $_SESSION["idusuario"];
     $idEmpresaActiva = $_SESSION["idempresa"];
     $usuarioActivo = "Jose L Giantomassi";
-    $campanaActiva = "20-21";
+    $campanaActiva = "21-22";
 } else {
     echo "El usuario no esta logeado";
     session_destroy();

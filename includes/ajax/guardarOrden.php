@@ -70,6 +70,7 @@ if(isset($_REQUEST["terceros"]))
     }
     
 }
+//echo $sql;
 $id=$bd1->insertarVarios($sql);
 echo $id;
 /*

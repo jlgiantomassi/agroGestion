@@ -15,7 +15,7 @@
     $personales = $oPersonal->listarPersonales($idEmpresaActiva);
     
     ?>
-    <script src="./jquery/personales.js?version=<?php echo rand(1, 10000); ?>"></script>
+    <script src="./jquery/personales.js?version=<?php //echo rand(1, 10000); ?>"></script>
     <div class="container border bg-white">
         <div id="alerta"></div>
         <form id="formpersonales">
@@ -49,7 +49,7 @@
                                         <td class="text-right"><?php echo $personal["cuil"]; ?></td>
                                         <td class="text-right"><?php echo $personal["precioHa"]; ?></td>
                                         <td class="text-center">
-                                            <a class="btn btn-success btn-sm btn-xxs"  data-toggle="modal" data-target="#modalModificarPersonal" data-whatever="" onclick="modificarPersonal(<?php echo $personal['idpersonal']; ?>)">Modificar</a>
+                                            <a class="btn btn-success btn-sm btn-xxs"  data-toggle="modal" data-target="#modalModificarPersonal" data-whatever=""onclick="modificarPersonal(<?php echo $personal['idpersonal']; ?>)">Modificar</a>
                                             <button class="btn btn-danger btn-sm btn-xxs btnEliminarPersonal"  value="<?php echo $personal["idpersonal"]; ?>">Eliminar</button>
                                         </td>
                                     </tr>

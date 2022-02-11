@@ -7,8 +7,10 @@ if ($cantTerceros > 0) //solo entramos si hay mas de un usuario. el activo y otr
 {
     if ($rowsTerceros[0]['idempresa'] == $idEmpresaActiva) //si el primer usuario de la lista es el usuario activo
     {
-        $primerCuitTercero = $rowsTerceros[1]['cuit']; //seleccionamos el siguiente usuario
-        $primerDireccionTercero = $rowsTerceros[1]['direccion'];
+        if ($cantTerceros > 1) {
+            $primerCuitTercero = $rowsTerceros[1]['cuit']; //seleccionamos el siguiente usuario
+            $primerDireccionTercero = $rowsTerceros[1]['direccion'];
+        }
     } else {
         $primerCuitTercero = $rowsTerceros[0]['cuit'];  //si el primer usuario no es el activo
         $primerDireccionTercero = $rowsTerceros[0]['direccion'];

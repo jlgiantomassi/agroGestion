@@ -1,17 +1,18 @@
 <?php
 $raiz = "";
 include 'includes/modelos/cuentasModelo.php';
+
 $oCuentas = new cuentasModel();
-if(isset($_POST["enviar"]))
-{
-    $idtipo=$_POST["sltTipoCuenta"];
-    $idmoneda=$_POST["sltMoneda"];
-    $cuenta=$_POST["txtCuenta"];
-    $numero=$_POST["txtNumeroCuenta"]==""?0:$_POST["txtNumeroCuenta"]=="";
-    $idempresaAct=$_POST["idEmpresaActiva"];
-    $oCuentas->agragarCuenta($cuenta,$numero,$idtipo,$idmoneda,$idempresaAct);
+if (isset($_POST["enviar"])) {
+    $idtipo = $_POST["sltTipoCuenta"];
+    $idmoneda = $_POST["sltMoneda"];
+    $cuenta = $_POST["txtCuenta"];
+    $numero = $_POST["txtNumeroCuenta"] == "" ? 0 : $_POST["txtNumeroCuenta"] == "";
+    $idempresaAct = $_POST["idEmpresaActiva"];
+    $oCuentas->agragarCuenta($cuenta, $numero, $idtipo, $idmoneda, $idempresaAct);
     header("Location:cuentas.php");
-}   
+}
+
 ?>
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -23,12 +24,19 @@ if(isset($_POST["enviar"]))
 
 <body>
     <?php
-    
+
     include_once 'includes/menu.php';
-    
+    include_once 'includes/modelos/personalesModelo.php';
+    include_once 'includes/modelos/empresasModelo.php';
+
     $tipos = $oCuentas->tipoCuentas($idEmpresaActiva);
     $monedas = $oCuentas->monedas($idEmpresaActiva);
-    
+
+    $oPersonales = new personalesModel();
+    $personales = $oPersonales->listarPersonales($idEmpresaActiva);
+
+    $oEmp = new empresasModel();
+    $Lempresas = $oEmp->listarEmpresasRubros(1,1,1,1, $idUsuarioActivo);
     ?>
     <script src="jquery/cuentas.js?version=<?php echo rand(1, 10000); ?>"></script>
     <div class="container border bg-white col-8">
@@ -92,14 +100,45 @@ if(isset($_POST["enviar"]))
                         <label for="txtNumeroCuenta" class="col-form-label">Numero Cuenta:</label>
                         <input type="number" class="form-control" id="txtNumeroCuenta" name="txtNumeroCuenta" value="">
                     </div>
-                    <input type="hidden" name="idEmpresaActiva" value="<?php echo $idEmpresaActiva; ?>"
-                    <div class="modal-footer">
-                        <a href="cuentas.php" class="btn btn-secondary">Cancelar</a>
-                        <input type="submit" class="btn btn-primary" id="enviar" name="enviar" value="Agregar">
+                    <label for="txtpertenece" class="col-form-label">La cuenta pertenece a:</label>
+                    <div class="form-group">
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" id="propia" name="pertenece" value="propia" checked><label class="form-check-label" for="propia">Propia</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" id="personales" name="pertenece" value="personales"><label class="form-check-label" for="personales">Personales</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" id="empresas" name="pertenece" value="empresas"><label class="form-check-label" for="empresas">Empresas</label>
+                        </div>
                     </div>
-                </form>
+                    <div class="form-group d-none" id="divPersonales">
+                        <select name="sltPersonales" id="sltPersonales" class="form-control">
+                            <?php
+                            foreach ($personales as $personal) { ?>
+                                <option value="<?php echo $personal['idpersonal']; ?>"><?php echo $personal['personal']; ?></option>
+                            <?php
+                            } ?>
+                        </select>
+                    </div>
+
+                    <div class="form-group d-none" id="divEmpresas">
+                        <select name="sltEmpresas" id="sltEmpresas" class="form-control">
+                            <?php
+                            foreach ($Lempresas as $Lemp) { ?>
+                                <option value="<?php echo $Lemp['idempresa']; ?>"><?php echo $Lemp['empresa']; ?></option>
+                            <?php
+                            } ?>
+                        </select>
+                    </div>
+                    <input type="hidden" name="idEmpresaActiva" value="<?php echo $idEmpresaActiva; ?>" <div class="modal-footer">
+                    <a href="cuentas.php" class="btn btn-secondary">Cancelar</a>
+                    <input type="submit" class="btn btn-primary" id="enviar" name="enviar" value="Agregar">
             </div>
+            </form>
         </div>
+    </div>
     </div>
     <?php include 'includes/footer.php'; ?>
 </body>

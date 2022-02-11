@@ -1,6 +1,6 @@
 <?php
 $idusuario = 1;
-$idcampana = 4;
+$idcampana = 1;
 ?>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 
